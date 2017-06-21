@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/loginLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="6dp"
-    android:gravity="center_vertical">
+    android:layout_margin="6dp">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/logo_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -17,8 +16,9 @@
         android:id="@+id/loginContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/round"
-        android:orientation="vertical">
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:background="@drawable/round">
 
         <ImageView
             android:id="@+id/user_login_image"
@@ -35,8 +35,10 @@
             android:layout_marginLeft="6dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
+            android:inputType="textEmailAddress"
             android:layout_toRightOf="@+id/user_login_image"
             android:background="@drawable/oval"
+
             android:hint="email"
             android:padding="8dp" />
 
@@ -53,79 +55,63 @@
             android:id="@+id/passEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="8dp"
             android:background="@drawable/oval"
-            android:layout_below="@id/emailEdit"
             android:singleLine="true"
-            android:layout_toRightOf="@id/user_pass_image"
             android:hint="pass"
             android:padding="8dp"
-            android:layout_marginBottom="16dp"
             android:maxLines="1"
             android:lines="1"
-            android:ellipsize="end"/>
+            android:ellipsize="end"
+            android:layout_alignTop="@+id/user_pass_image"
+            android:layout_alignLeft="@+id/emailEdit"
+            android:layout_alignStart="@+id/emailEdit" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/signInBtn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp">
+        android:layout_gravity="center_horizontal"
 
-        <Button
-            android:layout_weight="0.5"
-            android:id="@+id/signInBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="12dp"
-            android:layout_marginRight="6dp"
-            android:textAllCaps="false"
-            android:background="@drawable/colorbutton"
-            android:text="Sign in"
+        android:textAllCaps="false"
+        android:background="@drawable/colorbutton"
+        android:text="Sign in"
+        android:padding="8dp"
+        android:layout_alignBaseline="@+id/registrationBtn"
+        android:layout_alignBottom="@+id/registrationBtn"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-            android:padding="8dp" />
+    <Button
+        android:id="@+id/registrationBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/colorbutton"
+        android:text="Registration"
+        android:textAllCaps="false"
+        android:padding="8dp"
+        android:layout_below="@+id/loginContainer"
+        android:layout_toRightOf="@+id/signInBtn"
+        android:layout_toEndOf="@+id/signInBtn" />
 
-        <Button
-            android:id="@+id/registrationBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginRight="6dp"
-            android:layout_marginTop="8dp"
-            android:layout_weight="0.5"
-            android:background="@drawable/colorbutton"
-            android:text="Registration"
-            android:textAllCaps="false"
-            android:padding="8dp" />
+    <ImageView
+        android:id="@+id/forgotPassImage"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/lock_1" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/forgot_pass_image"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/lock_1" />
-
-        <Button
-            android:id="@+id/forgot_pass_Btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="6dp"
-            android:layout_marginTop="0dp"
-            android:text="Forgot your password?"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            android:textStyle="normal"
-            android:background="@drawable/noborder"/>
-    </LinearLayout>
+    <Button
+        android:id="@+id/forgotPassBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="0dp"
+        android:text="Forgot your password?"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        android:background="@drawable/noborder"/>
 
     <Button
         android:id="@+id/skipBtn"
@@ -133,6 +119,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:background="@drawable/colorbutton"
-        android:text="Skip >" />
-
-</LinearLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/skip" />
+</RelativeLayout>

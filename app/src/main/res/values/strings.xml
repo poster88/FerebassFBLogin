@@ -2,4 +2,7 @@
     <string name="facebook_app_id">174427279757509</string>
     <string name="app_name">LoginWhithFB</string>
     <string name="fb_login_protocol_scheme">fb174427279757509</string>
+    
+    <string name="skip">Skip</string>
+    <string name="loading">loading</string>
 </resources>

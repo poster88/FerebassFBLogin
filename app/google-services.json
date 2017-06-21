@@ -101,6 +101,50 @@
           "status": 2
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:229142208729:android:4e99f8e84b536756",
+        "android_client_info": {
+          "package_name": "com.example.poster.fbloginfacebookdemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "229142208729-0e93u0pa39nbh6hgvekaagasgphgel96.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.poster.fbloginfacebookdemo",
+            "certificate_hash": "131b2d77e60c084da6f90d4f04fad93d132144d3"
+          }
+        },
+        {
+          "client_id": "229142208729-mpko8198vkrgt7oml6dhn6470sn9n3jr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrpwuHMfxExKvmn5QOL6d2f3RYd2KnQZQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "229142208729-mpko8198vkrgt7oml6dhn6470sn9n3jr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
     }
   ],
   "configuration_version": "1"

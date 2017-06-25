@@ -1,8 +1,8 @@
 package com.example.user.loginwhithfb;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,11 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.vision.barcode.Barcode;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,6 +34,9 @@ import butterknife.Unbinder;
 public class LoginFragment extends Fragment{
     @BindView(R.id.emailEdit) EditText emailEdit;
     @BindView(R.id.passEdit) EditText passEdit;
+    @BindView(R.id.currentUser) TextView currentUser;
+    @BindView(R.id.skipImgBtn) ImageView skipImgBtn;
+
     private Unbinder unbinder;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -47,6 +51,7 @@ public class LoginFragment extends Fragment{
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         unbinder = ButterKnife.bind(this, view);
         mAuth = FirebaseAuth.getInstance();
+
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -54,8 +59,12 @@ public class LoginFragment extends Fragment{
                 if (user != null){
                     Log.d(TAG, "user loggin in: " + user.getEmail() + '\n' +
                             "user name : "+ user.getDisplayName());
+                    if (!user.isAnonymous()){
+                        currentUser.setText("Welcome " + user.getDisplayName());
+                    }
                 }else {
                     Log.d(TAG, "user loggin out.");
+                    currentUser.setText("");
                 }
             }
         };
@@ -73,7 +82,8 @@ public class LoginFragment extends Fragment{
         //createAccount();
     }
 
-    @OnClick(R.id.skipBtn)
+
+    @OnClick(R.id.skipImgBtn)
     public void skipBtnClick(){
         anonymouslySingIn();
     }
@@ -86,12 +96,13 @@ public class LoginFragment extends Fragment{
                     Log.d(TAG, "Exeption : " + task.getException());
                 }else {
                     Log.d(TAG, "signInAnonymously:success");
+                    getActivity().startActivity(new Intent(getActivity(), NavigationDrawerActivity.class));
                 }
             }
         });
     }
 
-    private void signIn(String email, String password) {
+    private void signIn(String email, final String password) {
         Log.d(TAG, "signIn:" + email);
         if (!validateForm()) {
             return;
@@ -103,6 +114,11 @@ public class LoginFragment extends Fragment{
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithEmail:success");
+                            if (mAuth != null){
+                                currentUser.setText("Welcome " + user.getDisplayName() + password);
+                            }else {
+                                currentUser.setText("");
+                            }
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(getContext(), "Authentication failed.",
@@ -196,9 +212,10 @@ public class LoginFragment extends Fragment{
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onStart() {
+        super.onStart();
         mAuth.addAuthStateListener(mAuthStateListener);
+
     }
 
     @Override
@@ -207,5 +224,11 @@ public class LoginFragment extends Fragment{
         if (mAuth != null){
             mAuth.removeAuthStateListener(mAuthStateListener);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        unbinder.unbind();
+        super.onDestroyView();
     }
 }

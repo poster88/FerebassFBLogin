@@ -2,7 +2,17 @@
     <string name="facebook_app_id">174427279757509</string>
     <string name="app_name">LoginWhithFB</string>
     <string name="fb_login_protocol_scheme">fb174427279757509</string>
-    
+
     <string name="skip">Skip</string>
     <string name="loading">loading</string>
+    <string name="email">email</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="pass">pass</string>
+    <string name="welcome">Logged as </string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

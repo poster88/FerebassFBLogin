@@ -5,6 +5,17 @@
     android:layout_height="match_parent"
     android:layout_margin="6dp">
 
+    <TextView
+        android:id="@+id/currentUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/loginContainer"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="6dp"
+        android:textColor="@color/wallet_bright_foreground_holo_light"
+        android:layout_alignRight="@+id/loginContainer"
+        android:textSize="14sp"/>
+
     <ImageView
         android:id="@+id/logo_image"
         android:layout_width="match_parent"
@@ -14,40 +25,43 @@
 
     <RelativeLayout
         android:id="@+id/loginContainer"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
         android:background="@drawable/round">
 
         <ImageView
             android:id="@+id/user_login_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginRight="14dp"
             android:src="@drawable/users_1" />
 
         <EditText
             android:id="@+id/emailEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="6dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
             android:inputType="textEmailAddress"
             android:layout_toRightOf="@+id/user_login_image"
+            android:layout_alignLeft="@+id/loginContainer"
+            android:singleLine="true"
+            android:textSize="14sp"
             android:background="@drawable/oval"
-
-            android:hint="email"
+            android:hint="@string/email"
             android:padding="8dp" />
 
         <ImageView
             android:id="@+id/user_pass_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginRight="14dp"
             android:layout_below="@id/user_login_image"
             android:src="@drawable/locked" />
 
@@ -57,69 +71,105 @@
             android:layout_height="wrap_content"
             android:background="@drawable/oval"
             android:singleLine="true"
-            android:hint="pass"
+            android:hint="@string/pass"
             android:padding="8dp"
             android:maxLines="1"
             android:lines="1"
-            android:ellipsize="end"
-            android:layout_alignTop="@+id/user_pass_image"
-            android:layout_alignLeft="@+id/emailEdit"
-            android:layout_alignStart="@+id/emailEdit" />
+            android:textSize="14sp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_below="@id/emailEdit"
+            android:layout_toRightOf="@+id/user_login_image"
+            android:layout_alignLeft="@+id/loginContainer" />
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/signInBtn"
+    <LinearLayout
+        android:id="@+id/buttonContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_below="@id/loginContainer"
+        android:layout_alignLeft="@id/loginContainer"
+        android:layout_alignRight="@id/loginContainer"
+        android:layout_margin="6dp"
+        android:weightSum="1">
 
-        android:textAllCaps="false"
-        android:background="@drawable/colorbutton"
-        android:text="Sign in"
-        android:padding="8dp"
-        android:layout_alignBaseline="@+id/registrationBtn"
-        android:layout_alignBottom="@+id/registrationBtn"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        <Button
+            android:id="@+id/signInBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:background="@drawable/colorbutton"
+            android:text="Sign in"
+            android:layout_marginRight="3dp"
+            android:layout_marginBottom="12dp"/>
 
-    <Button
-        android:id="@+id/registrationBtn"
+        <Button
+            android:id="@+id/registrationBtn"
+            android:layout_weight="0.5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/colorbutton"
+            android:text="Registration"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:layout_marginLeft="3dp"
+            />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/colorbutton"
-        android:text="Registration"
-        android:textAllCaps="false"
-        android:padding="8dp"
-        android:layout_below="@+id/loginContainer"
-        android:layout_toRightOf="@+id/signInBtn"
-        android:layout_toEndOf="@+id/signInBtn" />
+        android:orientation="horizontal"
 
-    <ImageView
-        android:id="@+id/forgotPassImage"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/lock_1" />
+        android:layout_below="@+id/buttonContainer">
 
-    <Button
-        android:id="@+id/forgotPassBtn"
+        <ImageView
+            android:id="@+id/forgotPassImage"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/lock_1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"/>
+
+        <TextView
+            android:id="@+id/forgotPassBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="6dp"
+            android:textColor="@color/wallet_bright_foreground_holo_light"
+            android:text="@string/forgot_your_password"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="6dp"
-        android:layout_marginTop="0dp"
-        android:text="Forgot your password?"
-        android:textAllCaps="false"
-        android:textSize="16sp"
-        android:textStyle="normal"
-        android:background="@drawable/noborder"/>
-
-    <Button
-        android:id="@+id/skipBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:background="@drawable/colorbutton"
+        android:layout_margin="6dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:text="@string/skip" />
+        android:layout_alignParentRight="true">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="6dp"
+            android:text="Skip"
+            android:textColor="@color/wallet_bright_foreground_holo_light"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/skipImgBtn"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/annon_login"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"/>
+    </LinearLayout>
+
 </RelativeLayout>

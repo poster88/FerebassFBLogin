@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +34,6 @@ public class LoginFragment extends Fragment{
     @BindView(R.id.emailEdit) EditText emailEdit;
     @BindView(R.id.passEdit) EditText passEdit;
     @BindView(R.id.currentUser) TextView currentUser;
-    @BindView(R.id.skipImgBtn) ImageView skipImgBtn;
 
     private Unbinder unbinder;
     private FirebaseAuth mAuth;
@@ -71,21 +69,18 @@ public class LoginFragment extends Fragment{
 
         return view;
     }
-
-    @OnClick(R.id.signInBtn)
-    public void singInClick(){
-        signIn(emailEdit.getText().toString(), passEdit.getText().toString());
-    }
-
-    @OnClick(R.id.registrationBtn)
-    public void registrationBtnClick(){
-        //createAccount();
-    }
-
-
     @OnClick(R.id.skipImgBtn)
-    public void skipBtnClick(){
+    public void signInAction(){
         anonymouslySingIn();
+    }
+
+    @OnClick({R.id.signInBtn, R.id.registrationBtn})
+    public void pickAction(TextView textView){
+        if (textView.getId() == R.id.signInBtn){
+            signIn(emailEdit.getText().toString(), passEdit.getText().toString());
+        }else {
+            getFragmentManager().beginTransaction().replace(R.id.container, new RegistrationFragment()).commit();
+        }
     }
 
     public void anonymouslySingIn(){
@@ -121,28 +116,6 @@ public class LoginFragment extends Fragment{
                             }
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(getContext(), "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                        hideProgressDialog();
-                    }
-                });
-    }
-
-    private void createAccount(String email, String password) {
-        Log.d(TAG, "createAccount:" + email);
-        if (!validateForm()) {
-            return;
-        }
-        showProgressDialog();
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "createUserWithEmail:success");
-                        } else {
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getContext(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }

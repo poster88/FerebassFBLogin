@@ -95,6 +95,7 @@ public class RegistrationFragment extends Fragment{
                             Log.d(LoginFragment.TAG, "createUserWithEmail:success");
                             addUser();
                             Toast.makeText(getContext(), "Збережено", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getActivity(), NavigationDrawerActivity.class));
                         } else {
                             Log.w(LoginFragment.TAG, "createUserWithEmail:failure", task.getException().fillInStackTrace());
                             Toast.makeText(getContext(), "Authentication failed.",

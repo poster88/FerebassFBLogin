@@ -45,7 +45,6 @@ public class LoginFragment extends Fragment{
     public ProgressDialog mProgressDialog;
     public static final String TAG = "MY_LOGS";
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

@@ -20,6 +20,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,6 +45,7 @@ public class LoginFragment extends Fragment{
     public ProgressDialog mProgressDialog;
     public static final String TAG = "MY_LOGS";
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,15 +53,28 @@ public class LoginFragment extends Fragment{
         unbinder = ButterKnife.bind(this, view);
         mAuth = FirebaseAuth.getInstance();
 
+        FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
+        if (user1 != null){
+            Log.d(TAG, "user is already logged");
+        }else {
+            Log.d(TAG, "no user");
+        }
+
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 user = firebaseAuth.getCurrentUser();
                 if (user != null){
-                    Log.d(TAG, "user loggin in: " + user.getEmail() + '\n' +
-                            "user name : "+ user.getDisplayName());
+                    Log.d(TAG, "user loggin in: " + '\n' +
+                            "user name : " + user.getDisplayName() + '\n' +
+                            "user email : " + user.getEmail() + '\n' +
+                            "user photo url : " + user.getPhotoUrl() + '\n' +
+                            "user provider : " + user.getProviderId() + '\n' +
+                            "user Uid : " + user.getUid() + '\n' +
+                            "user email verified status : " + user.isEmailVerified()
+                    );
                     if (!user.isAnonymous()){
-                        currentUser.setText("Welcome " + user.getDisplayName());
+                        currentUser.setText("Welcome " + user.getEmail());
                     }
                 }else {
                     Log.d(TAG, "user loggin out.");

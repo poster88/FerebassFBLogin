@@ -1,6 +1,7 @@
 package com.example.user.loginwhithfb;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,10 +17,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.user.loginwhithfb.model.UsersInfoTable;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,12 +58,21 @@ public class RegistrationFragment extends Fragment{
     private FirebaseAuth mAuth;
     public ProgressDialog mProgressDialog;
 
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
+
+    public static final String USER_INFO_TABLE = "UserLoginInfoTable";
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_registaration, container, false);
         unbinder = ButterKnife.bind(this, view);
         mAuth = FirebaseAuth.getInstance();
+
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference(USER_INFO_TABLE);
+
         return view;
     }
 
@@ -77,8 +93,8 @@ public class RegistrationFragment extends Fragment{
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(LoginFragment.TAG, "createUserWithEmail:success");
+                            addUser();
                             Toast.makeText(getContext(), "Збережено", Toast.LENGTH_SHORT).show();
-                            System.out.println(mAuth.getCurrentUser().toString());
                         } else {
                             Log.w(LoginFragment.TAG, "createUserWithEmail:failure", task.getException().fillInStackTrace());
                             Toast.makeText(getContext(), "Authentication failed.",
@@ -87,6 +103,19 @@ public class RegistrationFragment extends Fragment{
                         hideProgressDialog();
                     }
                 });
+    }
+
+    private void addUser(){
+        String id = reference.push().getKey();
+        UsersInfoTable usersInfoTable = new UsersInfoTable(
+                name.getText().toString(), lastName.getText().toString(), surName.getText().toString(),
+                "photo_url", Integer.valueOf(number.getText().toString()), email.getText().toString(),
+                mAuth.getCurrentUser().getUid(), mAuth.getCurrentUser().isEmailVerified()
+        );
+        Map<String, Object> userLoginInfo = usersInfoTable.toMap();
+        Map<String, Object> userAttributes = new HashMap<>();
+        userAttributes.put(id, userLoginInfo);
+        reference.updateChildren(userAttributes);
     }
 
     public void showProgressDialog() {

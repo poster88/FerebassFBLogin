@@ -26,7 +26,7 @@
     <string name="hint_repeat_password">Повторіть пароль</string>
     <string name="btn_sign_up">Sign Up</string>
 
-        /*registration errors*/
+    <!-- registration errors -->
     <string name="err_msg_name">Вкажіть ваше Імя</string>
     <string name="err_msg_email">Введіть валідний емейл</string>
     <string name="err_msg_password">Введіть пароль</string>
@@ -35,4 +35,15 @@
     <string name="err_msg_mob_number">Введіть мобільний номер</string>
     <string name="err_msg_rep_pass">Заповніть поле перевірки паролю</string>
     <string name="err_msg_check_pass">Паролі не співпадають. Спробуйте ще раз!</string>
+
+    <!-- navigation drawer strings -->
+    <string name="myAccount">Мій аккаунт</string>
+    <string name="myOrder">Мої замовлення</string>
+
+    <!-- Toolbar titles when navigation menu item is selected -->
+    <string-array name="nav_item_activity_titles">
+        <item>Home</item>
+        <item>Мій аккаунт</item>
+        <item>Мої замовлення</item>
+    </string-array>
 </resources>

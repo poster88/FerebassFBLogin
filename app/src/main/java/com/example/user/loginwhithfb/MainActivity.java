@@ -24,13 +24,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         showProgressDialog();
         user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null){
-            startActivity(new Intent(getApplicationContext(), NavigationDrawerActivity.class));
+        if (user != null && !user.isAnonymous()){
+            startActivity(new Intent(this, NavigationDrawerActivity.class));
         }else{
             if (fragmentManager == null){
                 fragmentManager = getSupportFragmentManager();
             }
-
             fragmentManager.beginTransaction().replace(R.id.container, new LoginFragment()).commit();
         }
         hideProgressDialog();

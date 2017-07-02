@@ -84,10 +84,6 @@ public class LoginFragment extends Fragment{
 
         return view;
     }
-    @OnClick(R.id.skipImgBtn)
-    public void signInAction(){
-        anonymouslySingIn();
-    }
 
     @OnClick({R.id.signInBtn, R.id.registrationBtn})
     public void pickAction(TextView textView){
@@ -97,7 +93,7 @@ public class LoginFragment extends Fragment{
             getFragmentManager().beginTransaction().replace(R.id.container, new RegistrationFragment()).commit();
         }
     }
-
+    @OnClick(R.id.skipImgBtn)
     public void anonymouslySingIn(){
         mAuth.signInAnonymously().addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
             @Override
@@ -124,11 +120,7 @@ public class LoginFragment extends Fragment{
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithEmail:success");
-                            if (mAuth != null){
-                                currentUser.setText("Welcome " + user.getDisplayName() + password);
-                            }else {
-                                currentUser.setText("");
-                            }
+                            getActivity().startActivity(new Intent(getActivity(), NavigationDrawerActivity.class));
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(getContext(), "Authentication failed.",
@@ -137,10 +129,6 @@ public class LoginFragment extends Fragment{
                         hideProgressDialog();
                     }
                 });
-    }
-
-    private void signOut() {
-        mAuth.signOut();
     }
 
     private void sendEmailVerification() {

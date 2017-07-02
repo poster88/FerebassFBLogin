@@ -1,5 +1,6 @@
 package com.example.user.loginwhithfb;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -11,10 +12,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -28,6 +31,7 @@ import com.google.firebase.auth.FirebaseUser;
 import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class NavigationDrawerActivity extends AppCompatActivity {
     @BindArray(R.array.nav_item_activity_titles) String[] activityTitles;
@@ -99,14 +103,53 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         TextView userName = ButterKnife.findById(navHeader, R.id.name);
         TextView userEmail = ButterKnife.findById(navHeader, R.id.email);
         ImageView userPhoto = ButterKnife.findById(navHeader, R.id.img_profile);
+        TextView logOut = ButterKnife.findById(navHeader, R.id.log_out);
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null){
+            if (user.isAnonymous()){
+                RelativeLayout regBtnContainer = ButterKnife.findById(navHeader, R.id.reg_buttons_container);
+                TextView signInBtn = ButterKnife.findById(navHeader, R.id.sign_in_form_nav);
+                TextView regBtn = ButterKnife.findById(navHeader, R.id.reg_in_form_nav);
+
+                regBtnContainer.setVisibility(View.VISIBLE);
+                userName.setVisibility(View.GONE);
+                userEmail.setVisibility(View.GONE);
+
+                regBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, new RegistrationFragment()).commit();
+                    }
+                });
+
+                signInBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    }
+                });
+                return;
+            }
             userName.setText(user.getDisplayName());
             userEmail.setText(user.getEmail());
             Glide.with(this).load(user.getPhotoUrl()).crossFade().diskCacheStrategy(DiskCacheStrategy.ALL).into(userPhoto);
-        }else {
-            userName.setText("Welcome!");
+            logOut.setVisibility(View.VISIBLE);
+            logOut.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FirebaseAuth.getInstance().signOut();
+                    Log.d("OUT", "Succes sign out!");
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                }
+            });
+
+
         }
+    }
+
+    public void regFromNavDrawerClick(){
+        Log.d("REG", "Succes click from nav drawer !");
     }
 
     private void loadHomeFragment(){

@@ -56,7 +56,7 @@ public class RegistrationFragment extends Fragment{
 
     private Unbinder unbinder;
     private FirebaseAuth mAuth;
-    public ProgressDialog mProgressDialog;
+    public ProgressDialog progressDialog;
 
     private FirebaseDatabase database;
     private DatabaseReference reference;
@@ -120,17 +120,17 @@ public class RegistrationFragment extends Fragment{
     }
 
     public void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setMessage(getString(R.string.loading));
+            progressDialog.setIndeterminate(true);
         }
-        mProgressDialog.show();
+        progressDialog.show();
     }
 
     public void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
     }
 

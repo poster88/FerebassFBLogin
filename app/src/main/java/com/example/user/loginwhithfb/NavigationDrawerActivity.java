@@ -31,7 +31,6 @@ import com.google.firebase.auth.FirebaseUser;
 import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class NavigationDrawerActivity extends AppCompatActivity {
     @BindArray(R.array.nav_item_activity_titles) String[] activityTitles;
@@ -44,9 +43,9 @@ public class NavigationDrawerActivity extends AppCompatActivity {
     private Handler handler;
 
     public static int navItemIndex = 0;
-    private static final String TAG_HOME = "home";
-    private static final String TAG_ACCOUNT = "account";
-    private static final String TAG_ORDER = "order";
+    private static final String TAG_HOME = "HOME";
+    private static final String TAG_ACCOUNT = "ACCOUNT";
+    private static final String TAG_ORDER = "ORDER";
     public static String CURRENT_TAG = TAG_HOME;
 
     @Override
@@ -68,37 +67,6 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         }
     }
 
-    private void setUpNavigationView() {
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.nav_home){
-                    navItemIndex = 0;
-                    CURRENT_TAG = TAG_HOME;
-                }
-                if (item.getItemId() == R.id.nav_account){
-                    navItemIndex = 1;
-                    CURRENT_TAG = TAG_ACCOUNT;
-                }
-                if (item.getItemId() == R.id.nav_order){
-                    navItemIndex = 2;
-                    CURRENT_TAG = TAG_ORDER;
-                }
-                if (item.isChecked()) {
-                    item.setChecked(false);
-                }else {
-                    item.setChecked(true);
-                }
-                loadHomeFragment();
-                return true;
-            }
-        });
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-    }
-
     private void loadNavHeader() {
         TextView userName = ButterKnife.findById(navHeader, R.id.name);
         TextView userEmail = ButterKnife.findById(navHeader, R.id.email);
@@ -106,6 +74,7 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         TextView logOut = ButterKnife.findById(navHeader, R.id.log_out);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Log.d("EMAAIL STATUS VERIFY: ", "" + user.isEmailVerified());
         if (user != null){
             if (user.isAnonymous()){
                 RelativeLayout regBtnContainer = ButterKnife.findById(navHeader, R.id.reg_buttons_container);
@@ -143,13 +112,7 @@ public class NavigationDrawerActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 }
             });
-
-
         }
-    }
-
-    public void regFromNavDrawerClick(){
-        Log.d("REG", "Succes click from nav drawer !");
     }
 
     private void loadHomeFragment(){
@@ -200,22 +163,46 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         navigationView.getMenu().getItem(navItemIndex).setChecked(true);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawers();
-            return;
-        }
-
-        if (shouldLoadHomeFRagOnBackPress) {
-            if (navItemIndex != 0) {
-                navItemIndex = 0;
-                CURRENT_TAG = TAG_HOME;
+    private void setUpNavigationView() {
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.nav_home){
+                    navItemIndex = 0;
+                    CURRENT_TAG = TAG_HOME;
+                }
+                if (item.getItemId() == R.id.nav_account){
+                    navItemIndex = 1;
+                    CURRENT_TAG = TAG_ACCOUNT;
+                }
+                if (item.getItemId() == R.id.nav_order){
+                    navItemIndex = 2;
+                    CURRENT_TAG = TAG_ORDER;
+                }
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                }else {
+                    item.setChecked(true);
+                }
                 loadHomeFragment();
-                return;
+                return true;
             }
-        }
-        super.onBackPressed();
+        });
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+        };
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
     }
 
     @Override
@@ -236,7 +223,24 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawers();
+            return;
+        }
+
+        if (shouldLoadHomeFRagOnBackPress) {
+            if (navItemIndex != 0) {
+                navItemIndex = 0;
+                CURRENT_TAG = TAG_HOME;
+                loadHomeFragment();
+                return;
+            }
+        }
+        super.onBackPressed();
     }
 }

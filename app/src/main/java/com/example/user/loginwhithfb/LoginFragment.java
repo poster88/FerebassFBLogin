@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,8 +21,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +37,7 @@ public class LoginFragment extends Fragment{
     @BindView(R.id.currentUser) TextView currentUser;
 
     private Unbinder unbinder;
-    private FirebaseAuth mAuth;
+    private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private FirebaseUser user;
 
@@ -50,7 +49,7 @@ public class LoginFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         unbinder = ButterKnife.bind(this, view);
-        mAuth = FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance();
 
         FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
         if (user1 != null){
@@ -95,7 +94,7 @@ public class LoginFragment extends Fragment{
     }
     @OnClick(R.id.skipImgBtn)
     public void anonymouslySingIn(){
-        mAuth.signInAnonymously().addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+        auth.signInAnonymously().addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (!task.isSuccessful()){
@@ -108,13 +107,30 @@ public class LoginFragment extends Fragment{
         });
     }
 
+    @OnClick(R.id.sentPassOnEmail)
+    public void sendPassResetEmail(){
+        //TODO: add validate to send pass on email!
+        String emailAddress = auth.getCurrentUser().getEmail();
+        auth.sendPasswordResetEmail(emailAddress)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Snackbar.make(getView().findViewById(R.id.activity_change_pass), "Email sent!", Snackbar.LENGTH_LONG).show();
+                        }else{
+                            Log.d("ERROR SEND PASS", " " + task.getException());
+                        }
+                    }
+                });
+    }
+
     private void signIn(String email, final String password) {
         Log.d(TAG, "signIn:" + email);
         if (!validateForm()) {
             return;
         }
         showProgressDialog();
-        mAuth.signInWithEmailAndPassword(email, password)
+        auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -131,25 +147,6 @@ public class LoginFragment extends Fragment{
                 });
     }
 
-    private void sendEmailVerification() {
-        final FirebaseUser user = mAuth.getCurrentUser();
-        user.sendEmailVerification()
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // Re-enable button
-                        //findViewById(R.id.verify_email_button).setEnabled(true);
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getContext(),
-                                    "Verification email sent to " + user.getEmail(),
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.e(TAG, "sendEmailVerification", task.getException());
-                            Toast.makeText(getContext(), "Failed to send verification email.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
 
     private boolean validateForm() {
         boolean valid = true;
@@ -190,15 +187,15 @@ public class LoginFragment extends Fragment{
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthStateListener);
+        auth.addAuthStateListener(mAuthStateListener);
 
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuth != null){
-            mAuth.removeAuthStateListener(mAuthStateListener);
+        if (auth != null){
+            auth.removeAuthStateListener(mAuthStateListener);
         }
     }
 

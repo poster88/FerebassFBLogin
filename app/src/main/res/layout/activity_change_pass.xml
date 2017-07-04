@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_change_pass"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="60dp">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/layout_acc_old_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/set_old_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:hint="@string/hint_password"
+            android:inputType="textPassword"
+            android:singleLine="true" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/layout_acc_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/set_new_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:hint="@string/hint_new_password"
+            android:inputType="textPassword"
+            android:singleLine="true" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/layout_acc_rep_pass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/set_acc_rep_pass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:hint="@string/hint_repeat_password"
+            android:inputType="textPassword"
+            android:singleLine="true" />
+    </android.support.design.widget.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/forgotPassLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:clickable="true"
+
+        android:layout_below="@+id/buttonContainer">
+
+        <ImageView
+            android:id="@+id/forgotPassImage"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/lock_1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"/>
+
+        <TextView
+            android:id="@+id/forgotPassBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="6dp"
+            android:textColor="@color/wallet_bright_foreground_holo_light"
+            android:text="@string/forgot_your_password"
+            android:textSize="14sp" />
+    </LinearLayout>
+</LinearLayout>

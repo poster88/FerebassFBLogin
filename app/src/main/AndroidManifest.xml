@@ -24,6 +24,9 @@
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".ChangePassActivity"
-            android:label="@string/activity_title_change_pass"/>
+        android:label="@string/activity_title_change_pass"/>
+        <activity android:name=".SearchCompanyActivity"
+            android:label="@string/activity_title_search_company"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 </manifest>

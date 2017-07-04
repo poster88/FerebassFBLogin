@@ -42,5 +42,7 @@ dependencies {
     compile 'com.android.support:design:25.3.1'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
+    //search view lib
+    compile 'com.miguelcatalan:materialsearchview:1.4.0'
 }
 apply plugin: 'com.google.gms.google-services'

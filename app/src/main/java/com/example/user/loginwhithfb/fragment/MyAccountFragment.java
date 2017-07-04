@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.ChangePassActivity;
 import com.example.user.loginwhithfb.R;
+import com.example.user.loginwhithfb.SearchCompanyActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -86,6 +87,11 @@ public class MyAccountFragment extends Fragment{
     @OnClick(R.id.change_user_pass_btn)
     public void changeUserPass(){
         startActivity(new Intent(getActivity(), ChangePassActivity.class));
+    }
+
+    @OnClick(R.id.company_search)
+    public void companySearch(){
+        startActivity(new Intent(getActivity(), SearchCompanyActivity.class));
     }
 
     @Override

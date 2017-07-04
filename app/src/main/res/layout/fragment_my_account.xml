@@ -58,4 +58,29 @@
         android:clickable="true"
         android:layout_below="@+id/verify_email_btn"/>
 
+    <TextView
+        android:id="@+id/user_data_info"
+        android:text="Day of birthday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:clickable="true"
+        android:layout_below="@id/change_user_pass_btn"/>
+
+    <TextView
+        android:id="@+id/company_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Company info"
+        android:layout_marginTop="26dp"
+        android:layout_below="@id/user_data_info"/>
+
+    <TextView
+        android:id="@+id/company_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Company search"
+        android:layout_marginTop="26dp"
+        android:layout_below="@id/company_info"/>
+
 </RelativeLayout>

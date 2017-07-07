@@ -77,4 +77,12 @@ public class RequestToAddClientToCompaniesTable {
     public void setStatusRequest(String statusRequest) {
         this.statusRequest = statusRequest;
     }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
 }

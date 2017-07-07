@@ -6,6 +6,7 @@
     
     
     <ImageView
+        android:layout_gravity="center_horizontal"
         android:id="@+id/company_logo"
         android:src="@color/colorBluGray300"
         android:layout_width="40dp"
@@ -37,4 +38,19 @@
             android:layout_height="wrap_content">
         </Spinner>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/sendRequestBtn"
+        android:text="Sent"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/generateCompany"
+
+        android:text="Generate company"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.example.user.loginwhithfb.activity;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,8 +13,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.user.loginwhithfb.R;
+import com.example.user.loginwhithfb.model.RequestToAddClientToCompaniesTable;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
@@ -29,9 +38,15 @@ public class SearchCompanyActivity extends AppCompatActivity{
     @BindView(R.id.search_view) MaterialSearchView searchView;
     @BindView(R.id.toolbar_search)  Toolbar toolbar;
     @BindView(R.id.companyList) ListView companyList;
+    @BindView(R.id.progressBar) ProgressBar progressBar;
 
     private String[] companyTitles = {"First", "Second", "Third", "Four", "Five", "Six", "Dog",
             "Boll", "Bag", "Data", "Yellow", "Skip", "Mite", "Ten"};
+
+    private ArrayList<String> arrayCompanyTitles;
+
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,18 +55,20 @@ public class SearchCompanyActivity extends AppCompatActivity{
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //TODO: create adapter for a search view by companies
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, companyTitles);
-        companyList.setAdapter(adapter);
-        companyList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("clicked id is: " + id);
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
 
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("RequestToAddClientToCompaniesTable");
+        innitCompanyList();
+
+        companyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                System.out.println("Comapany name is: " + arrayCompanyTitles.get(position));
+                //TODO: create a bundle for Data
+                startActivity(new Intent(getBaseContext(), AddRequestCompanyActivity.class)
+                        .putExtra("companyName", arrayCompanyTitles.get(position)));
+                finish();
             }
         });
         searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
@@ -62,7 +79,7 @@ public class SearchCompanyActivity extends AppCompatActivity{
 
             @Override
             public void onSearchViewClosed() {
-                ArrayAdapter adapter = new ArrayAdapter(SearchCompanyActivity.this, android.R.layout.simple_list_item_1, companyTitles);
+                ArrayAdapter adapter = new ArrayAdapter(SearchCompanyActivity.this, android.R.layout.simple_list_item_1, arrayCompanyTitles);
                 companyList.setAdapter(adapter);
             }
         });
@@ -77,7 +94,7 @@ public class SearchCompanyActivity extends AppCompatActivity{
             public boolean onQueryTextChange(String newText) {
                 if (newText != null && !newText.isEmpty()){
                     List<String> firstFound = new ArrayList<String>();
-                    for (String str: companyTitles) {
+                    for (String str: arrayCompanyTitles) {
                         if(str.trim().toLowerCase().contains(newText.trim().toLowerCase())){
                             firstFound.add(str);
                         }
@@ -85,12 +102,34 @@ public class SearchCompanyActivity extends AppCompatActivity{
                     ArrayAdapter adapter = new ArrayAdapter(SearchCompanyActivity.this, android.R.layout.simple_list_item_1, firstFound);
                     companyList.setAdapter(adapter);
                 }else {
-                    ArrayAdapter adapter = new ArrayAdapter(SearchCompanyActivity.this, android.R.layout.simple_list_item_1, companyTitles);
+                    ArrayAdapter adapter = new ArrayAdapter(SearchCompanyActivity.this, android.R.layout.simple_list_item_1, arrayCompanyTitles);
                     companyList.setAdapter(adapter);
                 }
                 return false;
             }
         });
+    }
+
+    private boolean innitCompanyList() {
+        showProgressDialog();
+        arrayCompanyTitles = new ArrayList<>();
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot data: dataSnapshot.getChildren()) {
+                        arrayCompanyTitles.add(data.getValue(RequestToAddClientToCompaniesTable.class).getCompanyName());
+                }
+                ArrayAdapter adapter = new ArrayAdapter(SearchCompanyActivity.this, android.R.layout.simple_list_item_1, arrayCompanyTitles);
+                companyList.setAdapter(adapter);
+                hideProgressDialog();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(SearchCompanyActivity.this, "Error : " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                hideProgressDialog();
+            }
+        });
+        return true;
     }
 
     @Override
@@ -110,6 +149,17 @@ public class SearchCompanyActivity extends AppCompatActivity{
         MenuItem item = menu.findItem(R.id.action_search);
         searchView.setMenuItem(item);
         return true;
+    }
+
+    public boolean showProgressDialog() {
+        progressBar.setVisibility(View.VISIBLE);
+        return true;
+    }
+
+    public boolean hideProgressDialog() {
+        progressBar.setVisibility(View.GONE);
+        companyList.setVisibility(View.VISIBLE);
+        return false;
     }
 
 

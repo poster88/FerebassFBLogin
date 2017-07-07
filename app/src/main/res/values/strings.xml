@@ -11,6 +11,7 @@
     <string name="activity_title_change_pass">Change password</string>
     <string name="activity_title_search_company">Search company</string>
     <string name="activity_title_change_number">Change number</string>
+    <string name="activity_title_request_to_add_company">Change number</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

@@ -1,10 +1,9 @@
-package com.example.user.loginwhithfb;
+package com.example.user.loginwhithfb.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -23,6 +22,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.user.loginwhithfb.R;
+import com.example.user.loginwhithfb.fragment.RegistrationFragment;
 import com.example.user.loginwhithfb.fragment.HomeFragment;
 import com.example.user.loginwhithfb.fragment.MyAccountFragment;
 import com.example.user.loginwhithfb.fragment.MyOrdersFragment;
@@ -199,7 +200,6 @@ public class NavigationDrawerActivity extends AppCompatActivity {
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
             }
-
         };
         drawer.setDrawerListener(toggle);
         toggle.syncState();

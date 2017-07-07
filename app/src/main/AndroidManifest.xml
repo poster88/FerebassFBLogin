@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,13 +20,15 @@
         </activity>
 
         <activity
-            android:name=".NavigationDrawerActivity"
+            android:name=".activity.NavigationDrawerActivity"
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".ChangePassActivity"
+        <activity android:name=".activity.ChangePassActivity"
         android:label="@string/activity_title_change_pass"/>
-        <activity android:name=".SearchCompanyActivity"
+        <activity android:name=".activity.SearchCompanyActivity"
             android:label="@string/activity_title_search_company"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".activity.ChangeNumberActivity"
+            android:label="@string/activity_title_change_number"/>
     </application>
 </manifest>

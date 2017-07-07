@@ -1,4 +1,4 @@
-package com.example.user.loginwhithfb;
+package com.example.user.loginwhithfb.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -17,6 +17,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.user.loginwhithfb.R;
+import com.example.user.loginwhithfb.activity.NavigationDrawerActivity;
 import com.example.user.loginwhithfb.model.UsersInfoTable;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

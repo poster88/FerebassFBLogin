@@ -2,8 +2,6 @@ package com.example.user.loginwhithfb.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.RippleDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,16 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.user.loginwhithfb.ChangePassActivity;
+import com.example.user.loginwhithfb.activity.ChangeNumberActivity;
+import com.example.user.loginwhithfb.activity.ChangePassActivity;
 import com.example.user.loginwhithfb.R;
-import com.example.user.loginwhithfb.SearchCompanyActivity;
+import com.example.user.loginwhithfb.activity.SearchCompanyActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -82,6 +78,11 @@ public class MyAccountFragment extends Fragment{
                         }
                     }
                 });
+    }
+
+    @OnClick(R.id.user_telephone)
+    public void changeUserNumber(){
+        startActivity(new Intent(getActivity(), ChangeNumberActivity.class));
     }
 
     @OnClick(R.id.change_user_pass_btn)

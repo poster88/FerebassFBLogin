@@ -1,4 +1,4 @@
-package com.example.user.loginwhithfb;
+package com.example.user.loginwhithfb.activity;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
+import com.example.user.loginwhithfb.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -55,7 +56,7 @@ public class ChangePassActivity extends AppCompatActivity{
             onBackPressed();
             return true;
         }
-        if (id == R.id.change_pass_in_account){
+        if (id == R.id.accept_changes_menu_btn){
             if (validatePassword(setNewPassword.getText().toString(), setRepPassword.getText().toString())){
                 showProgressDialog();
                 final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

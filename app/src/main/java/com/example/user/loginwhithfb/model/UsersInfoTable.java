@@ -41,7 +41,6 @@ public class UsersInfoTable {
         result.put("mobileNumber", mobileNumber);
         result.put("email", email);
         result.put("uID", uID);
-
         return result;
     }
 

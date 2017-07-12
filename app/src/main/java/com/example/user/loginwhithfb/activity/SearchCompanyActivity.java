@@ -40,11 +40,7 @@ public class SearchCompanyActivity extends AppCompatActivity{
     @BindView(R.id.companyList) ListView companyList;
     @BindView(R.id.progressBar) ProgressBar progressBar;
 
-    private String[] companyTitles = {"First", "Second", "Third", "Four", "Five", "Six", "Dog",
-            "Boll", "Bag", "Data", "Yellow", "Skip", "Mite", "Ten"};
-
     private ArrayList<String> arrayCompanyTitles;
-
     private FirebaseDatabase database;
     private DatabaseReference reference;
 
@@ -55,7 +51,6 @@ public class SearchCompanyActivity extends AppCompatActivity{
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("RequestToAddClientToCompaniesTable");

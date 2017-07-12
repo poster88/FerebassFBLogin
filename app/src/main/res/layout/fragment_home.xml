@@ -15,13 +15,11 @@
         android:text="HOME"
         android:textStyle="bold"/>
 
-    <TextView
-        android:layout_below="@id/label"
-        android:layout_centerInParent="true"
-        android:layout_width="fill_parent"
+    <Button
+        android:id="@+id/company_info_gen_comp_btn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="12dp"
-        android:layout_marginTop="10dp"
-        android:gravity="center_horizontal"
-        android:text="Edit fragment_home.xml to change the appearance" />
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/label"
+        android:text="gen companies" />
 </RelativeLayout>

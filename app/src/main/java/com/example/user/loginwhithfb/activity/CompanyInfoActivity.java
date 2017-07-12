@@ -8,6 +8,8 @@ import android.view.MenuItem;
 
 import com.example.user.loginwhithfb.R;
 
+import java.util.ArrayList;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -16,6 +18,9 @@ import butterknife.OnClick;
  */
 
 public class CompanyInfoActivity extends AppCompatActivity{
+    private ArrayList positions = new ArrayList();
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,6 +28,7 @@ public class CompanyInfoActivity extends AppCompatActivity{
         ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.companyInfo);
+
     }
 
     @OnClick(R.id.company_info_back_btn)

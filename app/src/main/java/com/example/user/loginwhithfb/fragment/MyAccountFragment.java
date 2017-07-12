@@ -17,6 +17,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.activity.ChangeNumberActivity;
 import com.example.user.loginwhithfb.activity.ChangePassActivity;
 import com.example.user.loginwhithfb.R;
+import com.example.user.loginwhithfb.activity.CompanyInfoActivity;
 import com.example.user.loginwhithfb.activity.SearchCompanyActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -78,6 +79,11 @@ public class MyAccountFragment extends Fragment{
                         }
                     }
                 });
+    }
+    @OnClick(R.id.company_info)
+    public void showCompanyInfo(){
+        Log.d("SHOW COM.INFO: ", "entered method");
+        startActivity(new Intent(getActivity(), CompanyInfoActivity.class));
     }
 
     @OnClick(R.id.user_telephone)

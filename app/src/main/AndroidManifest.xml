@@ -32,5 +32,7 @@
             android:label="@string/activity_title_change_number"/>
         <activity android:name=".activity.AddRequestCompanyActivity"
             android:label="@string/activity_title_request_to_add_company"/>
+        <activity android:name=".activity.CompanyInfoActivity"
+            android:label="@string/companyInfo"/>
     </application>
 </manifest>

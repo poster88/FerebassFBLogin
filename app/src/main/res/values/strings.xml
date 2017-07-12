@@ -44,6 +44,7 @@
     <!-- navigation drawer strings -->
     <string name="myAccount">Мій аккаунт</string>
     <string name="myOrder">Мої замовлення</string>
+    <string name="companyInfo">Company info</string>
 
 
     <!-- Toolbar titles when navigation menu item is selected -->
@@ -56,4 +57,9 @@
     <!-- account fragment strings -->
     <string name="verify_label_status">Verify email status : </string>
 
+    <!-- company info strings -->
+    <string name="activity_company_info_name">Company name : </string>
+    <string name="activity_company_info_descr">About as : </string>
+    <string name="activity_company_info_my_pos">My position : </string>
+    <string name="activity_company_info_back_btn">Back</string>
 </resources>

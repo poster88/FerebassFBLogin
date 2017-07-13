@@ -7,7 +7,7 @@ import java.util.Map;
  * Created by POSTER on 28.06.2017.
  */
 
-public class UsersInfoTable {
+public class UserLoginInfoTable {
     private String name;
     private String lastName;
     private String surname;
@@ -15,13 +15,13 @@ public class UsersInfoTable {
     private int mobileNumber;
     private String email;
     private String uID;
-    private boolean emailVerifiedStatus;
+    private String companyUid;
 
-    public UsersInfoTable() {
+    public UserLoginInfoTable() {
 
     }
 
-    public UsersInfoTable(String name, String lastName, String surname, String photoUrl, int mobileNumber, String email, String uID, boolean emailVerifiedStatus) {
+    public UserLoginInfoTable(String name, String lastName, String surname, String photoUrl, int mobileNumber, String email, String uID, String companyUid) {
         this.name = name;
         this.lastName = lastName;
         this.surname = surname;
@@ -29,7 +29,7 @@ public class UsersInfoTable {
         this.mobileNumber = mobileNumber;
         this.email = email;
         this.uID = uID;
-        this.emailVerifiedStatus = emailVerifiedStatus;
+        this.companyUid = companyUid;
     }
 
     public Map<String, Object> toMap(){
@@ -41,6 +41,7 @@ public class UsersInfoTable {
         result.put("mobileNumber", mobileNumber);
         result.put("email", email);
         result.put("uID", uID);
+        result.put("companyUid", companyUid);
         return result;
     }
 
@@ -100,11 +101,12 @@ public class UsersInfoTable {
         this.uID = uID;
     }
 
-    public boolean getEmailVerifiedStatus() {
-        return emailVerifiedStatus;
+    public String getCompanyUid() {
+        return companyUid;
     }
 
-    public void setEmailVerifiedStatus(boolean emailVerifiedStatus) {
-        this.emailVerifiedStatus = emailVerifiedStatus;
+    public void setCompanyUid(String companyUid) {
+        this.companyUid = companyUid;
     }
+
 }

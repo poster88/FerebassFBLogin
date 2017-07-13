@@ -13,10 +13,19 @@ public class CompaniesInfoTable {
     private String companyName;
     private String companyDescr;
     private String companyLogoUri;
-    private String companyProducts;
+    private Object companyProducts;
     private Object positions;
 
     public CompaniesInfoTable() {
+    }
+
+    public CompaniesInfoTable(String id, String companyName, String companyDescr, String companyLogoUri, Object companyProducts, Object positions) {
+        this.id = id;
+        this.companyName = companyName;
+        this.companyDescr = companyDescr;
+        this.companyLogoUri = companyLogoUri;
+        this.companyProducts = companyProducts;
+        this.positions = positions;
     }
 
     public Map<String, Object> toMap(){
@@ -62,11 +71,11 @@ public class CompaniesInfoTable {
         this.companyLogoUri = companyLogoUri;
     }
 
-    public String getCompanyProducts() {
+    public Object getCompanyProducts() {
         return companyProducts;
     }
 
-    public void setCompanyProducts(String companyProducts) {
+    public void setCompanyProducts(Object companyProducts) {
         this.companyProducts = companyProducts;
     }
 
@@ -78,7 +87,7 @@ public class CompaniesInfoTable {
         this.positions = positions;
     }
 
-    class CompanyPosition {
+    public class CompanyPosition {
         private String position;
         private ArrayList members;
 

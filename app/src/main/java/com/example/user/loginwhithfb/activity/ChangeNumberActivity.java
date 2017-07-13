@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.user.loginwhithfb.R;
-import com.example.user.loginwhithfb.model.UsersInfoTable;
+import com.example.user.loginwhithfb.model.UserLoginInfoTable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,7 +36,7 @@ public class ChangeNumberActivity extends AppCompatActivity {
     private String userUid;
     private ProgressDialog progressDialog;
     private String userKey;
-    private UsersInfoTable userModel;
+    private UserLoginInfoTable userModel;
     private boolean flag;
 
     @Override
@@ -54,9 +54,9 @@ public class ChangeNumberActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data: dataSnapshot.getChildren()) {
-                    if (userUid.equals(data.getValue(UsersInfoTable.class).getuID())){
+                    if (userUid.equals(data.getValue(UserLoginInfoTable.class).getuID())){
                         userKey = data.getKey();
-                        userModel = data.getValue(UsersInfoTable.class);
+                        userModel = data.getValue(UserLoginInfoTable.class);
                         numberEdit.setText(String.valueOf(userModel.getMobileNumber()));
                         hideProgressDialog();
                         break;
@@ -80,7 +80,7 @@ public class ChangeNumberActivity extends AppCompatActivity {
         return true;
     }
 
-    private void changeNumber(int number, String key, UsersInfoTable model){
+    private void changeNumber(int number, String key, UserLoginInfoTable model){
         model.setMobileNumber(number);
         reference.child(key).setValue(model);
         Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();

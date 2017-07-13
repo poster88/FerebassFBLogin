@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.activity.NavigationDrawerActivity;
-import com.example.user.loginwhithfb.model.UsersInfoTable;
+import com.example.user.loginwhithfb.model.UserLoginInfoTable;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -110,10 +110,10 @@ public class RegistrationFragment extends Fragment{
 
     private void addUser(){
         String id = reference.push().getKey();
-        UsersInfoTable usersInfoTable = new UsersInfoTable(
+        UserLoginInfoTable usersInfoTable = new UserLoginInfoTable(
                 name.getText().toString(), lastName.getText().toString(), surName.getText().toString(),
                 "photo_url", Integer.valueOf(number.getText().toString()), email.getText().toString(),
-                mAuth.getCurrentUser().getUid(), mAuth.getCurrentUser().isEmailVerified()
+                mAuth.getCurrentUser().getUid(), "some id"
         );
         Map<String, Object> userLoginInfo = usersInfoTable.toMap();
         Map<String, Object> userAttributes = new HashMap<>();

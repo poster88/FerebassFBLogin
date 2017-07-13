@@ -7,6 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.user.loginwhithfb.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -18,7 +22,11 @@ import butterknife.OnClick;
  */
 
 public class CompanyInfoActivity extends AppCompatActivity{
-    private ArrayList positions = new ArrayList();
+
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
+    private FirebaseUser user;
+    private String userUid;
 
 
     @Override
@@ -29,6 +37,13 @@ public class CompanyInfoActivity extends AppCompatActivity{
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.companyInfo);
 
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("CompaniesInfoTable");
+
+        if (!user.isAnonymous()){
+            userUid = user.getUid();
+        }
     }
 
     @OnClick(R.id.company_info_back_btn)

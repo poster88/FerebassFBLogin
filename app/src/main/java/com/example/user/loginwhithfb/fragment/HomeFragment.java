@@ -12,10 +12,14 @@ import android.widget.Button;
 
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.activity.CompanyInfoActivity;
+import com.example.user.loginwhithfb.model.CompaniesInfoTable;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by POSTER on 24.06.2017.
@@ -53,12 +57,25 @@ public class HomeFragment extends Fragment {
     }
 
     private void createCpmpanieInfoTable() {
-        CompanyInfoActivity companyInfoTable = new CompanyInfoActivity(
-                
+        String id = reference.push().getKey();
+        List<String> productKeys = new ArrayList<>();
+        productKeys.add("key product 1");
+        productKeys.add("key product 2");
+
+        Map<String, Object> positions = new HashMap<>();
+        List<String> peoples = new ArrayList<>();
+        peoples.add("person 1");
+        peoples.add("person 2");
+        peoples.add("person 3");
+
+        positions.put("pos 1", peoples);
+        CompaniesInfoTable companyInfoTable = new CompaniesInfoTable(
+                "id", "test", "test", "test", productKeys, positions
         );
-        ArrayList<String> membersList = new ArrayList<>();
-
-
+        Map<String, Object> newTable = new HashMap<>();
+        Map<String, Object> tempTable = companyInfoTable.toMap();
+        newTable.put(id, tempTable);
+        reference.updateChildren(newTable);
 
     }
 

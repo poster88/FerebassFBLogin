@@ -28,8 +28,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/activity_company_info_my_pos"
-        />
+        android:text="@string/activity_company_info_my_pos" />
+
     <TextView
         android:id="@+id/company_info_back_btn"
         android:layout_width="wrap_content"

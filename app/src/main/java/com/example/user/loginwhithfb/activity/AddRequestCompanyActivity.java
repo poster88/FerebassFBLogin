@@ -1,27 +1,27 @@
 package com.example.user.loginwhithfb.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.user.loginwhithfb.R;
-import com.example.user.loginwhithfb.model.RequestToAddClientToCompaniesTable;
+import com.example.user.loginwhithfb.model.CompaniesInfoTable;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,7 +39,12 @@ public class AddRequestCompanyActivity extends AppCompatActivity{
 
     private ProgressDialog progressDialog;
     private FirebaseDatabase database;
-    private DatabaseReference reference;
+    private DatabaseReference refCompany;
+    private String keyPath;
+    private CompaniesInfoTable companiesInfoModel;
+
+    private final String URL_PATH = "https://fir-projectdb.firebaseio.com/CompaniesInfoTable";
+    private final String COMPANY_ID = "companyId";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,13 +54,18 @@ public class AddRequestCompanyActivity extends AppCompatActivity{
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference("RequestToAddClientToCompaniesTable");
-        //reference.child(key);
-        //System.out.println("company name is: " + getIntent().getStringExtra("companyName"));
-        reference.addValueEventListener(new ValueEventListener() {
+        try {
+            keyPath = getIntent().getStringExtra(COMPANY_ID);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        refCompany = database.getReferenceFromUrl(URL_PATH + "/" + keyPath);
+
+        refCompany.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                System.out.println("onDataChange: " + dataSnapshot.toString());
+                companiesInfoModel = dataSnapshot.getValue(CompaniesInfoTable.class);
+                innitDataToWidgets();
             }
 
             @Override
@@ -63,24 +73,15 @@ public class AddRequestCompanyActivity extends AppCompatActivity{
                 System.out.println("onCancelled: " + databaseError.getMessage());
             }
         });
-        generateCompany();
     }
 
-    private void generateCompany() {
-        ((Button)findViewById(R.id.generateCompany)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int number = new Random().nextInt(1000);
-                String id = reference.push().getKey();
-                RequestToAddClientToCompaniesTable reqModel = new RequestToAddClientToCompaniesTable(
-                        "id", "test", "test", "company №" + number, "test", "test"
-                );
-                Map<String, Object> tempTable = reqModel.toMap();
-                Map<String, Object> newTable = new HashMap<>();
-                newTable.put(id, tempTable);
-                reference.updateChildren(newTable);
-            }
-        });
+    private void innitDataToWidgets() {
+        companyName.setText(companiesInfoModel.getCompanyName());
+        companyDescr.setText(companiesInfoModel.getCompanyDescr());
+        Map<String, Object> data = (Map<String, Object>) companiesInfoModel.getPositions();
+        List<String> listPositions = new ArrayList<>(data.keySet());
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listPositions);
+        spinChoosePos.setAdapter(adapter);
     }
 
     @Override
@@ -95,7 +96,6 @@ public class AddRequestCompanyActivity extends AppCompatActivity{
 
     @OnClick(R.id.sendRequestBtn)
     public void sendRequest(){
-        showProgressDialog();
         createRequestAddUser();
     }
 
@@ -118,6 +118,8 @@ public class AddRequestCompanyActivity extends AppCompatActivity{
         }
     }
 
-
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

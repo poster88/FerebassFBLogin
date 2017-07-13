@@ -40,7 +40,7 @@ public class LoginFragment extends Fragment{
 
     private Unbinder unbinder;
     private FirebaseAuth auth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseUser user;
 
     public ProgressDialog mProgressDialog;
@@ -60,7 +60,7 @@ public class LoginFragment extends Fragment{
             Log.d(TAG, "no user");
         }
 
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+        authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 user = firebaseAuth.getCurrentUser();
@@ -189,7 +189,7 @@ public class LoginFragment extends Fragment{
     @Override
     public void onStart() {
         super.onStart();
-        auth.addAuthStateListener(mAuthStateListener);
+        auth.addAuthStateListener(authStateListener);
 
     }
 
@@ -197,7 +197,7 @@ public class LoginFragment extends Fragment{
     public void onStop() {
         super.onStop();
         if (auth != null){
-            auth.removeAuthStateListener(mAuthStateListener);
+            auth.removeAuthStateListener(authStateListener);
         }
     }
 

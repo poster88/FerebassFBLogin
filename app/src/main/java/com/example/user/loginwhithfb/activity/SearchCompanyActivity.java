@@ -1,5 +1,6 @@
 package com.example.user.loginwhithfb.activity;
 
+
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,7 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.user.loginwhithfb.R;
-import com.example.user.loginwhithfb.model.RequestToAddClientToCompaniesTable;
+import com.example.user.loginwhithfb.model.CompaniesInfoTable;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,7 +27,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -40,7 +45,8 @@ public class SearchCompanyActivity extends AppCompatActivity{
     @BindView(R.id.companyList) ListView companyList;
     @BindView(R.id.progressBar) ProgressBar progressBar;
 
-    private ArrayList<String> arrayCompanyTitles;
+    private Map<String, String> companyData;
+
     private FirebaseDatabase database;
     private DatabaseReference reference;
 
@@ -53,16 +59,15 @@ public class SearchCompanyActivity extends AppCompatActivity{
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference("RequestToAddClientToCompaniesTable");
+        reference = database.getReference("CompaniesInfoTable");
         innitCompanyList();
 
         companyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("Comapany name is: " + arrayCompanyTitles.get(position));
-                //TODO: create a bundle for Data
+                List<String> list = new ArrayList<>(companyData.keySet());
                 startActivity(new Intent(getBaseContext(), AddRequestCompanyActivity.class)
-                        .putExtra("companyName", arrayCompanyTitles.get(position)));
+                        .putExtra("companyId", list.get(position)));
                 finish();
             }
         });
@@ -74,7 +79,7 @@ public class SearchCompanyActivity extends AppCompatActivity{
 
             @Override
             public void onSearchViewClosed() {
-                ArrayAdapter adapter = new ArrayAdapter(SearchCompanyActivity.this, android.R.layout.simple_list_item_1, arrayCompanyTitles);
+                ArrayAdapter adapter = new ArrayAdapter(SearchCompanyActivity.this, android.R.layout.simple_list_item_1, companyData.values().toArray());
                 companyList.setAdapter(adapter);
             }
         });
@@ -89,7 +94,7 @@ public class SearchCompanyActivity extends AppCompatActivity{
             public boolean onQueryTextChange(String newText) {
                 if (newText != null && !newText.isEmpty()){
                     List<String> firstFound = new ArrayList<String>();
-                    for (String str: arrayCompanyTitles) {
+                    for (String str: companyData.values()) {
                         if(str.trim().toLowerCase().contains(newText.trim().toLowerCase())){
                             firstFound.add(str);
                         }
@@ -97,7 +102,7 @@ public class SearchCompanyActivity extends AppCompatActivity{
                     ArrayAdapter adapter = new ArrayAdapter(SearchCompanyActivity.this, android.R.layout.simple_list_item_1, firstFound);
                     companyList.setAdapter(adapter);
                 }else {
-                    ArrayAdapter adapter = new ArrayAdapter(SearchCompanyActivity.this, android.R.layout.simple_list_item_1, arrayCompanyTitles);
+                    ArrayAdapter adapter = new ArrayAdapter(SearchCompanyActivity.this, android.R.layout.simple_list_item_1, companyData.values().toArray());
                     companyList.setAdapter(adapter);
                 }
                 return false;
@@ -107,14 +112,16 @@ public class SearchCompanyActivity extends AppCompatActivity{
 
     private boolean innitCompanyList() {
         showProgressDialog();
-        arrayCompanyTitles = new ArrayList<>();
+        companyData = new HashMap<>();
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data: dataSnapshot.getChildren()) {
-                        arrayCompanyTitles.add(data.getValue(RequestToAddClientToCompaniesTable.class).getCompanyName());
+                    String t1 = data.getValue(CompaniesInfoTable.class).getCompanyId();
+                    String t2 = data.getValue(CompaniesInfoTable.class).getCompanyName();
+                    companyData.put(t1, t2);
                 }
-                ArrayAdapter adapter = new ArrayAdapter(SearchCompanyActivity.this, android.R.layout.simple_list_item_1, arrayCompanyTitles);
+                ArrayAdapter adapter = new ArrayAdapter(SearchCompanyActivity.this, android.R.layout.simple_list_item_1, companyData.values().toArray());
                 companyList.setAdapter(adapter);
                 hideProgressDialog();
             }

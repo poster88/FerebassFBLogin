@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/loginLayout"
+    android:requestId="@+requestId/loginLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="6dp">
 
     <TextView
-        android:id="@+id/currentUser"
+        android:requestId="@+requestId/currentUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/loginContainer"
+        android:layout_above="@+requestId/loginContainer"
         android:layout_marginLeft="16dp"
         android:layout_marginBottom="6dp"
-        android:layout_alignRight="@+id/loginContainer"
+        android:layout_alignRight="@+requestId/loginContainer"
         android:textSize="14sp"/>
 
     <ImageView
-        android:id="@+id/logo_image"
+        android:requestId="@+requestId/logo_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="32dp" />
 
     <RelativeLayout
-        android:id="@+id/loginContainer"
+        android:requestId="@+requestId/loginContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -31,7 +31,7 @@
         android:background="@drawable/round">
 
         <ImageView
-            android:id="@+id/user_login_image"
+            android:requestId="@+requestId/user_login_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginTop="20dp"
@@ -40,14 +40,14 @@
             android:src="@drawable/users_1" />
 
         <EditText
-            android:id="@+id/emailEdit"
+            android:requestId="@+requestId/emailEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
             android:inputType="textEmailAddress"
-            android:layout_toRightOf="@+id/user_login_image"
-            android:layout_alignLeft="@+id/loginContainer"
+            android:layout_toRightOf="@+requestId/user_login_image"
+            android:layout_alignLeft="@+requestId/loginContainer"
             android:singleLine="true"
             android:textSize="14sp"
             android:background="@drawable/oval"
@@ -55,17 +55,17 @@
             android:padding="8dp" />
 
         <ImageView
-            android:id="@+id/user_pass_image"
+            android:requestId="@+requestId/user_pass_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="14dp"
-            android:layout_below="@id/user_login_image"
+            android:layout_below="@requestId/user_login_image"
             android:src="@drawable/locked" />
 
         <EditText
-            android:id="@+id/passEdit"
+            android:requestId="@+requestId/passEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/oval"
@@ -78,23 +78,23 @@
             android:layout_marginTop="8dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
-            android:layout_below="@id/emailEdit"
-            android:layout_toRightOf="@+id/user_login_image"
-            android:layout_alignLeft="@+id/loginContainer" />
+            android:layout_below="@requestId/emailEdit"
+            android:layout_toRightOf="@+requestId/user_login_image"
+            android:layout_alignLeft="@+requestId/loginContainer" />
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/buttonContainer"
+        android:requestId="@+requestId/buttonContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/loginContainer"
-        android:layout_alignLeft="@id/loginContainer"
-        android:layout_alignRight="@id/loginContainer"
+        android:layout_below="@requestId/loginContainer"
+        android:layout_alignLeft="@requestId/loginContainer"
+        android:layout_alignRight="@requestId/loginContainer"
         android:layout_margin="6dp"
         android:weightSum="1">
 
         <Button
-            android:id="@+id/signInBtn"
+            android:requestId="@+requestId/signInBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
@@ -106,7 +106,7 @@
             android:layout_marginBottom="12dp"/>
 
         <Button
-            android:id="@+id/registrationBtn"
+            android:requestId="@+requestId/registrationBtn"
             android:layout_weight="0.5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -119,15 +119,15 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/sentPassOnEmail"
+        android:requestId="@+requestId/sentPassOnEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
 
-        android:layout_below="@+id/buttonContainer">
+        android:layout_below="@+requestId/buttonContainer">
 
         <ImageView
-            android:id="@+id/forgotPassImage"
+            android:requestId="@+requestId/forgotPassImage"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:src="@drawable/lock_1"
@@ -135,7 +135,7 @@
             android:clickable="true"/>
 
         <TextView
-            android:id="@+id/forgotPassBtn"
+            android:requestId="@+requestId/forgotPassBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="6dp"
@@ -153,7 +153,7 @@
         android:layout_alignParentRight="true">
 
         <TextView
-            android:id="@+id/textView"
+            android:requestId="@+requestId/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="6dp"
@@ -163,7 +163,7 @@
             android:textSize="14sp" />
 
         <ImageView
-            android:id="@+id/skipImgBtn"
+            android:requestId="@+requestId/skipImgBtn"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:adjustViewBounds="true"

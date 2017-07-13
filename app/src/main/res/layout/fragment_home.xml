@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/label"
+        android:requestId="@+requestId/label"
         android:layout_alignParentTop="true"
         android:layout_marginTop="100dp"
         android:layout_width="fill_parent"
@@ -14,12 +14,4 @@
         android:textSize="45dp"
         android:text="HOME"
         android:textStyle="bold"/>
-
-    <Button
-        android:id="@+id/company_info_gen_comp_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_below="@id/label"
-        android:text="gen companies" />
 </RelativeLayout>

@@ -45,38 +45,8 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        ((Button)view.findViewById(R.id.company_info_gen_comp_btn)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("BTN CLK", "company_info_gen_comp_btn click");
-                createCpmpanieInfoTable();
-            }
-        });
 
         return view;
-    }
-
-    private void createCpmpanieInfoTable() {
-        String id = reference.push().getKey();
-        List<String> productKeys = new ArrayList<>();
-        productKeys.add("key product 1");
-        productKeys.add("key product 2");
-
-        Map<String, Object> positions = new HashMap<>();
-        List<String> peoples = new ArrayList<>();
-        peoples.add("person 1");
-        peoples.add("person 2");
-        peoples.add("person 3");
-
-        positions.put("pos 1", peoples);
-        CompaniesInfoTable companyInfoTable = new CompaniesInfoTable(
-                "id", "test", "test", "test", productKeys, positions
-        );
-        Map<String, Object> newTable = new HashMap<>();
-        Map<String, Object> tempTable = companyInfoTable.toMap();
-        newTable.put(id, tempTable);
-        reference.updateChildren(newTable);
-
     }
 
     @Override

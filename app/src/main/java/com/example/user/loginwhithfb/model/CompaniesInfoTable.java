@@ -9,7 +9,7 @@ import java.util.Map;
  */
 
 public class CompaniesInfoTable {
-    private String id;
+    private String companyId;
     private String companyName;
     private String companyDescr;
     private String companyLogoUri;
@@ -20,7 +20,7 @@ public class CompaniesInfoTable {
     }
 
     public CompaniesInfoTable(String id, String companyName, String companyDescr, String companyLogoUri, Object companyProducts, Object positions) {
-        this.id = id;
+        this.companyId = id;
         this.companyName = companyName;
         this.companyDescr = companyDescr;
         this.companyLogoUri = companyLogoUri;
@@ -30,7 +30,7 @@ public class CompaniesInfoTable {
 
     public Map<String, Object> toMap(){
         HashMap<String, Object> result = new HashMap<>();
-        result.put("company ID", id);
+        result.put("companyId", companyId);
         result.put("companyName", companyName);
         result.put("companyDescr", companyDescr);
         result.put("companyLogoUri", companyLogoUri);
@@ -39,12 +39,12 @@ public class CompaniesInfoTable {
         return result;
     }
 
-    public String getId() {
-        return id;
+    public String getCompanyId() {
+        return companyId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setCompanyId(String id) {
+        this.companyId = id;
     }
 
     public String getCompanyName() {
@@ -85,31 +85,5 @@ public class CompaniesInfoTable {
 
     public void setPositions(Object positions) {
         this.positions = positions;
-    }
-
-    public class CompanyPosition {
-        private String position;
-        private ArrayList members;
-
-        public CompanyPosition(String position, ArrayList members) {
-            this.position = position;
-            this.members = members;
-        }
-
-        public String getPosition() {
-            return position;
-        }
-
-        public void setPosition(String position) {
-            this.position = position;
-        }
-
-        public ArrayList getMembers() {
-            return members;
-        }
-
-        public void setMembers(ArrayList members) {
-            this.members = members;
-        }
     }
 }

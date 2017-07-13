@@ -8,10 +8,10 @@ import java.util.Map;
  */
 
 public class RequestToAddClientToCompaniesTable {
-    private String id;
+    private String requestId;
     private String dataRequest;
     private String clientUid;
-    private String companyName;
+    private String companyId;
     private String contactPersonUid;
     private String statusRequest;
 
@@ -19,31 +19,31 @@ public class RequestToAddClientToCompaniesTable {
     }
 
     public RequestToAddClientToCompaniesTable(String id, String dataRequest, String clientUid, String companyName, String contactPersonUid, String statusRequest) {
-        this.id = id;
+        this.requestId = id;
         this.dataRequest = dataRequest;
         this.clientUid = clientUid;
-        this.companyName = companyName;
+        this.companyId = companyName;
         this.contactPersonUid = contactPersonUid;
         this.statusRequest = statusRequest;
     }
 
     public Map<String, Object> toMap(){
         HashMap<String, Object> result = new HashMap<>();
-        result.put("id" , id);
+        result.put("requestId" , requestId);
         result.put("dataRequest" , dataRequest);
         result.put("clientUid" , clientUid);
-        result.put("companyName" , companyName);
+        result.put("companyId" , companyId);
         result.put("contactPersonUid" , contactPersonUid);
         result.put("statusRequest" , statusRequest);
         return result;
     }
 
-    public String getId() {
-        return id;
+    public String getRequestId() {
+        return requestId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 
     public String getDataRequest() {
@@ -78,11 +78,11 @@ public class RequestToAddClientToCompaniesTable {
         this.statusRequest = statusRequest;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getCompanyId() {
+        return companyId;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
     }
 }

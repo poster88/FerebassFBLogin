@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:requestId="@+requestId/view_container"
+    android:id="@+id/view_container"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
     android:background="@drawable/side_nav_bar"
@@ -10,7 +10,7 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
-        android:requestId="@+requestId/img_header_bgr"
+        android:id="@+id/img_header_bgr"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
@@ -26,54 +26,54 @@
         android:layout_alignParentStart="true">
 
         <ImageView
-            android:requestId="@+requestId/img_profile"
+            android:id="@+id/img_profile"
             android:layout_width="@dimen/profile_width"
             android:layout_height="@dimen/profile_height"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
             app:srcCompat="@android:drawable/sym_def_app_icon" />
 
         <TextView
-            android:requestId="@+requestId/name"
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@requestId/img_profile"
+            android:layout_below="@+id/img_profile"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <TextView
-            android:requestId="@+requestId/email"
-            android:layout_below="@requestId/name"
+            android:id="@+id/email"
+            android:layout_below="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:requestId="@+requestId/log_out"
+            android:id="@+id/log_out"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@requestId/name"
-            android:layout_toRightOf="@requestId/email"
+            android:layout_below="@+id/name"
+            android:layout_toRightOf="@+id/email"
             android:layout_marginLeft="16dp"
             android:text="log out"
             android:visibility="gone"
             android:clickable="true" />
 
         <RelativeLayout
-            android:requestId="@+requestId/reg_buttons_container"
-            android:layout_below="@requestId/img_profile"
+            android:id="@+id/reg_buttons_container"
+            android:layout_below="@+id/img_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone">
 
             <TextView
-                android:requestId="@+requestId/sign_in_form_nav"
+                android:id="@+id/sign_in_form_nav"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:text="sign in"/>
 
             <TextView
-                android:requestId="@+requestId/reg_in_form_nav"
-                android:layout_toRightOf="@requestId/sign_in_form_nav"
+                android:id="@+id/reg_in_form_nav"
+                android:layout_toRightOf="@+id/sign_in_form_nav"
                 android:layout_marginLeft="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

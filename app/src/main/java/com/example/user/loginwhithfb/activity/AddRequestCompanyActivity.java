@@ -10,9 +10,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.model.CompaniesInfoTable;
+import com.example.user.loginwhithfb.model.RequestToAddClientToCompaniesTable;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,6 +23,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,10 +45,11 @@ public class AddRequestCompanyActivity extends AppCompatActivity{
     private ProgressDialog progressDialog;
     private FirebaseDatabase database;
     private DatabaseReference refCompany;
-    private String keyPath;
+    private String companyKey;
     private CompaniesInfoTable companiesInfoModel;
 
-    private final String URL_PATH = "https://fir-projectdb.firebaseio.com/CompaniesInfoTable";
+    private final String URL_COMPANY_INFO_TABLE = "https://fir-projectdb.firebaseio.com/CompaniesInfoTable";
+    private final String URL_REQ_TO_ADD_CLIENT_TABLE = "https://fir-projectdb.firebaseio.com/RequestToAddClientToCompaniesTable";
     private final String COMPANY_ID = "companyId";
 
     @Override
@@ -52,15 +58,13 @@ public class AddRequestCompanyActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         database = FirebaseDatabase.getInstance();
         try {
-            keyPath = getIntent().getStringExtra(COMPANY_ID);
+            companyKey = getIntent().getStringExtra(COMPANY_ID);
+            refCompany = database.getReferenceFromUrl(URL_COMPANY_INFO_TABLE + "/" + companyKey);
         }catch (Exception e){
             e.printStackTrace();
         }
-        refCompany = database.getReferenceFromUrl(URL_PATH + "/" + keyPath);
-
         refCompany.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -96,11 +100,50 @@ public class AddRequestCompanyActivity extends AppCompatActivity{
 
     @OnClick(R.id.sendRequestBtn)
     public void sendRequest(){
-        createRequestAddUser();
+        showProgressDialog();
+        DatabaseReference refRequestTable = database.getReferenceFromUrl(URL_REQ_TO_ADD_CLIENT_TABLE);
+        refRequestTable.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (checkUsersRequestExist(dataSnapshot)){
+                    createRequestAddUser();
+                }else {
+                    Toast.makeText(getBaseContext(), "Request is already sent", Toast.LENGTH_SHORT).show();
+                }
+                hideProgressDialog();
+                onBackPressed();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                hideProgressDialog();
+                onBackPressed();
+            }
+        });
+    }
+
+    private boolean checkUsersRequestExist(DataSnapshot dataSnapshot) {
+        String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        for (DataSnapshot data: dataSnapshot.getChildren()){
+            String clientUid = data.getValue(RequestToAddClientToCompaniesTable.class).getClientUid();
+            String companyId = data.getValue(RequestToAddClientToCompaniesTable.class).getCompanyId();
+            if (userUid.equals(clientUid) && companyKey.equals(companyId)){
+                return false;
+            }
+        }
+        return true;
     }
 
     private void createRequestAddUser(){
-
+        DatabaseReference reference = database.getReferenceFromUrl(URL_REQ_TO_ADD_CLIENT_TABLE);
+        String id = reference.push().getKey();
+        RequestToAddClientToCompaniesTable request = new RequestToAddClientToCompaniesTable(
+                id, new Date().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid(), companyKey, null, "in process"
+        );
+        Map<String, Object> newTable = new HashMap<>();
+        Map<String, Object> tempMap = request.toMap();
+        newTable.put(id, tempMap);
+        reference.updateChildren(newTable);
     }
 
     public void showProgressDialog() {

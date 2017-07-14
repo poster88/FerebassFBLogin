@@ -7,40 +7,40 @@
     
     <ImageView
         android:layout_gravity="center_horizontal"
-        android:requestId="@+requestId/company_logo"
+        android:id="@+id/company_logo"
         android:src="@color/colorBluGray300"
         android:layout_width="40dp"
         android:layout_height="40dp" />
     
     <LinearLayout
-        android:requestId="@+requestId/company_info_req"
+        android:id="@+id/company_info_req"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         
         <TextView
-            android:requestId="@+requestId/company_name_req"
+            android:id="@+id/company_name_req"
             android:layout_width="wrap_content"
             android:hint="must be a company name"
             android:layout_marginTop="10dp"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:requestId="@+requestId/company_desc_req"
+            android:id="@+id/company_desc_req"
             android:hint="must be a description"
             android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         
         <Spinner
-            android:requestId="@+requestId/spinner_choose_position"
+            android:id="@+id/spinner_choose_position"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </Spinner>
     </LinearLayout>
 
     <TextView
-        android:requestId="@+requestId/sendRequestBtn"
+        android:id="@+id/sendRequestBtn"
         android:text="Sent"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"

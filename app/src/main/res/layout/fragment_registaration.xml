@@ -10,12 +10,12 @@
 
 
     <android.support.design.widget.TextInputLayout
-        android:requestId="@+requestId/layout_name"
+        android:id="@+id/layout_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <EditText
-            android:requestId="@+requestId/reg_name"
+            android:id="@+id/reg_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
@@ -25,12 +25,12 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:requestId="@+requestId/layout_last_name"
+        android:id="@+id/layout_last_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <EditText
-            android:requestId="@+requestId/reg_last_name"
+            android:id="@+id/reg_last_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
@@ -40,12 +40,12 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:requestId="@+requestId/layout_sur_name"
+        android:id="@+id/layout_sur_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <EditText
-            android:requestId="@+requestId/reg_sur_name"
+            android:id="@+id/reg_sur_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
@@ -55,12 +55,12 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:requestId="@+requestId/layout_mob_num"
+        android:id="@+id/layout_mob_num"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <EditText
-            android:requestId="@+requestId/reg_mob_num"
+            android:id="@+id/reg_mob_num"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_mobile_number"
@@ -70,12 +70,12 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:requestId="@+requestId/layout_email"
+        android:id="@+id/layout_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <EditText
-            android:requestId="@+requestId/reg_email"
+            android:id="@+id/reg_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
@@ -85,12 +85,12 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:requestId="@+requestId/layout_password"
+        android:id="@+id/layout_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <EditText
-            android:requestId="@+requestId/reg_password"
+            android:id="@+id/reg_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
@@ -100,12 +100,12 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:requestId="@+requestId/layout_rep_pass"
+        android:id="@+id/layout_rep_pass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <EditText
-            android:requestId="@+requestId/reg_rep_pass"
+            android:id="@+id/reg_rep_pass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
@@ -122,7 +122,7 @@
         android:weightSum="1">
 
         <Button
-            android:requestId="@+requestId/reg_back_btn"
+            android:id="@+id/reg_back_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
@@ -134,7 +134,7 @@
             android:layout_marginBottom="12dp"/>
 
         <Button
-            android:requestId="@+requestId/reg_next_btn"
+            android:id="@+id/reg_next_btn"
             android:layout_weight="0.5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

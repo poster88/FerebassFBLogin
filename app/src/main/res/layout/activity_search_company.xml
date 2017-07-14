@@ -6,20 +6,20 @@
     android:layout_height="match_parent">
 
     <FrameLayout
-        android:requestId="@+requestId/toolbar_container"
+        android:id="@+id/toolbar_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:requestId="@+requestId/toolbar_search"
+            android:id="@+id/toolbar_search"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
         <com.miguelcatalan.materialsearchview.MaterialSearchView
-            android:requestId="@+requestId/search_view"
+            android:id="@+id/search_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:searchBackground="@color/colorPrimary"
@@ -30,14 +30,14 @@
     </FrameLayout>
 
     <ProgressBar
-        android:requestId="@+requestId/progressBar"
+        android:id="@+id/progressBar"
         style="?attr/progressBarStyle"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_margin="12dp" />
     <ListView
-        android:requestId="@+requestId/companyList"
+        android:id="@+id/companyList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="#3f5259"

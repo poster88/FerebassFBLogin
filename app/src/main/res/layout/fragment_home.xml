@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:requestId="@+requestId/label"
+        android:id="@+id/label"
         android:layout_alignParentTop="true"
         android:layout_marginTop="100dp"
         android:layout_width="fill_parent"

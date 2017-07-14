@@ -9,7 +9,7 @@ import java.util.Map;
  */
 
 public class CompaniesInfoTable {
-    private String companyId;
+    private String id;
     private String companyName;
     private String companyDescr;
     private String companyLogoUri;
@@ -20,7 +20,7 @@ public class CompaniesInfoTable {
     }
 
     public CompaniesInfoTable(String id, String companyName, String companyDescr, String companyLogoUri, Object companyProducts, Object positions) {
-        this.companyId = id;
+        this.id = id;
         this.companyName = companyName;
         this.companyDescr = companyDescr;
         this.companyLogoUri = companyLogoUri;
@@ -30,7 +30,7 @@ public class CompaniesInfoTable {
 
     public Map<String, Object> toMap(){
         HashMap<String, Object> result = new HashMap<>();
-        result.put("companyId", companyId);
+        result.put("companyId", id);
         result.put("companyName", companyName);
         result.put("companyDescr", companyDescr);
         result.put("companyLogoUri", companyLogoUri);
@@ -40,11 +40,11 @@ public class CompaniesInfoTable {
     }
 
     public String getCompanyId() {
-        return companyId;
+        return id;
     }
 
     public void setCompanyId(String id) {
-        this.companyId = id;
+        this.id = id;
     }
 
     public String getCompanyName() {
@@ -85,5 +85,31 @@ public class CompaniesInfoTable {
 
     public void setPositions(Object positions) {
         this.positions = positions;
+    }
+
+    public class CompanyPosition {
+        private String position;
+        private ArrayList members;
+
+        public CompanyPosition(String position, ArrayList members) {
+            this.position = position;
+            this.members = members;
+        }
+
+        public String getPosition() {
+            return position;
+        }
+
+        public void setPosition(String position) {
+            this.position = position;
+        }
+
+        public ArrayList getMembers() {
+            return members;
+        }
+
+        public void setMembers(ArrayList members) {
+            this.members = members;
+        }
     }
 }

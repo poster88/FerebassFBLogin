@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_acc"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,6 +11,14 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_below="@+id/label"/>
+
+    <ImageView
+        android:id="@+id/acc_change_photo"
+        android:layout_below="@id/acc_user_photo"
+        android:clickable="true"
+        android:src="@drawable/edit_im"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
 
     <TextView
         android:id="@+id/label"

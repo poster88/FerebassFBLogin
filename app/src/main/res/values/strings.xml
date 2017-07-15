@@ -42,10 +42,14 @@
     <string name="err_msg_check_pass">Паролі не співпадають. Спробуйте ще раз!</string>
 
     <!-- navigation drawer strings -->
-    <string name="myAccount">Мій аккаунт</string>
-    <string name="myOrder">Мої замовлення</string>
+    <string name="myCatalog">Products catalog</string>
+    <string name="myAccount">My account</string>
+    <string name="myOrder">My orders</string>
     <string name="companyInfo">Company info</string>
-
+    <string name="myMessages">Company chat</string>
+    <string name="myWishList">Favorite</string>
+    <string name="techSupport">Information</string>
+    <string name="myNews">News</string>
 
     <!-- Toolbar titles when navigation menu item is selected -->
     <string-array name="nav_item_activity_titles">

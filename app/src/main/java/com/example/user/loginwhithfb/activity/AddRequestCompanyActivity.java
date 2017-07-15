@@ -111,7 +111,6 @@ public class AddRequestCompanyActivity extends AppCompatActivity{
                     Toast.makeText(getBaseContext(), "Request is already sent", Toast.LENGTH_SHORT).show();
                 }
                 hideProgressDialog();
-                onBackPressed();
             }
 
             @Override
@@ -120,6 +119,7 @@ public class AddRequestCompanyActivity extends AppCompatActivity{
                 onBackPressed();
             }
         });
+        super.onBackPressed();
     }
 
     private boolean checkUsersRequestExist(DataSnapshot dataSnapshot) {
@@ -159,10 +159,5 @@ public class AddRequestCompanyActivity extends AppCompatActivity{
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }

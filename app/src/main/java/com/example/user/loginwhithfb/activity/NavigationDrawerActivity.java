@@ -168,10 +168,10 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.nav_home){
+                /*if (item.getItemId() == R.id.nav_home){
                     navItemIndex = 0;
                     CURRENT_TAG = TAG_HOME;
-                }
+                }*/
                 if (item.getItemId() == R.id.nav_account){
                     navItemIndex = 1;
                     CURRENT_TAG = TAG_ACCOUNT;

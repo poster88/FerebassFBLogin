@@ -27,6 +27,7 @@ import com.example.user.loginwhithfb.fragment.RegistrationFragment;
 import com.example.user.loginwhithfb.fragment.HomeFragment;
 import com.example.user.loginwhithfb.fragment.MyAccountFragment;
 import com.example.user.loginwhithfb.fragment.MyOrdersFragment;
+import com.example.user.loginwhithfb.other.CircleTransform;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -103,7 +104,12 @@ public class NavigationDrawerActivity extends AppCompatActivity {
             }
             userName.setText(user.getDisplayName());
             userEmail.setText(user.getEmail());
-            Glide.with(this).load(user.getPhotoUrl()).crossFade().diskCacheStrategy(DiskCacheStrategy.ALL).into(userPhoto);
+            Glide.with(this).load(user.getPhotoUrl())
+                    .crossFade()
+                    .thumbnail(0.5f)
+                    .bitmapTransform(new CircleTransform(this))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(userPhoto);
             logOut.setVisibility(View.VISIBLE);
             logOut.setOnClickListener(new View.OnClickListener() {
                 @Override

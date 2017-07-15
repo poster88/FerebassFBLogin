@@ -2,7 +2,6 @@ package com.example.user.loginwhithfb.fragment;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -27,13 +26,18 @@ import com.example.user.loginwhithfb.activity.ChangePassActivity;
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.activity.CompanyInfoActivity;
 import com.example.user.loginwhithfb.activity.SearchCompanyActivity;
+import com.example.user.loginwhithfb.model.UploadPhotoModel;
+import com.example.user.loginwhithfb.other.CircleTransform;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -68,16 +72,22 @@ public class MyAccountFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_account, container, false);
         ImageView verEmailStatusImg = ButterKnife.findById(view, R.id.email_verify_status_img);
-
         unbinder = ButterKnife.bind(this, view);
+
         user = FirebaseAuth.getInstance().getCurrentUser();
+        database = FirebaseDatabase.getInstance();
         storageRef = FirebaseStorage.getInstance().getReference(USERS_IMAGES);
         if (user != null){
             if (user.isAnonymous()){
                 userImg.setImageResource(R.drawable.ic_person_black_24dp);
                 verEmailStatusImg.setImageResource(R.drawable.ic_fiber_manual_record_reg_24dp);
             }else {
-                Glide.with(this).load(user.getPhotoUrl()).crossFade().diskCacheStrategy(DiskCacheStrategy.ALL).into(userImg);
+                Glide.with(this).load(user.getPhotoUrl())
+                        .crossFade()
+                        .thumbnail(0.5f)
+                        .bitmapTransform(new CircleTransform(getContext()))
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(userImg);
                 if (!user.isEmailVerified()){
                     verEmailStatusImg.setImageResource(R.drawable.ic_fiber_manual_record_reg_24dp);
                 }else {
@@ -163,27 +173,72 @@ public class MyAccountFragment extends Fragment{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PHOTO_REQUEST && resultCode == RESULT_OK && data != null){
             photoUri = data.getData();
-            Glide.with(getActivity()).load(photoUri).into(userImg);
+            Glide.with(this).load(photoUri)
+                    .crossFade()
+                    .thumbnail(0.5f)
+                    .bitmapTransform(new CircleTransform(getContext()))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(userImg);
+            //Glide.with(getActivity()).load(photoUri).into(userImg);
+            savePhotoInStorage();
         }
     }
 
+    private void savePhotoInStorage() {
+        showProgressDialog();
+        StorageReference onlineStoragePhotoRef = storageRef.child(photoUri.getLastPathSegment());
+        onlineStoragePhotoRef.putFile(photoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                photoUrl = taskSnapshot.getDownloadUrl().toString();
+                UploadPhotoModel model = new UploadPhotoModel(user.getUid(), photoUrl);
+                database.getReference("UsersPhoto").push().setValue(model);
+                changeUserProfile(photoUrl);
+                hideProgressDialog();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                hideProgressDialog();
+                Toast.makeText(getContext(), "Fail to add storage", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
+    private void changeUserProfile(String url) {
+        UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(Uri.parse(url))
+                .build();
+        user.updateProfile(profileChangeRequest)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), "Fail to update user profile", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+    }
+
+    public void showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setMessage("loading...");
+            progressDialog.setIndeterminate(true);
+        }
+        progressDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
 
     @Override
     public void onDestroyView() {
         unbinder.unbind();
         super.onDestroyView();
-    }
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 }
 

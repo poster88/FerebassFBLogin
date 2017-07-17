@@ -172,17 +172,17 @@ public class LoginFragment extends Fragment{
     }
 
     public void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-        }
-        mProgressDialog.show();
-    }
+                if (mProgressDialog == null) {
+                    mProgressDialog = new ProgressDialog(getActivity());
+                    mProgressDialog.setMessage(getString(R.string.loading));
+                    mProgressDialog.setIndeterminate(true);
+                }
+                mProgressDialog.show();
+            }
 
-    public void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
+        public void hideProgressDialog() {
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
         }
     }
 

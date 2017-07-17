@@ -2,6 +2,7 @@ package com.example.user.loginwhithfb.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -19,10 +20,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.R;
+import com.example.user.loginwhithfb.fragment.LoginFragment;
 import com.example.user.loginwhithfb.fragment.RegistrationFragment;
 import com.example.user.loginwhithfb.fragment.HomeFragment;
 import com.example.user.loginwhithfb.fragment.MyAccountFragment;
@@ -44,6 +47,7 @@ public class NavigationDrawerActivity extends AppCompatActivity {
     private View navHeader;
     private boolean shouldLoadHomeFRagOnBackPress = true;
     private Handler handler;
+    private boolean isUserClickedBackButton = false;
 
     public static int navItemIndex = 0;
     private static final String TAG_HOME = "HOME";
@@ -238,7 +242,6 @@ public class NavigationDrawerActivity extends AppCompatActivity {
             drawer.closeDrawers();
             return;
         }
-
         if (shouldLoadHomeFRagOnBackPress) {
             if (navItemIndex != 0) {
                 navItemIndex = 0;
@@ -246,7 +249,8 @@ public class NavigationDrawerActivity extends AppCompatActivity {
                 loadHomeFragment();
                 return;
             }
+            super.onBackPressed();
         }
-        super.onBackPressed();
+
     }
 }

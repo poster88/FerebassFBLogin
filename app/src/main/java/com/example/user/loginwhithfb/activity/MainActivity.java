@@ -1,6 +1,6 @@
 package com.example.user.loginwhithfb.activity;
 
-import android.app.ProgressDialog;
+
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.support.v4.app.FragmentManager;
@@ -18,17 +18,14 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private boolean isUserClickedBackButton = false;
     private FirebaseUser user;
-    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        showProgressDialog();
-
+        checkUser();
         user = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (user != null && !user.isAnonymous()){
+        if (user != null && !user.isAnonymous() /*&& !checkUser()*/){
             startActivity(new Intent(this, NavigationDrawerActivity.class));
         }else{
             if (fragmentManager == null){
@@ -36,22 +33,15 @@ public class MainActivity extends AppCompatActivity {
             }
             fragmentManager.beginTransaction().replace(R.id.container, new LoginFragment()).commit();
         }
-        hideProgressDialog();
     }
 
-    public void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
+    private boolean checkUser() {
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra("OnBackPressed", false)){
+            onBackPressed();
+            return true;
         }
-        mProgressDialog.show();
-    }
-
-    public void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
+        return false;
     }
 
     @Override
@@ -60,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
             isUserClickedBackButton = true;
         }else {
-            super.onBackPressed();
+            System.exit(0);
         }
         new CountDownTimer(3000, 1000) {
             @Override

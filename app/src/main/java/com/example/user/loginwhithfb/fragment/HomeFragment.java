@@ -25,7 +25,7 @@ import java.util.Map;
  * Created by POSTER on 24.06.2017.
  */
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends BaseFragment {
     private FirebaseDatabase database;
     private DatabaseReference reference;
 
@@ -45,7 +45,6 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
         return view;
     }
 

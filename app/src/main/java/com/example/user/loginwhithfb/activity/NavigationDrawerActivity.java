@@ -11,7 +11,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,12 +20,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.user.loginwhithfb.BaseActivity;
 import com.example.user.loginwhithfb.R;
-import com.example.user.loginwhithfb.fragment.RegistrationFragment;
 import com.example.user.loginwhithfb.fragment.HomeFragment;
 import com.example.user.loginwhithfb.fragment.MyAccountFragment;
 import com.example.user.loginwhithfb.fragment.MyOrdersFragment;
+import com.example.user.loginwhithfb.fragment.RegistrationFragment;
 import com.example.user.loginwhithfb.other.CircleTransform;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -50,7 +48,18 @@ public class NavigationDrawerActivity extends BaseActivity {
     private static final String TAG_HOME = "HOME";
     private static final String TAG_ACCOUNT = "ACCOUNT";
     private static final String TAG_ORDER = "ORDER";
-    public static String CURRENT_TAG = TAG_HOME;
+    private static String CURRENT_TAG = TAG_HOME;
+
+    private Runnable pendingRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Fragment fragment = getHomeFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+            fragmentTransaction.replace(R.id.frame, fragment, CURRENT_TAG);
+            fragmentTransaction.commitAllowingStateLoss();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,51 +85,52 @@ public class NavigationDrawerActivity extends BaseActivity {
         ImageView userPhoto = ButterKnife.findById(navHeader, R.id.img_profile);
         TextView logOut = ButterKnife.findById(navHeader, R.id.log_out);
 
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        Log.d("EMAAIL STATUS VERIFY: ", "" + user.isEmailVerified());
-        if (user != null){
-            if (user.isAnonymous()){
-                RelativeLayout regBtnContainer = ButterKnife.findById(navHeader, R.id.reg_buttons_container);
-                TextView signInBtn = ButterKnife.findById(navHeader, R.id.sign_in_form_nav);
-                TextView regBtn = ButterKnife.findById(navHeader, R.id.reg_in_form_nav);
+        if (user.isAnonymous()){
+            RelativeLayout regBtnContainer = ButterKnife.findById(navHeader, R.id.reg_buttons_container);
+            TextView signInBtn = ButterKnife.findById(navHeader, R.id.sign_in_form_nav);
+            TextView regBtn = ButterKnife.findById(navHeader, R.id.reg_in_form_nav);
 
-                regBtnContainer.setVisibility(View.VISIBLE);
-                userName.setVisibility(View.GONE);
-                userEmail.setVisibility(View.GONE);
+            regBtnContainer.setVisibility(View.VISIBLE);
+            userName.setVisibility(View.GONE);
+            userEmail.setVisibility(View.GONE);
 
-                regBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //getSupportFragmentManager().beginTransaction().replace(R.id.activityMain, new RegistrationFragment()).commit();
-                    }
-                });
-
-                signInBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    }
-                });
-                return;
-            }
-            userName.setText(user.getDisplayName());
-            userEmail.setText(user.getEmail());
-            Glide.with(this).load(user.getPhotoUrl())
-                    .crossFade()
-                    .thumbnail(0.5f)
-                    .bitmapTransform(new CircleTransform(this))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(userPhoto);
-            logOut.setVisibility(View.VISIBLE);
-            logOut.setOnClickListener(new View.OnClickListener() {
+            regBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FirebaseAuth.getInstance().signOut();
-                    Log.d("OUT", "Succes sign out!");
+                    //getSupportFragmentManager().beginTransaction().replace(R.id.container, new RegistrationFragment()).commit();
+                }
+            });
+
+            signInBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 }
             });
+            return;
         }
+        userName.setText(user.getDisplayName());
+        userEmail.setText(user.getEmail());
+        Glide.with(this).load(user.getPhotoUrl())
+                .crossFade()
+                .thumbnail(0.5f)
+                .bitmapTransform(new CircleTransform(this))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(userPhoto);
+        logOut.setVisibility(View.VISIBLE);
+        logOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        });
+    }
+
+    private void innitWidgets() {
+
     }
 
     private void loadHomeFragment(){
@@ -130,18 +140,7 @@ public class NavigationDrawerActivity extends BaseActivity {
             drawer.closeDrawers();
             return;
         }
-
-        Runnable pendingRunnable = new Runnable() {
-            @Override
-            public void run() {
-                Fragment fragment = getHomeFragment();
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-                fragmentTransaction.replace(R.id.frame, fragment, CURRENT_TAG);
-                fragmentTransaction.commitAllowingStateLoss();
-            }
-        };
-
+        pendingRunnable.run();
         if (pendingRunnable != null){
             handler.post(pendingRunnable);
         }
@@ -197,17 +196,7 @@ public class NavigationDrawerActivity extends BaseActivity {
             }
         });
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-        };
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
     }

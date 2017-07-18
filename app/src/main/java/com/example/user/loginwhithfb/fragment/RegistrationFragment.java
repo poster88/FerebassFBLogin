@@ -1,14 +1,12 @@
 package com.example.user.loginwhithfb.fragment;
 
-import android.app.ProgressDialog;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +37,7 @@ import butterknife.Unbinder;
  * Created by POSTER on 27.06.2017.
  */
 
-public class RegistrationFragment extends Fragment{
+public class RegistrationFragment extends BaseFragment{
     @BindView(R.id.reg_name) EditText name;
     @BindView(R.id.reg_last_name) EditText lastName;
     @BindView(R.id.reg_sur_name) EditText surName;
@@ -58,7 +56,6 @@ public class RegistrationFragment extends Fragment{
 
     private Unbinder unbinder;
     private FirebaseAuth mAuth;
-    public ProgressDialog progressDialog;
 
     private FirebaseDatabase database;
     private DatabaseReference reference;
@@ -71,10 +68,8 @@ public class RegistrationFragment extends Fragment{
         View view = inflater.inflate(R.layout.fragment_registaration, container, false);
         unbinder = ButterKnife.bind(this, view);
         mAuth = FirebaseAuth.getInstance();
-
         database = FirebaseDatabase.getInstance();
         reference = database.getReference(USER_INFO_TABLE);
-
         return view;
     }
 
@@ -88,24 +83,20 @@ public class RegistrationFragment extends Fragment{
     }
 
     private void createAccount(String email, String password) {
-        showProgressDialog();
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            //Log.d(LoginFragment.TAG, "createUserWithEmail:success");
-                            addUser();
-                            Toast.makeText(getContext(), "Збережено", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getActivity(), NavigationDrawerActivity.class));
-                        } else {
-                            //Log.w(LoginFragment.TAG, "createUserWithEmail:failure", task.getException().fillInStackTrace());
-                            Toast.makeText(getContext(), "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                        hideProgressDialog();
-                    }
-                });
+        super.showProgressDialog();
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    addUser();
+                    Toast.makeText(getContext(), "User account created", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getContext(), NavigationDrawerActivity.class));
+                }else {
+                    Toast.makeText(getContext(), "Failed to create user account", Toast.LENGTH_SHORT).show();
+                }
+                hideProgressDialog();
+            }
+        });
     }
 
     private void addUser(){
@@ -121,41 +112,8 @@ public class RegistrationFragment extends Fragment{
         reference.updateChildren(userAttributes);
     }
 
-    public void showProgressDialog() {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setMessage(getString(R.string.loading));
-            progressDialog.setIndeterminate(true);
-        }
-        progressDialog.show();
-    }
-
-    public void hideProgressDialog() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-    }
-
     private void submitForm() {
-        if (!validateName()) {
-            return;
-        }
-        if (!validateLastName()) {
-            return;
-        }
-        if (!validateLastName()) {
-            return;
-        }
-        if (!validateSurName()) {
-            return;
-        }
-        if (!validateMobileNumber()){
-            return;
-        }
-        if (!validateEmail()) {
-            return;
-        }
-        if (!validatePassword()) {
+        if (!validateName() || !validateLastName() || !validateSurName() ||!validateMobileNumber() || !validateEmail() || !validatePassword()) {
             return;
         }
         createAccount(email.getText().toString(), password.getText().toString());
@@ -167,13 +125,12 @@ public class RegistrationFragment extends Fragment{
             inputLayoutEmail.setError(getString(R.string.err_msg_email));
             requestFocus(email);
             return false;
-        } else {
-            inputLayoutEmail.setErrorEnabled(false);
         }
+        inputLayoutEmail.setErrorEnabled(false);
         return true;
     }
 
-    private static boolean isValidEmail(String eMail) {
+    private boolean isValidEmail(String eMail) {
         return !TextUtils.isEmpty(eMail) && android.util.Patterns.EMAIL_ADDRESS.matcher(eMail).matches();
     }
 

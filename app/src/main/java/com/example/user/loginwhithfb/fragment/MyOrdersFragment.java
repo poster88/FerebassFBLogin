@@ -14,17 +14,6 @@ import com.example.user.loginwhithfb.R;
  */
 
 public class MyOrdersFragment extends Fragment{
-    public MyOrdersFragment() {
-    }
-
-    public static MyOrdersFragment newInstance() {
-
-        Bundle args = new Bundle();
-
-        MyOrdersFragment fragment = new MyOrdersFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

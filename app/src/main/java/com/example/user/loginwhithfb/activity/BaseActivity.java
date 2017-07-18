@@ -1,4 +1,4 @@
-package com.example.user.loginwhithfb;
+package com.example.user.loginwhithfb.activity;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -21,8 +21,8 @@ public class BaseActivity extends AppCompatActivity{
 
     private boolean isUserClickedBackButton = false;
 
-    protected FirebaseDatabase database = FirebaseDatabase.getInstance();
-    protected FirebaseAuth auth = FirebaseAuth.getInstance();
+    protected FirebaseDatabase database;
+    protected FirebaseAuth auth;
     protected FirebaseUser user;
     protected FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
         @Override
@@ -30,6 +30,15 @@ public class BaseActivity extends AppCompatActivity{
             user = firebaseAuth.getCurrentUser();
         }
     };
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        database = FirebaseDatabase.getInstance();
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+    }
 
     private void setExitTimer(){
         new CountDownTimer(3000, 1000) {
@@ -55,6 +64,8 @@ public class BaseActivity extends AppCompatActivity{
         }
         setExitTimer();
     }
+
+
 
     @Override
     protected void onStart() {

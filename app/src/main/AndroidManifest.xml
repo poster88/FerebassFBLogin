@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".BaseActivity" />
+        <activity android:name=".activity.BaseActivity" />
 
         <activity
             android:name=".activity.NavigationDrawerActivity"

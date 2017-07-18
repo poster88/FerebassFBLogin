@@ -53,13 +53,6 @@ public class LoginFragment extends Fragment{
         unbinder = ButterKnife.bind(this, view);
         auth = FirebaseAuth.getInstance();
 
-        FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
-        if (user1 != null){
-            Log.d(TAG, "user is already logged");
-        }else {
-            Log.d(TAG, "no user");
-        }
-
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {

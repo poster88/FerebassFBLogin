@@ -94,12 +94,12 @@ public class RegistrationFragment extends Fragment{
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Log.d(LoginFragment.TAG, "createUserWithEmail:success");
+                            //Log.d(LoginFragment.TAG, "createUserWithEmail:success");
                             addUser();
                             Toast.makeText(getContext(), "Збережено", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getActivity(), NavigationDrawerActivity.class));
                         } else {
-                            Log.w(LoginFragment.TAG, "createUserWithEmail:failure", task.getException().fillInStackTrace());
+                            //Log.w(LoginFragment.TAG, "createUserWithEmail:failure", task.getException().fillInStackTrace());
                             Toast.makeText(getContext(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }

@@ -24,7 +24,6 @@ import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.fragment.HomeFragment;
 import com.example.user.loginwhithfb.fragment.MyAccountFragment;
 import com.example.user.loginwhithfb.fragment.MyOrdersFragment;
-import com.example.user.loginwhithfb.fragment.RegistrationFragment;
 import com.example.user.loginwhithfb.other.CircleTransform;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -106,7 +105,7 @@ public class NavigationDrawerActivity extends BaseActivity {
             signInBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 }
             });
             return;
@@ -124,7 +123,7 @@ public class NavigationDrawerActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             }
         });
     }
@@ -237,6 +236,5 @@ public class NavigationDrawerActivity extends BaseActivity {
             }
             super.onBackPressed();
         }
-
     }
 }

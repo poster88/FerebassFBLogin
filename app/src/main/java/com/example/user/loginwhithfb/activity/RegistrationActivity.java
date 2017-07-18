@@ -1,29 +1,25 @@
-package com.example.user.loginwhithfb.fragment;
+package com.example.user.loginwhithfb.activity;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.user.loginwhithfb.R;
-import com.example.user.loginwhithfb.activity.NavigationDrawerActivity;
 import com.example.user.loginwhithfb.model.UserLoginInfoTable;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,13 +27,12 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
- * Created by POSTER on 27.06.2017.
+ * Created by POSTER on 18.07.2017.
  */
 
-public class RegistrationFragment extends BaseFragment{
+public class RegistrationActivity extends BaseActivity{
     @BindView(R.id.reg_name) EditText name;
     @BindView(R.id.reg_last_name) EditText lastName;
     @BindView(R.id.reg_sur_name) EditText surName;
@@ -54,49 +49,15 @@ public class RegistrationFragment extends BaseFragment{
     @BindView(R.id.layout_password) TextInputLayout inputLayoutPass;
     @BindView(R.id.layout_rep_pass) TextInputLayout inputLayoutRepPass;
 
-    private Unbinder unbinder;
-    private FirebaseAuth mAuth;
-
-    private FirebaseDatabase database;
     private DatabaseReference reference;
+    private static final String USER_INFO_TABLE = "UserLoginInfoTable";
 
-    public static final String USER_INFO_TABLE = "UserLoginInfoTable";
-
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_registaration, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_registaration);
+        ButterKnife.bind(this);
         reference = database.getReference(USER_INFO_TABLE);
-        return view;
-    }
-
-    @OnClick({R.id.reg_back_btn, R.id.reg_next_btn})
-    public void registrationAction(Button button){
-        if (button.getId() == R.id.reg_next_btn){
-            submitForm();
-        }else {
-            Toast.makeText(getContext(), "cancel!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void createAccount(String email, String password) {
-        super.showProgressDialog();
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    addUser();
-                    Toast.makeText(getContext(), "User account created", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getContext(), NavigationDrawerActivity.class));
-                }else {
-                    Toast.makeText(getContext(), "Failed to create user account", Toast.LENGTH_SHORT).show();
-                }
-                hideProgressDialog();
-            }
-        });
     }
 
     private void addUser(){
@@ -104,7 +65,7 @@ public class RegistrationFragment extends BaseFragment{
         UserLoginInfoTable usersInfoTable = new UserLoginInfoTable(
                 name.getText().toString(), lastName.getText().toString(), surName.getText().toString(),
                 "photo_url", Integer.valueOf(number.getText().toString()), email.getText().toString(),
-                mAuth.getCurrentUser().getUid(), "some id"
+                super.auth.getCurrentUser().getUid(), "some id"
         );
         Map<String, Object> userLoginInfo = usersInfoTable.toMap();
         Map<String, Object> userAttributes = new HashMap<>();
@@ -112,11 +73,21 @@ public class RegistrationFragment extends BaseFragment{
         reference.updateChildren(userAttributes);
     }
 
-    private void submitForm() {
-        if (!validateName() || !validateLastName() || !validateSurName() ||!validateMobileNumber() || !validateEmail() || !validatePassword()) {
-            return;
-        }
-        createAccount(email.getText().toString(), password.getText().toString());
+    private void createAccount(String email, String password) {
+        showProgressDialog(this, "Wait...");
+        super.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    addUser();
+                    Toast.makeText(RegistrationActivity.this, "User account is created", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(RegistrationActivity.this, NavigationDrawerActivity.class));
+                }else {
+                    Toast.makeText(RegistrationActivity.this, "Failed to create user account", Toast.LENGTH_SHORT).show();
+                }
+                hideProgressDialog();
+            }
+        });
     }
 
     private boolean validateEmail() {
@@ -135,26 +106,48 @@ public class RegistrationFragment extends BaseFragment{
     }
 
     private boolean validatePassword() {
-        if (password.getText().toString().trim().isEmpty()){
-            inputLayoutRepPass.setErrorEnabled(false);
-            inputLayoutPass.setError(getString(R.string.err_msg_password));
-            requestFocus(password);
+        if (!checkIfEmpty() || !checkLength()){
             return false;
-        }else if (repeatPass.getText().toString().trim().isEmpty()){
-            inputLayoutPass.setErrorEnabled(false);
-            inputLayoutRepPass.setError(getString(R.string.err_msg_rep_pass));
-            requestFocus(repeatPass);
-            return false;
-        }else if (!password.getText().toString().equals(repeatPass.getText().toString())){
+        }
+        if (!password.getText().toString().equals(repeatPass.getText().toString())){
             inputLayoutRepPass.setErrorEnabled(false);
             password.setText("");
             repeatPass.setText("");
             requestFocus(password);
             inputLayoutPass.setError(getString(R.string.err_msg_check_pass));
             return false;
-        }else {
-            inputLayoutPass.setErrorEnabled(false);
+        }
+        inputLayoutPass.setErrorEnabled(false);
+        inputLayoutRepPass.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean checkLength() {
+        if (password.getText().length() < 6) {
             inputLayoutRepPass.setErrorEnabled(false);
+            inputLayoutPass.setError(getString(R.string.err_msg_password_length));
+            requestFocus(password);
+            return false;
+        } else if (repeatPass.getText().length() < 6) {
+            inputLayoutPass.setErrorEnabled(false);
+            inputLayoutRepPass.setError(getString(R.string.err_msg_password_length));
+            requestFocus(repeatPass);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean checkIfEmpty() {
+        if (password.getText().toString().trim().isEmpty()) {
+            inputLayoutRepPass.setErrorEnabled(false);
+            inputLayoutPass.setError(getString(R.string.err_msg_password));
+            requestFocus(password);
+            return false;
+        } else if (repeatPass.getText().toString().trim().isEmpty()) {
+            inputLayoutPass.setErrorEnabled(false);
+            inputLayoutRepPass.setError(getString(R.string.err_msg_rep_pass));
+            requestFocus(repeatPass);
+            return false;
         }
         return true;
     }
@@ -205,13 +198,34 @@ public class RegistrationFragment extends BaseFragment{
 
     private void requestFocus(View view) {
         if (view.requestFocus()) {
-            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
+
+    private void submitForm() {
+        if (!validateName() || !validateLastName() || !validateSurName() ||!validateMobileNumber() || !validateEmail() || !validatePassword()) {
+            return;
+        }
+        createAccount(email.getText().toString(), password.getText().toString());
+    }
+
+    @OnClick({R.id.reg_back_btn, R.id.reg_next_btn})
+    public void pickAction(Button button){
+        if (button.getId() == R.id.reg_next_btn){
+            submitForm();
+        }else {
+            startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
+            finish();
         }
     }
 
     @Override
-    public void onDestroyView() {
-        unbinder.unbind();
-        super.onDestroyView();
+    protected void showProgressDialog(Context context, String msg) {
+        super.showProgressDialog(context, msg);
+    }
+
+    @Override
+    protected void hideProgressDialog() {
+        super.hideProgressDialog();
     }
 }

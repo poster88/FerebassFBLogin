@@ -12,10 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -25,7 +24,7 @@
         <activity
             android:name=".activity.NavigationDrawerActivity"
             android:label="@string/title_activity_main2"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activity.ChangePassActivity"
         android:label="@string/activity_title_change_pass"/>
         <activity android:name=".activity.SearchCompanyActivity"
@@ -37,5 +36,7 @@
             android:label="@string/activity_title_request_to_add_company"/>
         <activity android:name=".activity.CompanyInfoActivity"
             android:label="@string/companyInfo"/>
+        <activity android:name=".activity.RegistrationActivity"
+            android:label="@string/activity_title_registration"/>
     </application>
 </manifest>

@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layoutLogin"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="6dp">
-
-    <TextView
-        android:id="@+id/currentUser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/loginContainer"
-        android:layout_marginLeft="16dp"
-        android:layout_marginBottom="6dp"
-        android:layout_alignRight="@+id/loginContainer"
-        android:textSize="14sp"/>
+    android:layout_margin="6dp"
+    tools:context="com.example.user.loginwhithfb.activity.LoginActivity">
 
     <ImageView
         android:id="@+id/logo_image"
@@ -95,7 +86,7 @@
         android:weightSum="1">
 
         <Button
-            android:id="@+id/signInBtn"
+            android:id="@+id/sign_in_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
@@ -107,7 +98,7 @@
             android:layout_marginBottom="12dp"/>
 
         <Button
-            android:id="@+id/registrationBtn"
+            android:id="@+id/registration_btn"
             android:layout_weight="0.5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -120,7 +111,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/sentPassOnEmail"
+        android:id="@+id/sent_pass_on_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

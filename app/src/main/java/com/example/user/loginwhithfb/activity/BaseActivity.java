@@ -1,17 +1,18 @@
 package com.example.user.loginwhithfb.activity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
-
-import butterknife.ButterKnife;
 
 /**
  * Created by POSTER on 17.07.2017.
@@ -24,6 +25,8 @@ public class BaseActivity extends AppCompatActivity{
     protected FirebaseDatabase database;
     protected FirebaseAuth auth;
     protected FirebaseUser user;
+    protected FragmentManager fragmentManager;
+    protected ProgressDialog progressDialog;
     protected FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
         @Override
         public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -34,10 +37,12 @@ public class BaseActivity extends AppCompatActivity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        database = FirebaseDatabase.getInstance();
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
+        if (savedInstanceState == null){
+            fragmentManager = getSupportFragmentManager();
+            database = FirebaseDatabase.getInstance();
+            auth = FirebaseAuth.getInstance();
+            user = auth.getCurrentUser();
+        }
     }
 
     private void setExitTimer(){
@@ -65,8 +70,6 @@ public class BaseActivity extends AppCompatActivity{
         setExitTimer();
     }
 
-
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -78,6 +81,21 @@ public class BaseActivity extends AppCompatActivity{
         super.onStop();
         if (authStateListener != null){
             auth.removeAuthStateListener(authStateListener);
+        }
+    }
+
+    protected void showProgressDialog(Context context, String msg) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setMessage(msg);
+            progressDialog.setIndeterminate(true);
+        }
+        progressDialog.show();
+    }
+
+    protected void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
     }
 }

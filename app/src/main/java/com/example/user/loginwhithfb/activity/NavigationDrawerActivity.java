@@ -15,24 +15,27 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.R;
-import com.example.user.loginwhithfb.fragment.HomeFragment;
+import com.example.user.loginwhithfb.fragment.BaseFragment;
+import com.example.user.loginwhithfb.fragment.CompanyChatFragment;
+import com.example.user.loginwhithfb.fragment.InformationFragment;
+import com.example.user.loginwhithfb.fragment.NewsFragment;
+import com.example.user.loginwhithfb.fragment.ProductCatalogFragment;
 import com.example.user.loginwhithfb.fragment.MyAccountFragment;
 import com.example.user.loginwhithfb.fragment.MyOrdersFragment;
+import com.example.user.loginwhithfb.fragment.WishListFragment;
 import com.example.user.loginwhithfb.other.CircleTransform;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class NavigationDrawerActivity extends BaseActivity {
+public class NavigationDrawerActivity extends BaseActivity implements View.OnClickListener{
     @BindArray(R.array.nav_item_activity_titles) String[] activityTitles;
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
     @BindView(R.id.nav_view) NavigationView navigationView;
@@ -42,12 +45,15 @@ public class NavigationDrawerActivity extends BaseActivity {
     private boolean shouldLoadHomeFRagOnBackPress = true;
     private Handler handler;
     private boolean isUserClickedBackButton = false;
-
-    public static int navItemIndex = 0;
-    private static final String TAG_HOME = "HOME";
-    private static final String TAG_ACCOUNT = "ACCOUNT";
-    private static final String TAG_ORDER = "ORDER";
+    private static final String TAG_HOME = "PRODUCT_CATALOG";
+    private static final String TAG_ACCOUNT = "MY_ACCOUNT";
+    private static final String TAG_ORDER = "MY_ORDERS";
+    private static final String TAG_CHAT = "COMPANY_CHAT";
+    private static final String TAG_FAVORITE = "FAVORITE";
+    private static final String TAG_NEWS = "NEWS";
+    private static final String TAG_INFORMATION = "INFORMATION";
     private static String CURRENT_TAG = TAG_HOME;
+    private static int navItemIndex = 0;
 
     private Runnable pendingRunnable = new Runnable() {
         @Override
@@ -78,58 +84,48 @@ public class NavigationDrawerActivity extends BaseActivity {
         }
     }
 
-    private void loadNavHeader() {
-        TextView userName = ButterKnife.findById(navHeader, R.id.name);
-        TextView userEmail = ButterKnife.findById(navHeader, R.id.email);
-        ImageView userPhoto = ButterKnife.findById(navHeader, R.id.img_profile);
-        TextView logOut = ButterKnife.findById(navHeader, R.id.log_out);
-
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user.isAnonymous()){
-            RelativeLayout regBtnContainer = ButterKnife.findById(navHeader, R.id.reg_buttons_container);
-            TextView signInBtn = ButterKnife.findById(navHeader, R.id.sign_in_form_nav);
-            TextView regBtn = ButterKnife.findById(navHeader, R.id.reg_in_form_nav);
-
-            regBtnContainer.setVisibility(View.VISIBLE);
-            userName.setVisibility(View.GONE);
-            userEmail.setVisibility(View.GONE);
-
-            regBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //getSupportFragmentManager().beginTransaction().replace(R.id.container, new RegistrationFragment()).commit();
-                }
-            });
-
-            signInBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                }
-            });
-            return;
-        }
+    private void updateUI(View view){
+        TextView userName = ButterKnife.findById(view, R.id.name);
+        TextView userEmail = ButterKnife.findById(view, R.id.email);
+        ImageView userPhoto = ButterKnife.findById(view, R.id.img_profile);
         userName.setText(user.getDisplayName());
         userEmail.setText(user.getEmail());
-        Glide.with(this).load(user.getPhotoUrl())
-                .crossFade()
-                .thumbnail(0.5f)
+        Glide.with(this).load(user.getPhotoUrl()).crossFade().thumbnail(0.5f)
                 .bitmapTransform(new CircleTransform(this))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(userPhoto);
-        logOut.setVisibility(View.VISIBLE);
-        logOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            }
-        });
+    }
+
+    private void loadNavHeader() {
+        if (user.isAnonymous()){
+           innitWidgets();
+        }else {
+            updateUI(navHeader);
+            TextView logOut = ButterKnife.findById(navHeader, R.id.log_out);
+            logOut.setVisibility(View.VISIBLE);
+            logOut.setOnClickListener(this);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.reg_in_form_nav){
+            startActivity(new Intent(NavigationDrawerActivity.this, RegistrationActivity.class));
+            finish();
+            return;
+        }else if (v.getId() == R.id.log_out){
+            FirebaseAuth.getInstance().signOut();
+        }
+        startActivity(new Intent(NavigationDrawerActivity.this, LoginActivity.class));
+        finish();
     }
 
     private void innitWidgets() {
-
+        navHeader.findViewById(R.id.reg_buttons_container).setVisibility(View.VISIBLE);
+        navHeader.findViewById(R.id.name).setVisibility(View.GONE);
+        navHeader.findViewById(R.id.email).setVisibility(View.GONE);
+        navHeader.findViewById(R.id.sign_in_form_nav).setOnClickListener(this);
+        navHeader.findViewById(R.id.reg_in_form_nav).setOnClickListener(this);
     }
 
     private void loadHomeFragment(){
@@ -150,13 +146,25 @@ public class NavigationDrawerActivity extends BaseActivity {
     private Fragment getHomeFragment(){
         Fragment fragment = null;
         if (navItemIndex == 0){
-            fragment = new HomeFragment();
+            fragment = new ProductCatalogFragment();
         }
         if (navItemIndex == 1){
-           fragment = new MyAccountFragment();
+            fragment = new MyAccountFragment();
         }
         if (navItemIndex == 2){
             fragment = new MyOrdersFragment();
+        }
+        if (navItemIndex == 3){
+            fragment = new CompanyChatFragment();
+        }
+        if (navItemIndex == 4){
+            fragment = new WishListFragment();
+        }
+        if (navItemIndex == 5){
+            fragment = new NewsFragment();
+        }
+        if (navItemIndex == 6){
+            fragment = new InformationFragment();
         }
         return fragment;
     }
@@ -173,10 +181,10 @@ public class NavigationDrawerActivity extends BaseActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                /*if (item.getItemId() == R.id.nav_home){
+                if (item.getItemId() == R.id.nav_catalog_items){
                     navItemIndex = 0;
                     CURRENT_TAG = TAG_HOME;
-                }*/
+                }
                 if (item.getItemId() == R.id.nav_account){
                     navItemIndex = 1;
                     CURRENT_TAG = TAG_ACCOUNT;
@@ -185,6 +193,23 @@ public class NavigationDrawerActivity extends BaseActivity {
                     navItemIndex = 2;
                     CURRENT_TAG = TAG_ORDER;
                 }
+                if (item.getItemId() == R.id.nav_messages){
+                    navItemIndex = 3;
+                    CURRENT_TAG = TAG_CHAT;
+                }
+                if (item.getItemId() == R.id.nav_wish_list){
+                    navItemIndex = 4;
+                    CURRENT_TAG = TAG_FAVORITE;
+                }
+                if (item.getItemId() == R.id.nav_news){
+                    navItemIndex = 5;
+                    CURRENT_TAG = TAG_NEWS;
+                }
+                if (item.getItemId() == R.id.nav_tech_support){
+                    navItemIndex = 6;
+                    CURRENT_TAG = TAG_INFORMATION;
+                }
+
                 if (item.isChecked()) {
                     item.setChecked(false);
                 }else {
@@ -202,19 +227,14 @@ public class NavigationDrawerActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main2, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -236,5 +256,15 @@ public class NavigationDrawerActivity extends BaseActivity {
             }
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 }

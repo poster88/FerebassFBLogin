@@ -54,9 +54,13 @@
 
     <!-- Toolbar titles when navigation menu item is selected -->
     <string-array name="nav_item_activity_titles">
-        <item>Home</item>
-        <item>Мій аккаунт</item>
-        <item>Мої замовлення</item>
+        <item>Product catalog</item>
+        <item>My account</item>
+        <item>My orders</item>
+        <item>Company chat</item>
+        <item>Favorite</item>
+        <item>News</item>
+        <item>Information</item>
     </string-array>
 
     <!-- account fragment strings -->

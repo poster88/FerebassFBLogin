@@ -30,29 +30,16 @@ import com.example.user.loginwhithfb.fragment.WishListFragment;
 import com.example.user.loginwhithfb.other.CircleTransform;
 import com.google.firebase.auth.FirebaseAuth;
 
-import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class NavigationDrawerActivity extends BaseActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener{
-    @BindArray(R.array.nav_item_activity_titles) String[] activityTitles;
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
     @BindView(R.id.nav_view) NavigationView navigationView;
     @BindView(R.id.toolbar) Toolbar toolbar;
 
     private View navHeader;
-    private boolean shouldLoadHomeFRagOnBackPress = true;
     private Handler handler;
-
-    private static final String TAG_HOME = "PRODUCT_CATALOG";
-    private static final String TAG_ACCOUNT = "MY_ACCOUNT";
-    private static final String TAG_ORDER = "MY_ORDERS";
-    private static final String TAG_CHAT = "COMPANY_CHAT";
-    private static final String TAG_FAVORITE = "FAVORITE";
-    private static final String TAG_NEWS = "NEWS";
-    private static final String TAG_INFORMATION = "INFORMATION";
-    private static String CURRENT_TAG = TAG_HOME;
-    private static int navItemIndex = 0;
 
     private Runnable pendingRunnable = new Runnable() {
         @Override
@@ -64,6 +51,7 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
             fragmentTransaction.commitAllowingStateLoss();
         }
     };
+
     private ActionBarDrawerToggle toggle(){
         return new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
             @Override
@@ -85,7 +73,6 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         loadNavHeader();
         setUpNavigationView();
         if (savedInstanceState == null) {
-            navItemIndex = 0;
             CURRENT_TAG = TAG_HOME;
             loadHomeFragment();
         }
@@ -136,26 +123,17 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
     }
 
     private void loadHomeFragment(){
-        selectNavMenu();
-        setToolbarTitle();
-        if (getSupportFragmentManager().findFragmentByTag(CURRENT_TAG) != null) {
+        getSupportActionBar().setTitle(CURRENT_TAG);
+        /*if (getSupportFragmentManager().findFragmentByTag(CURRENT_TAG) != null) {
             drawer.closeDrawers();
             return;
-        }
+        }*/
         pendingRunnable.run();
         if (pendingRunnable != null){
             handler.post(pendingRunnable);
         }
         drawer.closeDrawers();
         invalidateOptionsMenu();
-    }
-
-    private void setToolbarTitle() {
-        getSupportActionBar().setTitle(activityTitles[navItemIndex]);
-    }
-
-    private void selectNavMenu(){
-        navigationView.getMenu().getItem(navItemIndex).setChecked(true);
     }
 
     private void setUpNavigationView() {
@@ -174,9 +152,9 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            return true;
+            //TODO: create settings properties
         }
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     @Override
@@ -185,13 +163,70 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
             drawer.closeDrawers();
             return;
         }
-        if (shouldLoadHomeFRagOnBackPress && navItemIndex != 0) {
-            navItemIndex = 0;
+        if (!CURRENT_TAG.equals(TAG_HOME)) {
             CURRENT_TAG = TAG_HOME;
             loadHomeFragment();
             return;
         }
         super.onBackPressed();
+    }
+
+    private Fragment getHomeFragment(){
+        Fragment fragment = null;
+        if (CURRENT_TAG.equals(TAG_HOME)){
+            fragment = new ProductCatalogFragment();
+        }
+        if (CURRENT_TAG.equals(TAG_ACCOUNT)){
+            fragment = new MyAccountFragment();
+        }
+        if (CURRENT_TAG.equals(TAG_ORDER)){
+            fragment = new MyOrdersFragment();
+        }
+        if (CURRENT_TAG.equals(TAG_CHAT)){
+            fragment = new CompanyChatFragment();
+        }
+        if (CURRENT_TAG.equals(TAG_FAVORITE)){
+            fragment = new WishListFragment();
+        }
+        if (CURRENT_TAG.equals(TAG_NEWS)){
+            fragment = new NewsFragment();
+        }
+        if (CURRENT_TAG.equals(TAG_INFORMATION)){
+            fragment = new InformationFragment();
+        }
+        return fragment;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.nav_catalog_items) {
+            CURRENT_TAG = TAG_HOME;
+        }
+        if (item.getItemId() == R.id.nav_account) {
+            CURRENT_TAG = TAG_ACCOUNT;
+        }
+        if (item.getItemId() == R.id.nav_order) {
+            CURRENT_TAG = TAG_ORDER;
+        }
+        if (item.getItemId() == R.id.nav_messages) {
+            CURRENT_TAG = TAG_CHAT;
+        }
+        if (item.getItemId() == R.id.nav_wish_list) {
+            CURRENT_TAG = TAG_FAVORITE;
+        }
+        if (item.getItemId() == R.id.nav_news) {
+            CURRENT_TAG = TAG_NEWS;
+        }
+        if (item.getItemId() == R.id.nav_tech_support) {
+            CURRENT_TAG = TAG_INFORMATION;
+        }
+        if (item.isChecked()) {
+            item.setChecked(false);
+        } else {
+            item.setChecked(true);
+        }
+        loadHomeFragment();
+        return true;
     }
 
     @Override
@@ -202,70 +237,5 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
     @Override
     protected void onStop() {
         super.onStop();
-    }
-
-    private Fragment getHomeFragment(){
-        Fragment fragment = null;
-        if (navItemIndex == 0){
-            fragment = new ProductCatalogFragment();
-        }
-        if (navItemIndex == 1){
-            fragment = new MyAccountFragment();
-        }
-        if (navItemIndex == 2){
-            fragment = new MyOrdersFragment();
-        }
-        if (navItemIndex == 3){
-            fragment = new CompanyChatFragment();
-        }
-        if (navItemIndex == 4){
-            fragment = new WishListFragment();
-        }
-        if (navItemIndex == 5){
-            fragment = new NewsFragment();
-        }
-        if (navItemIndex == 6){
-            fragment = new InformationFragment();
-        }
-        return fragment;
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.nav_catalog_items) {
-            navItemIndex = 0;
-            CURRENT_TAG = TAG_HOME;
-        }
-        if (item.getItemId() == R.id.nav_account) {
-            navItemIndex = 1;
-            CURRENT_TAG = TAG_ACCOUNT;
-        }
-        if (item.getItemId() == R.id.nav_order) {
-            navItemIndex = 2;
-            CURRENT_TAG = TAG_ORDER;
-        }
-        if (item.getItemId() == R.id.nav_messages) {
-            navItemIndex = 3;
-            CURRENT_TAG = TAG_CHAT;
-        }
-        if (item.getItemId() == R.id.nav_wish_list) {
-            navItemIndex = 4;
-            CURRENT_TAG = TAG_FAVORITE;
-        }
-        if (item.getItemId() == R.id.nav_news) {
-            navItemIndex = 5;
-            CURRENT_TAG = TAG_NEWS;
-        }
-        if (item.getItemId() == R.id.nav_tech_support) {
-            navItemIndex = 6;
-            CURRENT_TAG = TAG_INFORMATION;
-        }
-        if (item.isChecked()) {
-            item.setChecked(false);
-        } else {
-            item.setChecked(true);
-        }
-        loadHomeFragment();
-        return true;
     }
 }

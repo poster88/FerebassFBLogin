@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.example.user.loginwhithfb.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
@@ -33,6 +34,15 @@ public class BaseActivity extends AppCompatActivity{
             user = firebaseAuth.getCurrentUser();
         }
     };
+
+    protected final String TAG_HOME = "Products catalog";
+    protected final String TAG_ACCOUNT = "My account";
+    protected final String TAG_ORDER = "My orders";
+    protected final String TAG_CHAT = "Company chat";
+    protected final String TAG_FAVORITE = "Favorite";
+    protected final String TAG_NEWS = "News";
+    protected final String TAG_INFORMATION = "Information";
+    protected String CURRENT_TAG = TAG_HOME;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -20,13 +20,13 @@
     <string name="action_settings">Settings</string>
 
     <!-- registration strings -->
-    <string name="hint_name">Імя</string>
-    <string name="hint_last_name">Фамілія</string>
-    <string name="hint_sur_name">Побатькові</string>
-    <string name="hint_mobile_number">Мобільний телефон</string>
-    <string name="hint_email">Е-мейл</string>
-    <string name="hint_password">Пароль</string>
-    <string name="hint_repeat_password">Repeat a password</string>
+    <string name="hint_name">Nane</string>
+    <string name="hint_last_name">Last name</string>
+    <string name="hint_sur_name">Surname</string>
+    <string name="hint_mobile_number">Mobile number</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_repeat_password">Repeat password</string>
     <string name="btn_sign_up">Sign Up</string>
 
     <string name="hint_new_password">A new password</string>

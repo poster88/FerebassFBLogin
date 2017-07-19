@@ -15,9 +15,6 @@ import com.example.user.loginwhithfb.R;
 
 public class ProductCatalogFragment extends BaseFragment {
 
-    public ProductCatalogFragment() {
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

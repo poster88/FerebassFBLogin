@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,8 @@ import com.example.user.loginwhithfb.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -25,9 +28,31 @@ import butterknife.Unbinder;
 
 public class BaseFragment extends Fragment{
 
-    public ProgressDialog progressDialog;
+    protected FirebaseDatabase database;
+    protected FirebaseUser user;
+    protected StorageReference storageRef;
+    protected ProgressDialog progressDialog;
 
-    public void showProgressDialog() {
+    protected final static String USERS_IMAGES = "users_images";
+    protected final int PHOTO_REQUEST = 9002;
+    protected final int REQUEST_READ_PERMISSION = 9003;
+    protected final int RESULT_OK = -1;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        database = FirebaseDatabase.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    protected void showProgressDialog() {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(getContext());
             progressDialog.setMessage(getString(R.string.loading));
@@ -36,9 +61,11 @@ public class BaseFragment extends Fragment{
         progressDialog.show();
     }
 
-    public void hideProgressDialog() {
+    protected void hideProgressDialog() {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }
+
+
 }

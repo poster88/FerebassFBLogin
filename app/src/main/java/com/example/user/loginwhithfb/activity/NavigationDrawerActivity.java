@@ -84,10 +84,7 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         ImageView userPhoto = ButterKnife.findById(view, R.id.img_profile);
         userName.setText(user.getDisplayName());
         userEmail.setText(user.getEmail());
-        Glide.with(this).load(user.getPhotoUrl()).crossFade().thumbnail(0.5f)
-                .bitmapTransform(new CircleTransform(this))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(userPhoto);
+        Glide.with(this).load(user.getPhotoUrl()).crossFade().thumbnail(0.5f).bitmapTransform(new CircleTransform(this)).diskCacheStrategy(DiskCacheStrategy.ALL).into(userPhoto);
     }
 
     private void loadNavHeader() {
@@ -124,10 +121,6 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
 
     private void loadHomeFragment(){
         getSupportActionBar().setTitle(CURRENT_TAG);
-        /*if (getSupportFragmentManager().findFragmentByTag(CURRENT_TAG) != null) {
-            drawer.closeDrawers();
-            return;
-        }*/
         pendingRunnable.run();
         if (pendingRunnable != null){
             handler.post(pendingRunnable);
@@ -227,6 +220,11 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         }
         loadHomeFragment();
         return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

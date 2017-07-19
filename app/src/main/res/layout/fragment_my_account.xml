@@ -10,6 +10,7 @@
         android:id="@+id/acc_user_photo"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:src="@drawable/ic_person_black_24dp"
         android:layout_below="@+id/label"/>
 
     <ImageView
@@ -48,7 +49,8 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/email_verify_status_label"
-        android:layout_below="@+id/label" />
+        android:layout_below="@+id/label"
+        android:src="@drawable/ic_fiber_manual_record_reg_24dp"/>
 
     <TextView
         android:id="@+id/verify_email_btn"

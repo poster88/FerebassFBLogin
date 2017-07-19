@@ -41,6 +41,16 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
     private View navHeader;
     private Handler handler;
 
+    private static final String TAG_HOME = "PRODUCT_CATALOG";
+    private static final String TAG_ACCOUNT = "MY_ACCOUNT";
+    private static final String TAG_ORDER = "MY_ORDERS";
+    private static final String TAG_CHAT = "COMPANY_CHAT";
+    private static final String TAG_FAVORITE = "FAVORITE";
+    private static final String TAG_NEWS = "NEWS";
+    private static final String TAG_INFORMATION = "INFORMATION";
+    private static String CURRENT_TAG = TAG_HOME;
+    private static int navItemIndex = 0;
+
     private Runnable pendingRunnable = new Runnable() {
         @Override
         public void run() {

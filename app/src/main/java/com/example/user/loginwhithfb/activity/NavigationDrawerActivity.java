@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.R;
-import com.example.user.loginwhithfb.fragment.BaseFragment;
 import com.example.user.loginwhithfb.fragment.CompanyChatFragment;
 import com.example.user.loginwhithfb.fragment.InformationFragment;
 import com.example.user.loginwhithfb.fragment.NewsFragment;
@@ -44,7 +43,6 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
     private View navHeader;
     private boolean shouldLoadHomeFRagOnBackPress = true;
     private Handler handler;
-    private boolean isUserClickedBackButton = false;
     private static final String TAG_HOME = "PRODUCT_CATALOG";
     private static final String TAG_ACCOUNT = "MY_ACCOUNT";
     private static final String TAG_ORDER = "MY_ORDERS";

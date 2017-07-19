@@ -51,6 +51,17 @@ public class AddRequestCompanyActivity extends AppCompatActivity{
     private final String URL_COMPANY_INFO_TABLE = "https://fir-projectdb.firebaseio.com/CompaniesInfoTable";
     private final String URL_REQ_TO_ADD_CLIENT_TABLE = "https://fir-projectdb.firebaseio.com/RequestToAddClientToCompaniesTable";
     private final String COMPANY_ID = "companyId";
+    private ValueEventListener valueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -1,9 +1,12 @@
 package com.example.user.loginwhithfb.activity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +17,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
+import butterknife.ButterKnife;
+
 /**
  * Created by POSTER on 17.07.2017.
  */
@@ -21,7 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class BaseActivity extends AppCompatActivity{
 
     private boolean isUserClickedBackButton = false;
-
+    protected ButterKnife binder;
     protected FirebaseDatabase database;
     protected FirebaseAuth auth;
     protected FirebaseUser user;
@@ -33,7 +38,6 @@ public class BaseActivity extends AppCompatActivity{
             user = firebaseAuth.getCurrentUser();
         }
     };
-
     protected final String TAG_HOME = "Products catalog";
     protected final String TAG_ACCOUNT = "My account";
     protected final String TAG_ORDER = "My orders";
@@ -52,6 +56,10 @@ public class BaseActivity extends AppCompatActivity{
             auth = FirebaseAuth.getInstance();
             user = auth.getCurrentUser();
         }
+    }
+
+    protected void setActivityForBinder(Activity activity){
+        binder.bind(activity);
     }
 
     private void setExitTimer(){
@@ -93,9 +101,9 @@ public class BaseActivity extends AppCompatActivity{
         }
     }
 
-    protected void showProgressDialog(Context context, String msg) {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(context);
+    protected void showProgressDialog(String msg) {
+        if (progressDialog == null && !progressDialog.isShowing()) {
+            progressDialog = new ProgressDialog(getBaseContext());
             progressDialog.setMessage(msg);
             progressDialog.setIndeterminate(true);
         }
@@ -106,5 +114,13 @@ public class BaseActivity extends AppCompatActivity{
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
+    }
+
+    protected void showToast(Context context, String title){
+        Toast.makeText(context, title, Toast.LENGTH_SHORT).show();
+    }
+
+    protected void startCurActivity(Context packageContext, Class<?> cls){
+        startActivity(new Intent(packageContext, cls));
     }
 }

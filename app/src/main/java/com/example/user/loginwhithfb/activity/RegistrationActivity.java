@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -56,13 +55,14 @@ public class RegistrationActivity extends BaseActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registaration);
-        ButterKnife.bind(this);
+        super.setActivityForBinder(this);
         reference = database.getReference(USER_INFO_TABLE);
     }
 
     private void addUser(){
         String id = reference.push().getKey();
         UserLoginInfoTable usersInfoTable = new UserLoginInfoTable(
+                //винести в змінну
                 name.getText().toString(), lastName.getText().toString(), surName.getText().toString(),
                 "photo_url", Integer.valueOf(number.getText().toString()), email.getText().toString(),
                 super.auth.getCurrentUser().getUid(), "some id"
@@ -74,7 +74,7 @@ public class RegistrationActivity extends BaseActivity{
     }
 
     private void createAccount(String email, String password) {
-        showProgressDialog(this, "Wait...");
+        showProgressDialog("Wait...");
         super.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -217,15 +217,5 @@ public class RegistrationActivity extends BaseActivity{
             startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
             finish();
         }
-    }
-
-    @Override
-    protected void showProgressDialog(Context context, String msg) {
-        super.showProgressDialog(context, msg);
-    }
-
-    @Override
-    protected void hideProgressDialog() {
-        super.hideProgressDialog();
     }
 }

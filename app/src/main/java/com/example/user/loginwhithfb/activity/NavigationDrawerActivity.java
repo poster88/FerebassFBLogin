@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.R;
-import com.example.user.loginwhithfb.fragment.BaseFragment;
 import com.example.user.loginwhithfb.fragment.CompanyChatFragment;
 import com.example.user.loginwhithfb.fragment.InformationFragment;
 import com.example.user.loginwhithfb.fragment.NewsFragment;
@@ -35,7 +34,7 @@ import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class NavigationDrawerActivity extends BaseActivity implements View.OnClickListener{
+public class NavigationDrawerActivity extends BaseActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener{
     @BindArray(R.array.nav_item_activity_titles) String[] activityTitles;
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
     @BindView(R.id.nav_view) NavigationView navigationView;
@@ -44,7 +43,7 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
     private View navHeader;
     private boolean shouldLoadHomeFRagOnBackPress = true;
     private Handler handler;
-    private boolean isUserClickedBackButton = false;
+
     private static final String TAG_HOME = "PRODUCT_CATALOG";
     private static final String TAG_ACCOUNT = "MY_ACCOUNT";
     private static final String TAG_ORDER = "MY_ORDERS";
@@ -65,6 +64,15 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
             fragmentTransaction.commitAllowingStateLoss();
         }
     };
+    private ActionBarDrawerToggle toggle(){
+        return new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                updateUI(drawerView);
+            }
+        };
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +83,6 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         handler = new Handler();
         navHeader = navigationView.getHeaderView(0);
         loadNavHeader();
-
         setUpNavigationView();
         if (savedInstanceState == null) {
             navItemIndex = 0;
@@ -143,6 +150,60 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         invalidateOptionsMenu();
     }
 
+    private void setToolbarTitle() {
+        getSupportActionBar().setTitle(activityTitles[navItemIndex]);
+    }
+
+    private void selectNavMenu(){
+        navigationView.getMenu().getItem(navItemIndex).setChecked(true);
+    }
+
+    private void setUpNavigationView() {
+        navigationView.setNavigationItemSelectedListener(this);
+        drawer.addDrawerListener(toggle());
+        toggle().syncState();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main2, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawers();
+            return;
+        }
+        if (shouldLoadHomeFRagOnBackPress && navItemIndex != 0) {
+            navItemIndex = 0;
+            CURRENT_TAG = TAG_HOME;
+            loadHomeFragment();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
     private Fragment getHomeFragment(){
         Fragment fragment = null;
         if (navItemIndex == 0){
@@ -169,102 +230,42 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         return fragment;
     }
 
-    private void setToolbarTitle() {
-        getSupportActionBar().setTitle(activityTitles[navItemIndex]);
-    }
-
-    private void selectNavMenu(){
-        navigationView.getMenu().getItem(navItemIndex).setChecked(true);
-    }
-
-    private void setUpNavigationView() {
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.nav_catalog_items){
-                    navItemIndex = 0;
-                    CURRENT_TAG = TAG_HOME;
-                }
-                if (item.getItemId() == R.id.nav_account){
-                    navItemIndex = 1;
-                    CURRENT_TAG = TAG_ACCOUNT;
-                }
-                if (item.getItemId() == R.id.nav_order){
-                    navItemIndex = 2;
-                    CURRENT_TAG = TAG_ORDER;
-                }
-                if (item.getItemId() == R.id.nav_messages){
-                    navItemIndex = 3;
-                    CURRENT_TAG = TAG_CHAT;
-                }
-                if (item.getItemId() == R.id.nav_wish_list){
-                    navItemIndex = 4;
-                    CURRENT_TAG = TAG_FAVORITE;
-                }
-                if (item.getItemId() == R.id.nav_news){
-                    navItemIndex = 5;
-                    CURRENT_TAG = TAG_NEWS;
-                }
-                if (item.getItemId() == R.id.nav_tech_support){
-                    navItemIndex = 6;
-                    CURRENT_TAG = TAG_INFORMATION;
-                }
-
-                if (item.isChecked()) {
-                    item.setChecked(false);
-                }else {
-                    item.setChecked(true);
-                }
-                loadHomeFragment();
-                return true;
-            }
-        });
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-    }
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main2, menu);
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.nav_catalog_items) {
+            navItemIndex = 0;
+            CURRENT_TAG = TAG_HOME;
+        }
+        if (item.getItemId() == R.id.nav_account) {
+            navItemIndex = 1;
+            CURRENT_TAG = TAG_ACCOUNT;
+        }
+        if (item.getItemId() == R.id.nav_order) {
+            navItemIndex = 2;
+            CURRENT_TAG = TAG_ORDER;
+        }
+        if (item.getItemId() == R.id.nav_messages) {
+            navItemIndex = 3;
+            CURRENT_TAG = TAG_CHAT;
+        }
+        if (item.getItemId() == R.id.nav_wish_list) {
+            navItemIndex = 4;
+            CURRENT_TAG = TAG_FAVORITE;
+        }
+        if (item.getItemId() == R.id.nav_news) {
+            navItemIndex = 5;
+            CURRENT_TAG = TAG_NEWS;
+        }
+        if (item.getItemId() == R.id.nav_tech_support) {
+            navItemIndex = 6;
+            CURRENT_TAG = TAG_INFORMATION;
+        }
+        if (item.isChecked()) {
+            item.setChecked(false);
+        } else {
+            item.setChecked(true);
+        }
+        loadHomeFragment();
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawers();
-            return;
-        }
-        if (shouldLoadHomeFRagOnBackPress) {
-            if (navItemIndex != 0) {
-                navItemIndex = 0;
-                CURRENT_TAG = TAG_HOME;
-                loadHomeFragment();
-                return;
-            }
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
     }
 }

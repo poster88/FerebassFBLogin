@@ -2,6 +2,7 @@ package com.example.user.loginwhithfb.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.user.loginwhithfb.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,14 +36,14 @@ public class BaseFragment extends Fragment{
     protected ProgressDialog progressDialog;
 
     protected final static String USERS_IMAGES = "users_images";
-    protected final int PHOTO_REQUEST = 9002;
-    protected final int REQUEST_READ_PERMISSION = 9003;
-    protected final int RESULT_OK = -1;
+    protected final static int PHOTO_REQUEST = 9002;
+    protected final static int REQUEST_READ_PERMISSION = 9003;
+    protected final static int RESULT_OK = -1;
+    protected Unbinder unbinder;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         database = FirebaseDatabase.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
     }
@@ -53,7 +55,7 @@ public class BaseFragment extends Fragment{
     }
 
     protected void showProgressDialog() {
-        if (progressDialog == null) {
+        if (progressDialog == null && !progressDialog.isShowing()) {
             progressDialog = new ProgressDialog(getContext());
             progressDialog.setMessage(getString(R.string.loading));
             progressDialog.setIndeterminate(true);
@@ -67,5 +69,22 @@ public class BaseFragment extends Fragment{
         }
     }
 
+    protected void setFragmentForBinder(Object target, View source){
+        unbinder = ButterKnife.bind(target, source);
+    }
 
+    protected void showToast(Context context, String title){
+        Toast.makeText(context, title, Toast.LENGTH_SHORT).show();
+    }
+
+    protected void startCurActivity(Context packageContext, Class<?> cls){
+        startActivity(new Intent(packageContext, cls));
+    }
+
+    @Override
+    public void onDestroyView() {
+        unbinder.unbind();
+        super.onDestroyView();
+
+    }
 }

@@ -1,6 +1,5 @@
 package com.example.user.loginwhithfb.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -41,23 +40,12 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
     private View navHeader;
     private Handler handler;
 
-    private static final String TAG_HOME = "PRODUCT_CATALOG";
-    private static final String TAG_ACCOUNT = "MY_ACCOUNT";
-    private static final String TAG_ORDER = "MY_ORDERS";
-    private static final String TAG_CHAT = "COMPANY_CHAT";
-    private static final String TAG_FAVORITE = "FAVORITE";
-    private static final String TAG_NEWS = "NEWS";
-    private static final String TAG_INFORMATION = "INFORMATION";
-    private static String CURRENT_TAG = TAG_HOME;
-    private static int navItemIndex = 0;
-
     private Runnable pendingRunnable = new Runnable() {
         @Override
         public void run() {
-            Fragment fragment = getHomeFragment();
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-            fragmentTransaction.replace(R.id.frame, fragment, CURRENT_TAG);
+            fragmentTransaction.replace(R.id.frame, getHomeFragment(), CURRENT_TAG);
             fragmentTransaction.commitAllowingStateLoss();
         }
     };
@@ -76,8 +64,8 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_drawer);
-        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        setActivityForBinder(this);
         handler = new Handler();
         navHeader = navigationView.getHeaderView(0);
         loadNavHeader();
@@ -111,13 +99,13 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.reg_in_form_nav){
-            startActivity(new Intent(NavigationDrawerActivity.this, RegistrationActivity.class));
+            NavigationDrawerActivity.super.startCurActivity(NavigationDrawerActivity.this, RegistrationActivity.class);
             finish();
             return;
         }else if (v.getId() == R.id.log_out){
             FirebaseAuth.getInstance().signOut();
         }
-        startActivity(new Intent(NavigationDrawerActivity.this, LoginActivity.class));
+        NavigationDrawerActivity.super.startCurActivity(NavigationDrawerActivity.this, LoginActivity.class);
         finish();
     }
 
@@ -147,7 +135,7 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main2, menu);
+        getMenuInflater().inflate(R.menu.main_burger, menu);
         return true;
     }
 

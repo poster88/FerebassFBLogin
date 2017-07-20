@@ -1,7 +1,6 @@
 package com.example.user.loginwhithfb.activity;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.model.UserLoginInfoTable;
@@ -50,6 +48,20 @@ public class RegistrationActivity extends BaseActivity{
 
     private DatabaseReference reference;
     private static final String USER_INFO_TABLE = "UserLoginInfoTable";
+    private UserLoginInfoTable usersInfoTable;
+    private OnCompleteListener onCompleteListenerCreateUser = new OnCompleteListener<AuthResult>() {
+        @Override
+        public void onComplete(@NonNull Task<AuthResult> task) {
+            if (task.isSuccessful()) {
+                addUser();
+                RegistrationActivity.super.showToast(RegistrationActivity.this, "User account is created");
+                RegistrationActivity.super.startCurActivity(RegistrationActivity.this, NavigationDrawerActivity.class);
+            }else {
+                RegistrationActivity.super.showToast(RegistrationActivity.this, "Failed to create user account");
+            }
+            hideProgressDialog();
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,33 +73,23 @@ public class RegistrationActivity extends BaseActivity{
 
     private void addUser(){
         String id = reference.push().getKey();
-        UserLoginInfoTable usersInfoTable = new UserLoginInfoTable(
-                //винести в змінну
-                name.getText().toString(), lastName.getText().toString(), surName.getText().toString(),
-                "photo_url", Integer.valueOf(number.getText().toString()), email.getText().toString(),
-                super.auth.getCurrentUser().getUid(), "some id"
-        );
+        setDataToConstructor();
         Map<String, Object> userLoginInfo = usersInfoTable.toMap();
         Map<String, Object> userAttributes = new HashMap<>();
         userAttributes.put(id, userLoginInfo);
         reference.updateChildren(userAttributes);
     }
 
+    private void setDataToConstructor() {
+        usersInfoTable = new UserLoginInfoTable(
+                name.getText().toString(), lastName.getText().toString(), surName.getText().toString(),
+                "photo__def_url", Integer.valueOf(number.getText().toString()), email.getText().toString(),
+                super.auth.getCurrentUser().getUid(), "some_id");
+    }
+
     private void createAccount(String email, String password) {
         showProgressDialog("Wait...");
-        super.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    addUser();
-                    Toast.makeText(RegistrationActivity.this, "User account is created", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(RegistrationActivity.this, NavigationDrawerActivity.class));
-                }else {
-                    Toast.makeText(RegistrationActivity.this, "Failed to create user account", Toast.LENGTH_SHORT).show();
-                }
-                hideProgressDialog();
-            }
-        });
+        super.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(onCompleteListenerCreateUser);
     }
 
     private boolean validateEmail() {
@@ -124,6 +126,7 @@ public class RegistrationActivity extends BaseActivity{
 
     private boolean checkLength() {
         if (password.getText().length() < 6) {
+            //TODO: розібратись з inputLayoutRepPass.setErrorEnabled(false)
             inputLayoutRepPass.setErrorEnabled(false);
             inputLayoutPass.setError(getString(R.string.err_msg_password_length));
             requestFocus(password);
@@ -203,7 +206,7 @@ public class RegistrationActivity extends BaseActivity{
     }
 
     private void submitForm() {
-        if (!validateName() || !validateLastName() || !validateSurName() ||!validateMobileNumber() || !validateEmail() || !validatePassword()) {
+        if (!validateName() || !validateLastName() || !validateSurName() || !validateMobileNumber() || !validateEmail() || !validatePassword()) {
             return;
         }
         createAccount(email.getText().toString(), password.getText().toString());
@@ -214,7 +217,7 @@ public class RegistrationActivity extends BaseActivity{
         if (button.getId() == R.id.reg_next_btn){
             submitForm();
         }else {
-            startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
+            RegistrationActivity.super.startCurActivity(RegistrationActivity.this, LoginActivity.class);
             finish();
         }
     }

@@ -18,7 +18,6 @@ public class UserLoginInfoTable {
     private String companyUid;
 
     public UserLoginInfoTable() {
-
     }
 
     public UserLoginInfoTable(String name, String lastName, String surname, String photoUrl, int mobileNumber, String email, String uID, String companyUid) {

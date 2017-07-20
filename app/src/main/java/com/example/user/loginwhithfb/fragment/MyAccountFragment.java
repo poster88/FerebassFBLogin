@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -36,9 +35,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * Created by POSTER on 24.06.2017.
@@ -48,20 +45,47 @@ public class MyAccountFragment extends BaseFragment {
     @BindView(R.id.acc_user_photo) ImageView userImg;
     @BindView(R.id.email_verify_status_img) ImageView verEmailStatusImg;
 
-    private Unbinder unbinder;
     private Uri photoUri;
     private String photoUrl;
+    private final String REF_USER_PHOTO = "UsersPhoto";
+    private OnCompleteListener onCompleteListenerSentEmailVerify = new OnCompleteListener() {
+        @Override
+        public void onComplete(@NonNull Task task) {
+            if (task.isSuccessful()){
+                MyAccountFragment.super.user.reload();
+                //TODO: update user: додати в базу дані! + абстрактний клас
+            }else {
+                MyAccountFragment.super.showToast(getContext(), "Failed verify email : ");
+            }
+        }
+    };
+    private OnSuccessListener<UploadTask.TaskSnapshot> onSuccessListenerAddPhoto = new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        @Override
+        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+            photoUrl = taskSnapshot.getDownloadUrl().toString();
+            UploadPhotoModel model = new UploadPhotoModel(user.getUid(), photoUrl);
+            MyAccountFragment.super.database.getReference(REF_USER_PHOTO).push().setValue(model);
+            changeUserProfile(photoUrl);
+        }
+    };
+    private OnFailureListener onFailureListenerProfileChange = new OnFailureListener() {
+        @Override
+        public void onFailure(@NonNull Exception e) {
+            MyAccountFragment.super.showToast(getContext(), "Fail to update user profile");
+        }
+    };
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
+    private OnFailureListener onFailureListenerAddPhoto = new OnFailureListener() {
+        @Override
+        public void onFailure(@NonNull Exception e) {
+            MyAccountFragment.super.showToast(getContext(), "Fail to add storage");
+        }
+    };
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_account, container, false);
-        unbinder = ButterKnife.bind(this, view);
+        setFragmentForBinder(this, view);
         super.storageRef = FirebaseStorage.getInstance().getReference(USERS_IMAGES);
         checkCurUser(super.user);
         return view;
@@ -69,33 +93,21 @@ public class MyAccountFragment extends BaseFragment {
 
     private void checkCurUser(FirebaseUser user) {
         if (!user.isAnonymous()){
-            loadUserPhoto();
-        }
-        if (user.isEmailVerified()){
-            verEmailStatusImg.setImageResource(R.drawable.ic_fiber_manual_record_green_24dp);
+            loadUserPhoto(user.getPhotoUrl(), userImg);
+            if (user.isEmailVerified()){
+                verEmailStatusImg.setImageResource(R.drawable.ic_fiber_manual_record_green_24dp);
+            }
         }
     }
 
-    private void loadUserPhoto() {
-        Glide.with(this).load(user.getPhotoUrl()).crossFade().thumbnail(0.5f)
-                .bitmapTransform(new CircleTransform(getContext()))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(userImg);
+    private void loadUserPhoto(Uri uri, ImageView view) {
+        Glide.with(this).load(uri).crossFade().thumbnail(0.5f).bitmapTransform(new CircleTransform(getContext()))
+                .diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
     }
 
     @OnClick(R.id.verify_email_btn)
     public void verifyEmail(){
-        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()){
-                    user.reload();
-                    //TODO: update user: додати в базу дані!
-                }else {
-                    Toast.makeText(getContext(), "Failed verify email : " + task.getException(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        user.sendEmailVerification().addOnCompleteListener(onCompleteListenerSentEmailVerify);
     }
 
     @OnClick({R.id.company_info, R.id.user_telephone, R.id.change_user_pass_btn, R.id.company_search})
@@ -107,13 +119,13 @@ public class MyAccountFragment extends BaseFragment {
 
     private void pickActivity(int id){
         if (id == R.id.company_info){
-            startActivity(new Intent(getContext(), CompanyInfoActivity.class));
+            MyAccountFragment.super.startCurActivity(getContext(), CompanyInfoActivity.class);
         }else if (id == R.id.user_telephone){
-            startActivity(new Intent(getContext(), ChangeNumberActivity.class));
+            MyAccountFragment.super.startCurActivity(getContext(), ChangeNumberActivity.class);
         }else if (id == R.id.change_user_pass_btn){
-            startActivity(new Intent(getContext(), ChangePassActivity.class));
+            MyAccountFragment.super.startCurActivity(getContext(), ChangePassActivity.class);
         }else {
-            startActivity(new Intent(getContext(), SearchCompanyActivity.class));
+            MyAccountFragment.super.startCurActivity(getContext(), SearchCompanyActivity.class);
         }
     }
 
@@ -153,57 +165,21 @@ public class MyAccountFragment extends BaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PHOTO_REQUEST && resultCode == RESULT_OK && data != null){
             photoUri = data.getData();
-            Glide.with(this).load(photoUri).crossFade().thumbnail(0.5f)
-                    .bitmapTransform(new CircleTransform(getContext()))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(userImg);
-            //TODO: винести в окремий потік?
+            loadUserPhoto(photoUri, userImg);
             savePhotoInStorage();
         }
     }
 
     private void savePhotoInStorage() {
-        StorageReference onlineStoragePhotoRef = storageRef.child(photoUri.getLastPathSegment());
-        onlineStoragePhotoRef.putFile(photoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                photoUrl = taskSnapshot.getDownloadUrl().toString();
-                UploadPhotoModel model = new UploadPhotoModel(user.getUid(), photoUrl);
-                database.getReference("UsersPhoto").push().setValue(model);
-                changeUserProfile(photoUrl);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(), "Fail to add storage", Toast.LENGTH_SHORT).show();
-            }
-        });
+        StorageReference onlineStoragePhotoRef = super.storageRef.child(photoUri.getLastPathSegment());
+        onlineStoragePhotoRef.putFile(photoUri)
+                .addOnSuccessListener(onSuccessListenerAddPhoto)
+                .addOnFailureListener(onFailureListenerAddPhoto);
     }
 
     private void changeUserProfile(String url) {
         UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setPhotoUri(Uri.parse(url)).build();
-        user.updateProfile(profileChangeRequest).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(), "Fail to update user profile", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    @Override
-    public void onDestroyView() {
-        unbinder.unbind();
-        super.onDestroyView();
-    }
-
-    @Override
-    protected void showProgressDialog() {
-        super.showProgressDialog();
-    }
-
-    @Override
-    protected void hideProgressDialog() {
-        super.hideProgressDialog();
+        user.updateProfile(profileChangeRequest).addOnFailureListener(onFailureListenerProfileChange);
     }
 }
 

@@ -39,13 +39,13 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
 
     private View navHeader;
     private Handler handler;
-
     private Runnable pendingRunnable = new Runnable() {
         @Override
         public void run() {
+            Fragment fragment = getHomeFragment();
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-            fragmentTransaction.replace(R.id.frame, getHomeFragment(), CURRENT_TAG);
+            fragmentTransaction.replace(R.id.frame, fragment, CURRENT_TAG);
             fragmentTransaction.commitAllowingStateLoss();
         }
     };
@@ -64,8 +64,8 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_drawer);
-        setSupportActionBar(toolbar);
         setActivityForBinder(this);
+        setSupportActionBar(toolbar);
         handler = new Handler();
         navHeader = navigationView.getHeaderView(0);
         loadNavHeader();

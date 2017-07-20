@@ -102,8 +102,8 @@ public class BaseActivity extends AppCompatActivity{
     }
 
     protected void showProgressDialog(String msg) {
-        if (progressDialog == null && !progressDialog.isShowing()) {
-            progressDialog = new ProgressDialog(getBaseContext());
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
             progressDialog.setMessage(msg);
             progressDialog.setIndeterminate(true);
         }

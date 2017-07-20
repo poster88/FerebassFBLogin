@@ -1,6 +1,8 @@
 package com.example.user.loginwhithfb.fragment;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.user.loginwhithfb.BaseAlertDialog;
 import com.example.user.loginwhithfb.activity.ChangeNumberActivity;
 import com.example.user.loginwhithfb.activity.ChangePassActivity;
 import com.example.user.loginwhithfb.R;
@@ -47,13 +50,12 @@ public class MyAccountFragment extends BaseFragment {
 
     private Uri photoUri;
     private String photoUrl;
-    private final String REF_USER_PHOTO = "UsersPhoto";
+
     private OnCompleteListener onCompleteListenerSentEmailVerify = new OnCompleteListener() {
         @Override
         public void onComplete(@NonNull Task task) {
             if (task.isSuccessful()){
                 MyAccountFragment.super.user.reload();
-                //TODO: update user: додати в базу дані! + абстрактний клас
             }else {
                 MyAccountFragment.super.showToast(getContext(), "Failed verify email : ");
             }
@@ -74,13 +76,27 @@ public class MyAccountFragment extends BaseFragment {
             MyAccountFragment.super.showToast(getContext(), "Fail to update user profile");
         }
     };
-
     private OnFailureListener onFailureListenerAddPhoto = new OnFailureListener() {
         @Override
         public void onFailure(@NonNull Exception e) {
             MyAccountFragment.super.showToast(getContext(), "Fail to add storage");
         }
     };
+    private DialogInterface.OnClickListener posBtnClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            MyAccountFragment.super.user.sendEmailVerification()
+                    .addOnCompleteListener(onCompleteListenerSentEmailVerify);
+            MyAccountFragment.super.showToast(getContext(), "Email was sent");
+        }
+    };
+    private DialogInterface.OnClickListener negBtnClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            dialog.dismiss();
+        }
+    };
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -107,12 +123,28 @@ public class MyAccountFragment extends BaseFragment {
 
     @OnClick(R.id.verify_email_btn)
     public void verifyEmail(){
-        user.sendEmailVerification().addOnCompleteListener(onCompleteListenerSentEmailVerify);
+        if (!super.user.isEmailVerified()){
+            showAlertDialog("Email verification", "Do you want to verify your email?",
+                    android.R.drawable.ic_dialog_alert, false, "Send", "Cancel");
+            return;
+        }
+        MyAccountFragment.super.showToast(getContext(), "Your email already verified");
+    }
+
+    private void showAlertDialog(String title, String message, int icon, boolean cancelable, String positiveBtnTitle, String negativeBtnTitle) {
+        AlertDialog.Builder ab = new AlertDialog.Builder(getContext());
+        ab.setTitle(title);
+        ab.setMessage(message);
+        ab.setIcon(icon);
+        ab.setCancelable(cancelable);
+        ab.setPositiveButton(positiveBtnTitle, posBtnClickListener);
+        ab.setNegativeButton(negativeBtnTitle, negBtnClickListener);
+        ab.show();
     }
 
     @OnClick({R.id.company_info, R.id.user_telephone, R.id.change_user_pass_btn, R.id.company_search})
     public void pickActionBtn(TextView textView){
-        if (!user.isAnonymous()){
+        if (!super.user.isAnonymous()){
             pickActivity(textView.getId());
         }
     }
@@ -179,7 +211,7 @@ public class MyAccountFragment extends BaseFragment {
 
     private void changeUserProfile(String url) {
         UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setPhotoUri(Uri.parse(url)).build();
-        user.updateProfile(profileChangeRequest).addOnFailureListener(onFailureListenerProfileChange);
+        super.user.updateProfile(profileChangeRequest).addOnFailureListener(onFailureListenerProfileChange);
     }
 }
 

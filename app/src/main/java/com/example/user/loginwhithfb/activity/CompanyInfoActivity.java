@@ -23,13 +23,12 @@ public class CompanyInfoActivity extends BaseActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_company_info);
-        setActivityForBinder(this);
+        super.setActivityForBinder(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         reference = super.database.getReference(COMPANIES_INFO_TABLE);
         if (!user.isAnonymous()){
             userUid = user.getUid();
         }
-
     }
 
     @OnClick(R.id.company_info_back_btn)

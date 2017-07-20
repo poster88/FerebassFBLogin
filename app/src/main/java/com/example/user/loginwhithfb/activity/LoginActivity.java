@@ -90,7 +90,7 @@ public class LoginActivity extends BaseActivity {
 
     @OnClick(R.id.skipImgBtn)
     public void anonymouslySingIn(){
-        auth.signInAnonymously().addOnCompleteListener(onCompleteListenerAnonSignIn);
+        super.auth.signInAnonymously().addOnCompleteListener(onCompleteListenerAnonSignIn);
     }
 
     @OnClick({R.id.sign_in_btn, R.id.registration_btn})

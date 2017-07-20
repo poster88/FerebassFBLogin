@@ -31,11 +31,11 @@
             android:label="@string/activity_title_search_company"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activity.ChangeNumberActivity"
-            android:label="@string/activity_title_change_number"/>
+            android:label="@string/activity_title_change_number" />
         <activity android:name=".activity.AddRequestCompanyActivity"
             android:label="@string/activity_title_request_to_add_company"/>
         <activity android:name=".activity.CompanyInfoActivity"
-            android:label="@string/companyInfo"/>
+            android:label="@string/activity_title_company_info"/>
         <activity android:name=".activity.RegistrationActivity"
             android:label="@string/activity_title_registration"/>
     </application>

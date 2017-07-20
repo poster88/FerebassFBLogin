@@ -2,46 +2,34 @@ package com.example.user.loginwhithfb.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.example.user.loginwhithfb.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
  * Created by POSTER on 12.07.2017.
  */
 
-public class CompanyInfoActivity extends AppCompatActivity{
+public class CompanyInfoActivity extends BaseActivity{
 
-    private FirebaseDatabase database;
     private DatabaseReference reference;
-    private FirebaseUser user;
     private String userUid;
-
+    private final String COMPANIES_INFO_TABLE = "CompaniesInfoTable";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_company_info);
-        ButterKnife.bind(this);
+        setActivityForBinder(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(R.string.companyInfo);
-
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        database = FirebaseDatabase.getInstance();
-        reference = database.getReference("CompaniesInfoTable");
-
+        reference = super.database.getReference(COMPANIES_INFO_TABLE);
         if (!user.isAnonymous()){
             userUid = user.getUid();
         }
+
     }
 
     @OnClick(R.id.company_info_back_btn)

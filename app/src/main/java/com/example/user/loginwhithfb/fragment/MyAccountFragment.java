@@ -7,27 +7,21 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
-import android.view.LayoutInflater;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.activity.ChangeNumberActivity;
-import com.example.user.loginwhithfb.activity.ChangePassActivity;
 import com.example.user.loginwhithfb.R;
-import com.example.user.loginwhithfb.activity.CompanyInfoActivity;
-import com.example.user.loginwhithfb.activity.SearchCompanyActivity;
+
+import com.example.user.loginwhithfb.activity.ChangePassActivity;
 import com.example.user.loginwhithfb.model.UploadPhotoModel;
 import com.example.user.loginwhithfb.other.CircleTransform;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,7 +30,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -100,17 +93,6 @@ public class MyAccountFragment extends BaseFragment {
         }
     };
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_my_account, container, false);
-        setHasOptionsMenu(true);
-        setFragmentForBinder(this, view);
-        super.storageRef = FirebaseStorage.getInstance().getReference(USERS_IMAGES);
-        checkCurUser(super.user);
-        return view;
-    }
-
     private void checkCurUser(FirebaseUser user) {
         if (!user.isAnonymous()){
             loadUserPhoto(user.getPhotoUrl(), userImg);
@@ -145,8 +127,7 @@ public class MyAccountFragment extends BaseFragment {
         ab.show();
     }
 
-    //@OnClick({R.id.company_info, R.id.acc_user_email, R.id.company_search})
-    @OnClick({})
+    @OnClick({R.id.acc_card_view_person, R.id.acc_card_view_person_number, R.id.acc_card_view_person_email, R.id.acc_card_view_mail_check, R.id.acc_card_view_person_company})
     public void pickActionBtn(CardView view){
         if (!super.user.isAnonymous()){
             pickActivity(view.getId());
@@ -155,24 +136,24 @@ public class MyAccountFragment extends BaseFragment {
 
     private void pickActivity(int id){
         if (id == R.id.acc_card_view_person){
-            //changeUserPersonalData();
+            changeUserPersonalData();
         }else if (id == R.id.acc_card_view_person_number){
             MyAccountFragment.super.startCurActivity(getContext(), ChangeNumberActivity.class);
         }else if (id == R.id.acc_card_view_person_email){
-            //changeUserEmail();
+            //TODO: create method email edit;
         }else if (id == R.id.acc_card_view_mail_check){
-            //check
+            verifyEmail();
         }else if (id == R.id.acc_card_view_person_company){
-
+            changeCompany();
         }
-        /*
-        if (id == R.id.company_info){
-            MyAccountFragment.super.startCurActivity(getContext(), CompanyInfoActivity.class);
-        }else if (id == R.id.acc_user_email){
+    }
 
-        }else {
-            MyAccountFragment.super.startCurActivity(getContext(), SearchCompanyActivity.class);
-        }*/
+    private void changeUserPersonalData() {
+        System.out.println("changeUserPersonalData");
+    }
+
+    private void changeCompany(){
+        System.out.println("changeCompany");
     }
 
     @OnClick(R.id.acc_change_photo)
@@ -235,7 +216,8 @@ public class MyAccountFragment extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (!super.user.isAnonymous()){
+        super.onOptionsItemSelected(item);
+        /*if (!super.user.isAnonymous()){
             if (item.getItemId() == R.id.action_change_password){
                 MyAccountFragment.super.startCurActivity(getContext(), ChangePassActivity.class);
             }else if (item.getItemId() == R.id.action_delete_account){
@@ -243,7 +225,7 @@ public class MyAccountFragment extends BaseFragment {
             }
         }else {
             MyAccountFragment.super.showToast(getContext(), "Please create a user, to use this menu");
-        }
+        }*/
         return true;
     }
 

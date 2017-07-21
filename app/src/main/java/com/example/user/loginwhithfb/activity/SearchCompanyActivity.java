@@ -14,8 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
-
+//
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.model.CompaniesInfoTable;
 import com.google.firebase.database.DataSnapshot;
@@ -74,7 +73,7 @@ public class SearchCompanyActivity extends BaseActivity implements AdapterView.O
         @Override
         public boolean onQueryTextChange(String newText) {
             if (newText != null && !newText.isEmpty()){
-                List<String> firstFound = new ArrayList<String>();
+                List<String> firstFound = new ArrayList<>();
                 for (String str: companyData.values()) {
                     if(str.trim().toLowerCase().contains(newText.trim().toLowerCase())){
                         firstFound.add(str);

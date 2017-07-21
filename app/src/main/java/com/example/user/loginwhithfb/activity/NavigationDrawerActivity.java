@@ -10,10 +10,12 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.R;
@@ -172,7 +174,7 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         return fragment;
     }
 
-    @Override
+
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.nav_catalog_items) {
             CURRENT_TAG = TAG_HOME;
@@ -204,5 +206,11 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         return true;
     }
 
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.main_burger, menu);
+        return true;
+    }
 
 }

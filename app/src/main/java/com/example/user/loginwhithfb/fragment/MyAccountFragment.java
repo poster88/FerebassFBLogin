@@ -11,7 +11,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,7 +23,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.user.loginwhithfb.BaseAlertDialog;
 import com.example.user.loginwhithfb.activity.ChangeNumberActivity;
 import com.example.user.loginwhithfb.activity.ChangePassActivity;
 import com.example.user.loginwhithfb.R;
@@ -101,6 +104,7 @@ public class MyAccountFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_account, container, false);
+        setHasOptionsMenu(true);
         setFragmentForBinder(this, view);
         super.storageRef = FirebaseStorage.getInstance().getReference(USERS_IMAGES);
         checkCurUser(super.user);
@@ -121,8 +125,7 @@ public class MyAccountFragment extends BaseFragment {
                 .diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
     }
 
-    @OnClick(R.id.verify_email_btn)
-    public void verifyEmail(){
+    private void verifyEmail(){
         if (!super.user.isEmailVerified()){
             showAlertDialog("Email verification", "Do you want to verify your email?",
                     android.R.drawable.ic_dialog_alert, false, "Send", "Cancel");
@@ -142,23 +145,34 @@ public class MyAccountFragment extends BaseFragment {
         ab.show();
     }
 
-    @OnClick({R.id.company_info, R.id.user_telephone, R.id.change_user_pass_btn, R.id.company_search})
-    public void pickActionBtn(TextView textView){
+    //@OnClick({R.id.company_info, R.id.acc_user_email, R.id.company_search})
+    @OnClick({})
+    public void pickActionBtn(CardView view){
         if (!super.user.isAnonymous()){
-            pickActivity(textView.getId());
+            pickActivity(view.getId());
         }
     }
 
     private void pickActivity(int id){
+        if (id == R.id.acc_card_view_person){
+            //changeUserPersonalData();
+        }else if (id == R.id.acc_card_view_person_number){
+            MyAccountFragment.super.startCurActivity(getContext(), ChangeNumberActivity.class);
+        }else if (id == R.id.acc_card_view_person_email){
+            //changeUserEmail();
+        }else if (id == R.id.acc_card_view_mail_check){
+            //check
+        }else if (id == R.id.acc_card_view_person_company){
+
+        }
+        /*
         if (id == R.id.company_info){
             MyAccountFragment.super.startCurActivity(getContext(), CompanyInfoActivity.class);
-        }else if (id == R.id.user_telephone){
-            MyAccountFragment.super.startCurActivity(getContext(), ChangeNumberActivity.class);
-        }else if (id == R.id.change_user_pass_btn){
-            MyAccountFragment.super.startCurActivity(getContext(), ChangePassActivity.class);
+        }else if (id == R.id.acc_user_email){
+
         }else {
             MyAccountFragment.super.startCurActivity(getContext(), SearchCompanyActivity.class);
-        }
+        }*/
     }
 
     @OnClick(R.id.acc_change_photo)
@@ -213,6 +227,26 @@ public class MyAccountFragment extends BaseFragment {
         UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setPhotoUri(Uri.parse(url)).build();
         super.user.updateProfile(profileChangeRequest).addOnFailureListener(onFailureListenerProfileChange);
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_account, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (!super.user.isAnonymous()){
+            if (item.getItemId() == R.id.action_change_password){
+                MyAccountFragment.super.startCurActivity(getContext(), ChangePassActivity.class);
+            }else if (item.getItemId() == R.id.action_delete_account){
+               //TODO: create method del acc
+            }
+        }else {
+            MyAccountFragment.super.showToast(getContext(), "Please create a user, to use this menu");
+        }
+        return true;
+    }
+
 }
 
 

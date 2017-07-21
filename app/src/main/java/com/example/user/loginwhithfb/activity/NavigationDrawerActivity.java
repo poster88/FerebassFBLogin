@@ -10,12 +10,10 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.R;
@@ -36,6 +34,7 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
     @BindView(R.id.nav_view) NavigationView navigationView;
     @BindView(R.id.toolbar) Toolbar toolbar;
+
 
     private View navHeader;
     private Handler handler;
@@ -134,21 +133,6 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_burger, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            //TODO: create settings properties
-        }
-        return true;
-    }
-
-    @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawers();
@@ -159,7 +143,7 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
             loadHomeFragment();
             return;
         }
-        super.onBackPressed();
+        NavigationDrawerActivity.super.exitProgram();
     }
 
     private Fragment getHomeFragment(){
@@ -219,4 +203,6 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         loadHomeFragment();
         return true;
     }
+
+
 }

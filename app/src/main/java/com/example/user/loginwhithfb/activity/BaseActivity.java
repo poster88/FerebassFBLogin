@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
 
 public class BaseActivity extends AppCompatActivity{
 
-    private boolean isUserClickedBackButton = false;
+
     protected ButterKnife binder;
     protected FirebaseDatabase database;
     protected FirebaseAuth auth;
@@ -46,6 +46,7 @@ public class BaseActivity extends AppCompatActivity{
     protected final String TAG_NEWS = "News";
     protected final String TAG_INFORMATION = "Information";
     protected String CURRENT_TAG = TAG_HOME;
+    private boolean isUserClickedBackButton = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,31 +61,6 @@ public class BaseActivity extends AppCompatActivity{
 
     protected void setActivityForBinder(Activity activity){
         binder.bind(activity);
-    }
-
-    private void setExitTimer(){
-        new CountDownTimer(3000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-
-            }
-
-            @Override
-            public void onFinish() {
-                isUserClickedBackButton = false;
-            }
-        }.start();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (!isUserClickedBackButton){
-            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
-            isUserClickedBackButton = true;
-        }else {
-            super.onBackPressed();
-        }
-        setExitTimer();
     }
 
     @Override
@@ -122,5 +98,29 @@ public class BaseActivity extends AppCompatActivity{
 
     protected void startCurActivity(Context packageContext, Class<?> cls){
         startActivity(new Intent(packageContext, cls));
+    }
+
+    private void setExitTimer(){
+        new CountDownTimer(3000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                isUserClickedBackButton = false;
+            }
+        }.start();
+    }
+
+    protected void exitProgram(){
+        if (!isUserClickedBackButton){
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+            isUserClickedBackButton = true;
+        }else {
+            super.onBackPressed();
+        }
+        setExitTimer();
     }
 }

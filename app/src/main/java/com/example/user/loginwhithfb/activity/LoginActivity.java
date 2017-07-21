@@ -25,6 +25,7 @@ public class LoginActivity extends BaseActivity {
         public void onComplete(@NonNull Task task) {
             if (task.isSuccessful()){
                 LoginActivity.super.startCurActivity(LoginActivity.this, NavigationDrawerActivity.class);
+                finish();
             }else {
                 LoginActivity.super.showToast(LoginActivity.this, "Authentication failed. Try again");
             }

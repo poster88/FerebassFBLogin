@@ -1,17 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fragment_acc"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="6dp">
 
-    <ImageView
-        android:id="@+id/acc_user_photo"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_person_black_24dp"
-        android:layout_below="@+id/label"/>
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/acc_card_view_person"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/MyCardViewStyle"
+        android:layout_marginTop="7dp"
+        card_view:cardCornerRadius="4dp"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/acc_user_photo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_person_black_24dp" />
+            <TextView
+                android:id="@+id/acc_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="name : test"
+                android:textSize="16dp"
+                android:layout_toRightOf="@+id/acc_user_photo"/>
+            <TextView
+                android:id="@+id/acc_user_last_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="last name : test"
+                android:textSize="16dp"
+                android:layout_toRightOf="@+id/acc_user_photo"
+                android:layout_below="@+id/acc_user_name"/>
+            <TextView
+                android:id="@+id/acc_user_surname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="last name : test"
+                android:textSize="16dp"
+                android:layout_toRightOf="@+id/acc_user_photo"
+                android:layout_below="@+id/acc_user_last_name"/>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/acc_card_view_person_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/MyCardViewStyle"
+        android:layout_marginTop="7dp"
+        card_view:cardCornerRadius="4dp"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/acc_img_number"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_contact_phone_black_24dp" />
+
+            <TextView
+                android:id="@+id/acc_user_telephone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_toRightOf="@id/acc_img_number"
+                android:clickable="true"
+                android:text="Your number : "
+                android:textSize="16dp" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/acc_card_view_person_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/MyCardViewStyle"
+        android:layout_marginTop="7dp"
+        card_view:cardCornerRadius="4dp"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/acc_img_email"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_email_black_24dp" />
+            <TextView
+                android:id="@+id/acc_user_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_toRightOf="@+id/acc_img_email"
+                android:text="Your email: "
+                android:textSize="16dp" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/acc_card_view_mail_check"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/MyCardViewStyle"
+        android:layout_marginTop="14dp"
+        card_view:cardCornerRadius="4dp"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/acc_img_check_em_status"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_check_circle_black_24dp" />
+
+            <TextView
+                android:id="@+id/email_verify_status_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:text="@string/verify_label_status"
+                android:layout_toRightOf="@id/acc_img_check_em_status"
+                android:layout_marginLeft="12dp"/>
+
+            <ImageView
+                android:id="@+id/email_verify_status_img"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/email_verify_status_label"
+                android:src="@drawable/ic_fiber_manual_record_reg_24dp"/>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/acc_card_view_person_company"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/MyCardViewStyle"
+        android:layout_marginTop="7dp"
+        card_view:cardCornerRadius="4dp"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/acc_img_company"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_store_black_24dp" />
+
+            <TextView
+                android:id="@+id/company_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Company info"
+                android:clickable="true"
+                android:layout_toRightOf="@id/acc_img_company"
+                android:layout_marginLeft="12dp" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 
     <ImageView
         android:id="@+id/acc_change_photo"
@@ -20,54 +192,6 @@
         android:src="@drawable/edit_im"
         android:layout_width="30dp"
         android:layout_height="30dp" />
-
-    <TextView
-        android:id="@+id/label"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textSize="45dp"
-        android:text="ACCOUNT"
-        android:textStyle="bold"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:id="@+id/email_verify_status_label"
-        android:layout_below="@+id/acc_user_photo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12dp"
-        android:layout_marginTop="26dp"
-        android:text="@string/verify_label_status" />
-
-    <ImageView
-        android:id="@+id/email_verify_status_img"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/email_verify_status_label"
-        android:layout_below="@+id/label"
-        android:src="@drawable/ic_fiber_manual_record_reg_24dp"/>
-
-    <TextView
-        android:id="@+id/verify_email_btn"
-        android:text="verify your email "
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        android:layout_below="@+id/email_verify_status_label" />
-
-    <TextView
-        android:id="@+id/change_user_pass_btn"
-        android:text="change pass "
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        android:clickable="true"
-        android:layout_below="@+id/verify_email_btn"/>
 
     <TextView
         android:id="@+id/user_data_info"
@@ -79,31 +203,10 @@
         android:layout_below="@+id/change_user_pass_btn"/>
 
     <TextView
-        android:id="@+id/company_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Company info"
-        android:clickable="true"
-        android:layout_marginTop="25dp"
-        android:layout_below="@+id/user_data_info"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
         android:id="@+id/company_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/company_info"
         android:layout_marginTop="26dp"
         android:text="Company search" />
-
-    <TextView
-        android:id="@+id/user_telephone"
-        android:text="Your number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        android:clickable="true"
-        android:layout_below="@+id/company_search"/>
-
-</RelativeLayout>
+</LinearLayout>

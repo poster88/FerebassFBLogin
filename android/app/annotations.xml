@@ -1,0 +1,7 @@
+<root>
+    <item
+        name='android.app.Activity void startIntentSenderForResult(android.content.IntentSender, int, android.content.Intent, int, int, int) 2'>
+        <annotation name='java.lang.Deprecated' />
+        <annotation name='javax.annotation.Nullable' />
+    </item>
+</root>

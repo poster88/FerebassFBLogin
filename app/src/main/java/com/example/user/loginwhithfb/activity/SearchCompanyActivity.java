@@ -124,14 +124,14 @@ public class SearchCompanyActivity extends BaseActivity implements AdapterView.O
         return super.onOptionsItemSelected(item);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    /*@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_search_item, menu);
+        /*getMenuInflater().inflate(R.menu.menu_search_item, menu);
         MenuItem item = menu.findItem(R.id.action_search);
         searchView.setMenuItem(item);
         return true;
-    }
+    }*/
 
     public boolean isProgressDialogShowing() {
         progressBar.setVisibility(View.VISIBLE);

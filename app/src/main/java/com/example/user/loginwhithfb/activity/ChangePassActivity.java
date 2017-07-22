@@ -106,11 +106,11 @@ public class ChangePassActivity extends BaseActivity{
                 .addOnCompleteListener(onCompleteListenerResPasByEmail);
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_change_pass, menu);
         return true;
-    }
+    }*/
 
     private boolean validatePassword(String newPass, String repPass) {
         //TODO: перемістити в баз клас валідацію

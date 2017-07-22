@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item android:id="@+id/createOrEdit"
+        android:icon="@mipmap/ic_launcher"
+        android:title="@string/create_or_edit"/>
+    <item android:id="@+id/settings"
+        android:icon="@mipmap/ic_launcher"
+        android:title="@string/settings"/>
+    <item android:id="@+id/exit"
+        android:icon="@mipmap/ic_launcher"
+        android:title="@string/exit"/>
+
 </menu>

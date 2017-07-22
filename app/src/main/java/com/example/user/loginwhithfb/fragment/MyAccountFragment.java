@@ -7,21 +7,23 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
-
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.user.loginwhithfb.activity.ChangeNumberActivity;
 import com.example.user.loginwhithfb.R;
-
-import com.example.user.loginwhithfb.activity.ChangePassActivity;
+import com.example.user.loginwhithfb.activity.ChangeNumberActivity;
 import com.example.user.loginwhithfb.model.UploadPhotoModel;
 import com.example.user.loginwhithfb.other.CircleTransform;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -92,6 +94,16 @@ public class MyAccountFragment extends BaseFragment {
             dialog.dismiss();
         }
     };
+
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_my_account, container, false);
+        setFragmentForBinder(this, view);
+        setHasOptionsMenu(true);
+        return view;
+    }
 
     private void checkCurUser(FirebaseUser user) {
         if (!user.isAnonymous()){
@@ -214,10 +226,21 @@ public class MyAccountFragment extends BaseFragment {
         inflater.inflate(R.menu.menu_account, menu);
     }
 
+    /*@Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_account, menu);
+    }*/
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        System.out.println(item.getItemId());
+        return super.onOptionsItemSelected(item);
+    }
+
+   /*@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
-        /*if (!super.user.isAnonymous()){
+        if (!super.user.isAnonymous()){
             if (item.getItemId() == R.id.action_change_password){
                 MyAccountFragment.super.startCurActivity(getContext(), ChangePassActivity.class);
             }else if (item.getItemId() == R.id.action_delete_account){
@@ -225,9 +248,9 @@ public class MyAccountFragment extends BaseFragment {
             }
         }else {
             MyAccountFragment.super.showToast(getContext(), "Please create a user, to use this menu");
-        }*/
+        }
         return true;
-    }
+    }*/
 
 }
 

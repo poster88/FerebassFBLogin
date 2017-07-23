@@ -46,7 +46,6 @@ public class RegistrationActivity extends BaseActivity{
     @BindView(R.id.layout_rep_pass) TextInputLayout inputLayoutRepPass;
 
     private DatabaseReference reference;
-    private static final String USER_INFO_TABLE = "UserLoginInfoTable";
     private UserLoginInfoTable usersInfoTable;
     private OnCompleteListener onCompleteListenerCreateUser = new OnCompleteListener<AuthResult>() {
         @Override

@@ -21,11 +21,12 @@
     <string name="activity_title_request_to_add_company">Change number</string>
     <string name="activity_title_registration">User registration</string>
     <string name="activity_title_company_info">Company info</string>
+    <string name="activity_title_change_user_data">Change user data</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <!-- registration strings -->
-    <string name="hint_name">Nane</string>
+    <string name="hint_name">Name</string>
     <string name="hint_last_name">Last name</string>
     <string name="hint_sur_name">Surname</string>
     <string name="hint_mobile_number">Mobile number</string>

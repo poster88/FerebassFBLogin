@@ -12,9 +12,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.example.user.loginwhithfb.model.UserLoginInfoTable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import butterknife.ButterKnife;
 
@@ -23,7 +28,6 @@ import butterknife.ButterKnife;
  */
 
 public class BaseActivity extends AppCompatActivity{
-
 
     protected FirebaseDatabase database;
     protected FirebaseAuth auth;
@@ -36,6 +40,8 @@ public class BaseActivity extends AppCompatActivity{
             user = firebaseAuth.getCurrentUser();
         }
     };
+
+    protected final String USER_INFO_TABLE = "UserLoginInfoTable";
     protected final String TAG_HOME = "Products catalog";
     protected final String TAG_ACCOUNT = "My account";
     protected final String TAG_ORDER = "My orders";

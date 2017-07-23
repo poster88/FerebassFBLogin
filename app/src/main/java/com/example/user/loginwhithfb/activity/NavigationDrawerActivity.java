@@ -27,6 +27,7 @@ import com.example.user.loginwhithfb.fragment.MyAccountFragment;
 import com.example.user.loginwhithfb.fragment.MyOrdersFragment;
 import com.example.user.loginwhithfb.fragment.WishListFragment;
 import com.example.user.loginwhithfb.other.CircleTransform;
+import com.example.user.loginwhithfb.other.CurrentUserData;
 import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.BindView;

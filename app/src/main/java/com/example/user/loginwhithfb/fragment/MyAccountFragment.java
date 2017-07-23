@@ -1,7 +1,6 @@
 package com.example.user.loginwhithfb.fragment;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,14 +18,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.R;
+import com.example.user.loginwhithfb.activity.BaseActivity;
 import com.example.user.loginwhithfb.activity.ChangeNumberActivity;
 import com.example.user.loginwhithfb.activity.ChangePassActivity;
+import com.example.user.loginwhithfb.activity.ChangePersonalDataActivity;
+import com.example.user.loginwhithfb.activity.RegistrationActivity;
 import com.example.user.loginwhithfb.model.UploadPhotoModel;
 import com.example.user.loginwhithfb.other.CircleTransform;
+import com.example.user.loginwhithfb.other.CurrentUserData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -46,6 +50,9 @@ import butterknife.OnClick;
 public class MyAccountFragment extends BaseFragment {
     @BindView(R.id.acc_user_photo) ImageView userImg;
     @BindView(R.id.email_verify_status_img) ImageView verEmailStatusImg;
+    @BindView(R.id.acc_user_name) TextView userName;
+    @BindView(R.id.acc_user_last_name) TextView userLastName;
+    @BindView(R.id.acc_user_surname) TextView userSurname;
 
     private Uri photoUri;
     private String photoUrl;
@@ -96,6 +103,12 @@ public class MyAccountFragment extends BaseFragment {
         }
     };
 
+    private DialogInterface.OnClickListener onRegistrationListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            MyAccountFragment.super.startCurActivity(getContext(), RegistrationActivity.class);
+        }
+    };
 
     @Nullable
     @Override
@@ -123,34 +136,26 @@ public class MyAccountFragment extends BaseFragment {
 
     private void verifyEmail(){
         if (!super.user.isEmailVerified()){
-            showAlertDialog("Email verification", "Do you want to verify your email?",
-                    android.R.drawable.ic_dialog_alert, false, "Send", "Cancel");
+            super.showAlertDialog("Email verification", "Do you want to verify your email?",
+                    android.R.drawable.ic_dialog_alert, false, "Send", "Cancel", posBtnClickListener, negBtnClickListener);
             return;
         }
         MyAccountFragment.super.showToast(getContext(), "Your email already verified");
-    }
-
-    private void showAlertDialog(String title, String message, int icon, boolean cancelable, String positiveBtnTitle, String negativeBtnTitle) {
-        AlertDialog.Builder ab = new AlertDialog.Builder(getContext());
-        ab.setTitle(title);
-        ab.setMessage(message);
-        ab.setIcon(icon);
-        ab.setCancelable(cancelable);
-        ab.setPositiveButton(positiveBtnTitle, posBtnClickListener);
-        ab.setNegativeButton(negativeBtnTitle, negBtnClickListener);
-        ab.show();
     }
 
     @OnClick({R.id.acc_card_view_person, R.id.acc_card_view_person_number, R.id.acc_card_view_person_email, R.id.acc_card_view_mail_check, R.id.acc_card_view_person_company})
     public void pickActionBtn(CardView view){
         if (!super.user.isAnonymous()){
             pickActivity(view.getId());
+            return;
         }
+        showAlertDialog("Information", "Pls, register first.", android.R.drawable.ic_menu_info_details,
+                false, "Register now", "Cancel", onRegistrationListener, negBtnClickListener);
     }
 
     private void pickActivity(int id){
         if (id == R.id.acc_card_view_person){
-            changeUserPersonalData();
+            MyAccountFragment.super.startCurActivity(getContext(), ChangePersonalDataActivity.class);
         }else if (id == R.id.acc_card_view_person_number){
             MyAccountFragment.super.startCurActivity(getContext(), ChangeNumberActivity.class);
         }else if (id == R.id.acc_card_view_person_email){
@@ -160,10 +165,6 @@ public class MyAccountFragment extends BaseFragment {
         }else if (id == R.id.acc_card_view_person_company){
             changeCompany();
         }
-    }
-
-    private void changeUserPersonalData() {
-        System.out.println("changeUserPersonalData");
     }
 
     private void changeCompany(){
@@ -241,7 +242,6 @@ public class MyAccountFragment extends BaseFragment {
         }
         return true;
     }
-
 }
 
 

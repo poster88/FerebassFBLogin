@@ -88,7 +88,7 @@ public class ChangeNumberActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_change_pass, menu);
+        getMenuInflater().inflate(R.menu.menu_accept_changes, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

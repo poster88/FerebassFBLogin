@@ -1,7 +1,9 @@
 package com.example.user.loginwhithfb.fragment;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,7 +24,7 @@ import butterknife.Unbinder;
  * Created by POSTER on 17.07.2017.
  */
 
-public class BaseFragment extends Fragment{
+public class BaseFragment extends Fragment {
 
     protected FirebaseDatabase database;
     protected FirebaseUser user;
@@ -68,6 +70,17 @@ public class BaseFragment extends Fragment{
 
     protected void startCurActivity(Context packageContext, Class<?> cls){
         startActivity(new Intent(packageContext, cls));
+    }
+
+    protected void showAlertDialog(String title, String message, int icon, boolean cancelable, String positiveBtnTitle, String negativeBtnTitle, DialogInterface.OnClickListener posBtnClickListener, DialogInterface.OnClickListener negBtnClickListener) {
+        AlertDialog.Builder ab = new AlertDialog.Builder(getContext());
+        ab.setTitle(title);
+        ab.setMessage(message);
+        ab.setIcon(icon);
+        ab.setCancelable(cancelable);
+        ab.setPositiveButton(positiveBtnTitle, posBtnClickListener);
+        ab.setNegativeButton(negativeBtnTitle, negBtnClickListener);
+        ab.show();
     }
 
     @Override

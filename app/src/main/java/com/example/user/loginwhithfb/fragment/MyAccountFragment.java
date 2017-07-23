@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.activity.ChangeNumberActivity;
+import com.example.user.loginwhithfb.activity.ChangePassActivity;
 import com.example.user.loginwhithfb.model.UploadPhotoModel;
 import com.example.user.loginwhithfb.other.CircleTransform;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -102,6 +103,7 @@ public class MyAccountFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_my_account, container, false);
         setFragmentForBinder(this, view);
         setHasOptionsMenu(true);
+        checkCurUser(super.user);
         return view;
     }
 
@@ -226,20 +228,8 @@ public class MyAccountFragment extends BaseFragment {
         inflater.inflate(R.menu.menu_account, menu);
     }
 
-    /*@Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_account, menu);
-    }*/
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        System.out.println(item.getItemId());
-        return super.onOptionsItemSelected(item);
-    }
-
-   /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
         if (!super.user.isAnonymous()){
             if (item.getItemId() == R.id.action_change_password){
                 MyAccountFragment.super.startCurActivity(getContext(), ChangePassActivity.class);
@@ -250,7 +240,7 @@ public class MyAccountFragment extends BaseFragment {
             MyAccountFragment.super.showToast(getContext(), "Please create a user, to use this menu");
         }
         return true;
-    }*/
+    }
 
 }
 

@@ -3,10 +3,7 @@ package com.example.user.loginwhithfb.activity;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -19,11 +16,11 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 
-public class LoginActivity extends AppCompatActivity {
-    //@BindView(R.id.emailEdit) EditText emailEdit;
-    //@BindView(R.id.passEdit) EditText passEdit;
+public class LoginActivity extends BaseActivity {
+    @BindView(R.id.emailEdit) EditText emailEdit;
+    @BindView(R.id.passEdit) EditText passEdit;
 
-    /*private OnCompleteListener onCompleteListenerSignIn = new OnCompleteListener() {
+    private OnCompleteListener onCompleteListenerSignIn = new OnCompleteListener() {
         @Override
         public void onComplete(@NonNull Task task) {
             if (task.isSuccessful()){
@@ -56,24 +53,24 @@ public class LoginActivity extends AppCompatActivity {
                 LoginActivity.super.startCurActivity(LoginActivity.this, NavigationDrawerActivity.class);
             }
         }
-    };*/
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        //super.setActivityForBinder(this);
-        //checkUserData();
+        super.setActivityForBinder(this);
+        checkUserData();
     }
 
     private void checkUserData(){
-        /*if (super.user != null && !super.user.isAnonymous()){
+        if (super.user != null && !super.user.isAnonymous()){
             LoginActivity.super.startCurActivity(LoginActivity.this, NavigationDrawerActivity.class);
             finish();
-        }*/
+        }
     }
 
-    /*private boolean validateForm(String email, String password) {
+    private boolean validateForm(String email, String password) {
         boolean validation = true;
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
             emailEdit.setError("Required");
@@ -82,45 +79,33 @@ public class LoginActivity extends AppCompatActivity {
             emailEdit.setError(null);
         }
         return validation;
-    }*/
+    }
 
     private void signIn(String email, String password) {
-        /*if (!validateForm(email, password)) {
+        if (!validateForm(email, password)) {
             return;
         }
         super.showProgressDialog("Loading...");
-        super.auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(onCompleteListenerSignIn);*/
+        super.auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(onCompleteListenerSignIn);
     }
 
-    /*@OnClick(R.id.skipImgBtn)
+    @OnClick(R.id.skipImgBtn)
     public void anonymouslySingIn(){
-        //super.auth.signInAnonymously().addOnCompleteListener(onCompleteListenerAnonSignIn);
-    }*/
+        super.auth.signInAnonymously().addOnCompleteListener(onCompleteListenerAnonSignIn);
+    }
 
-    /*@OnClick({R.id.sign_in_btn, R.id.registration_btn})
+    @OnClick({R.id.sign_in_btn, R.id.registration_btn})
     public void pickAction(TextView textView){
         if (textView.getId() == R.id.sign_in_btn){
             signIn(emailEdit.getText().toString(), passEdit.getText().toString());
         }else {
             LoginActivity.super.startCurActivity(LoginActivity.this, RegistrationActivity.class);
         }
-    }*/
+    }
 
-    /*@OnClick(R.id.sent_pass_on_email)
+    @OnClick(R.id.sent_pass_on_email)
     public void sendPassResetEmail() {
         String emailAddress = auth.getCurrentUser().getEmail();
         auth.sendPasswordResetEmail(emailAddress).addOnCompleteListener(onCompleteListenerSentPass);
-    }*/
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        System.out.println(item.getTitle());
-        return super.onOptionsItemSelected(item);
     }
 }

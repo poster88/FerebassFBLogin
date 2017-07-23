@@ -11,7 +11,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -148,12 +147,6 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         NavigationDrawerActivity.super.exitProgram();
     }
 
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_burger, menu);
-        return true;
-    }*/
-
     private Fragment getHomeFragment(){
         Fragment fragment = null;
         if (CURRENT_TAG.equals(TAG_HOME)){
@@ -211,45 +204,4 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         loadHomeFragment();
         return true;
     }
-
-
-    /*public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.nav_catalog_items) {
-            CURRENT_TAG = TAG_HOME;
-        }
-        if (item.getItemId() == R.id.nav_account) {
-            CURRENT_TAG = TAG_ACCOUNT;
-        }
-        if (item.getItemId() == R.id.nav_order) {
-            CURRENT_TAG = TAG_ORDER;
-        }
-        if (item.getItemId() == R.id.nav_messages) {
-            CURRENT_TAG = TAG_CHAT;
-        }
-        if (item.getItemId() == R.id.nav_wish_list) {
-            CURRENT_TAG = TAG_FAVORITE;
-        }
-        if (item.getItemId() == R.id.nav_news) {
-            CURRENT_TAG = TAG_NEWS;
-        }
-        if (item.getItemId() == R.id.nav_tech_support) {
-            CURRENT_TAG = TAG_INFORMATION;
-        }
-        if (item.isChecked()) {
-            item.setChecked(false);
-        } else {
-            item.setChecked(true);
-        }
-        loadHomeFragment();
-        return true;
-    }*/
-
-
-
-    /*public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.main_burger, menu);
-        return true;
-    }*/
-
 }

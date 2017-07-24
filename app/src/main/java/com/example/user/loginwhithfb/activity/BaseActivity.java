@@ -6,20 +6,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.example.user.loginwhithfb.MyValueEventListener;
 import com.example.user.loginwhithfb.model.UserLoginInfoTable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.Query;
 
 import butterknife.ButterKnife;
 
@@ -52,6 +53,27 @@ public class BaseActivity extends AppCompatActivity{
     protected String CURRENT_TAG = TAG_HOME;
     private boolean isUserClickedBackButton = false;
 
+    public static DatabaseReference reference;
+    public static UserLoginInfoTable userModel;
+
+    protected Handler handler;
+    protected Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            reference = database.getReference(USER_INFO_TABLE);
+            Query query = reference.orderByChild("email").equalTo(user.getEmail());
+            query.addListenerForSingleValueEvent(new MyValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot data: dataSnapshot.getChildren()){
+                        userModel = data.getValue(UserLoginInfoTable.class);
+                    }
+                }
+            });
+        }
+    };
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +82,12 @@ public class BaseActivity extends AppCompatActivity{
             database = FirebaseDatabase.getInstance();
             auth = FirebaseAuth.getInstance();
             user = auth.getCurrentUser();
+            handler = new Handler();
+            if (user != null ){
+                if (!user.isAnonymous()){
+                    handler.post(runnable);
+                }
+            }
         }
     }
 

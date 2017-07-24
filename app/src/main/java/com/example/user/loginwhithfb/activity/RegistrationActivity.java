@@ -76,12 +76,14 @@ public class RegistrationActivity extends BaseActivity{
         Map<String, Object> userAttributes = new HashMap<>();
         userAttributes.put(id, userLoginInfo);
         reference.updateChildren(userAttributes);
+        super.handler.post(super.runnable);
+
     }
 
     private void setDataToConstructor() {
         usersInfoTable = new UserLoginInfoTable(
                 name.getText().toString(), lastName.getText().toString(), surName.getText().toString(),
-                "photo__def_url", Integer.valueOf(number.getText().toString()), email.getText().toString(),
+                "photo_def_url", Integer.valueOf(number.getText().toString()), email.getText().toString(),
                 super.auth.getCurrentUser().getUid(), "some_id");
     }
 

@@ -11,9 +11,14 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.user.loginwhithfb.MyChildEventListener;
+import com.example.user.loginwhithfb.MyValueEventListener;
 import com.example.user.loginwhithfb.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.StorageReference;
 
@@ -31,6 +36,7 @@ public class BaseFragment extends Fragment {
     protected StorageReference storageRef;
     protected ProgressDialog progressDialog;
 
+    protected final String USER_INFO_TABLE = "UserLoginInfoTable";
     protected final static String USERS_IMAGES = "users_images";
     protected final static String REF_USER_PHOTO = "UsersPhoto";
     protected final static int PHOTO_REQUEST = 9002;

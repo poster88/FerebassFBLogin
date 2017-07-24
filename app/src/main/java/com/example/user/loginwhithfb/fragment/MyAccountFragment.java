@@ -7,10 +7,12 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,12 +25,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.R;
+import com.example.user.loginwhithfb.ValueListener;
 import com.example.user.loginwhithfb.activity.BaseActivity;
 import com.example.user.loginwhithfb.activity.ChangeNumberActivity;
 import com.example.user.loginwhithfb.activity.ChangePassActivity;
 import com.example.user.loginwhithfb.activity.ChangePersonalDataActivity;
 import com.example.user.loginwhithfb.activity.RegistrationActivity;
 import com.example.user.loginwhithfb.model.UploadPhotoModel;
+import com.example.user.loginwhithfb.model.UserLoginInfoTable;
 import com.example.user.loginwhithfb.other.CircleTransform;
 import com.example.user.loginwhithfb.other.CurrentUserData;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,6 +41,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -117,6 +125,7 @@ public class MyAccountFragment extends BaseFragment {
         setFragmentForBinder(this, view);
         setHasOptionsMenu(true);
         checkCurUser(super.user);
+        findUserData();
         return view;
     }
 
@@ -241,6 +250,21 @@ public class MyAccountFragment extends BaseFragment {
             MyAccountFragment.super.showToast(getContext(), "Please create a user, to use this menu");
         }
         return true;
+    }
+
+    private DatabaseReference reference;
+    final String USER_INFO_TABLE = "UserLoginInfoTable";
+    private UserLoginInfoTable userModel;
+
+    private void findUserData(){
+        reference = super.database.getReference(USER_INFO_TABLE);
+        Query query = reference.orderByChild("email").equalTo(super.user.getEmail());
+        query.addListenerForSingleValueEvent(new ValueListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("TAG", dataSnapshot.getValue(UserLoginInfoTable.class).getName() + " ----- name;");
+            }
+        });
     }
 }
 

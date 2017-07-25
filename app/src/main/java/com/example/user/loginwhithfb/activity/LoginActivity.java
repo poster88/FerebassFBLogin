@@ -27,7 +27,7 @@ public class LoginActivity extends BaseActivity {
                 LoginActivity.super.startCurActivity(LoginActivity.this, NavigationDrawerActivity.class);
                 finish();
             }else {
-                LoginActivity.super.showToast(LoginActivity.this, "Authentication failed. Try again");
+                LoginActivity.super.showToast(LoginActivity.this, "Authentication failed. "  + task.getException().getMessage());
             }
             LoginActivity.super.hideProgressDialog();
         }
@@ -105,7 +105,8 @@ public class LoginActivity extends BaseActivity {
 
     @OnClick(R.id.sent_pass_on_email)
     public void sendPassResetEmail() {
-        String emailAddress = auth.getCurrentUser().getEmail();
-        auth.sendPasswordResetEmail(emailAddress).addOnCompleteListener(onCompleteListenerSentPass);
+        //TODO: create custom alertDialog
+        /*String emailAddress = auth.getCurrentUser().getEmail();
+        auth.sendPasswordResetEmail(emailAddress).addOnCompleteListener(onCompleteListenerSentPass);*/
     }
 }

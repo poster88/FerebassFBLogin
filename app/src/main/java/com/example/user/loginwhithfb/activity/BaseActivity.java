@@ -11,9 +11,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.user.loginwhithfb.MyValueEventListener;
+import com.example.user.loginwhithfb.model.CompaniesInfoTable;
 import com.example.user.loginwhithfb.model.UserLoginInfoTable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,7 +30,7 @@ import butterknife.ButterKnife;
  * Created by POSTER on 17.07.2017.
  */
 
-public class BaseActivity extends AppCompatActivity{
+public class BaseActivity extends AppCompatActivity {
 
     protected FirebaseDatabase database;
     protected FirebaseAuth auth;
@@ -53,26 +55,28 @@ public class BaseActivity extends AppCompatActivity{
     protected String CURRENT_TAG = TAG_HOME;
     private boolean isUserClickedBackButton = false;
 
-    public static DatabaseReference reference;
+    public static DatabaseReference refUserInfTable;
     public static UserLoginInfoTable userModel;
+    public static CompaniesInfoTable companyInfoModel;
+
+    private MyValueEventListener onUidUserDataListener = new MyValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            for (DataSnapshot data: dataSnapshot.getChildren()){
+                userModel = data.getValue(UserLoginInfoTable.class);
+            }
+        }
+    };
 
     protected Handler handler;
     protected Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            reference = database.getReference(USER_INFO_TABLE);
-            Query query = reference.orderByChild("email").equalTo(user.getEmail());
-            query.addListenerForSingleValueEvent(new MyValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot data: dataSnapshot.getChildren()){
-                        userModel = data.getValue(UserLoginInfoTable.class);
-                    }
-                }
-            });
+            refUserInfTable = database.getReference(USER_INFO_TABLE);
+            Query query = refUserInfTable.orderByChild("uID").equalTo(user.getUid());
+            query.addListenerForSingleValueEvent(onUidUserDataListener);
         }
     };
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,10 +87,17 @@ public class BaseActivity extends AppCompatActivity{
             auth = FirebaseAuth.getInstance();
             user = auth.getCurrentUser();
             handler = new Handler();
-            if (user != null ){
-                if (!user.isAnonymous()){
-                    handler.post(runnable);
-                }
+            checkUser();
+        }
+    }
+
+
+
+    private void checkUser() {
+        if (user != null){
+            if (!user.isAnonymous()){
+                handler.post(runnable);
+                Log.d("TAG", "handler.post(runnable)");
             }
         }
     }

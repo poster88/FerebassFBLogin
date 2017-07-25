@@ -14,11 +14,6 @@ public abstract class MyChildEventListener implements ChildEventListener{
     }
 
     @Override
-    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-    }
-
-    @Override
     public void onChildRemoved(DataSnapshot dataSnapshot) {
 
     }

@@ -117,7 +117,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="6dp"
-        android:weightSum="1">
+        android:weightSum="1.0">
 
         <Button
             android:id="@+id/reg_back_btn"
@@ -127,7 +127,7 @@
             android:textSize="14sp"
             android:textAllCaps="false"
             android:background="@drawable/colorbutton"
-            android:text="Повернутись"
+            android:text="Cancel"
             android:layout_marginRight="3dp"
             android:layout_marginBottom="12dp"/>
 
@@ -137,7 +137,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/colorbutton"
-            android:text="Далі"
+            android:text="Create"
             android:textSize="14sp"
             android:textAllCaps="false"
             android:layout_marginLeft="3dp" />

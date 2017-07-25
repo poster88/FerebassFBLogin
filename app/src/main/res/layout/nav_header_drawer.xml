@@ -37,32 +37,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/img_profile"
-            android:text="rwerwrwerwerwerw"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <TextView
             android:id="@+id/email"
             android:layout_below="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_toLeftOf="@+id/log_out" />
 
         <TextView
             android:id="@+id/log_out"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/name"
-            android:layout_toRightOf="@+id/email"
-            android:layout_marginLeft="16dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="16dp"
             android:text="log out"
             android:visibility="gone"
             android:clickable="true" />
 
         <RelativeLayout
             android:id="@+id/reg_buttons_container"
-            android:layout_below="@+id/img_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:visibility="gone">
 
             <TextView

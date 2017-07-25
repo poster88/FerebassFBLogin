@@ -14,8 +14,10 @@ import android.widget.EditText;
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.model.UserLoginInfoTable;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.HashMap;
@@ -55,9 +57,15 @@ public class RegistrationActivity extends BaseActivity{
                 RegistrationActivity.super.showToast(RegistrationActivity.this, "User account is created");
                 RegistrationActivity.super.startCurActivity(RegistrationActivity.this, NavigationDrawerActivity.class);
             }else {
-                RegistrationActivity.super.showToast(RegistrationActivity.this, "Failed to create user account");
+                RegistrationActivity.super.showToast(RegistrationActivity.this, "Failed to create user account. " + task.getException().getMessage());
             }
             hideProgressDialog();
+        }
+    };
+    private OnFailureListener onFailureListenerProfileChange = new OnFailureListener() {
+        @Override
+        public void onFailure(@NonNull Exception e) {
+            RegistrationActivity.super.showToast(RegistrationActivity.this, "Fail to update user profile");
         }
     };
 
@@ -76,15 +84,20 @@ public class RegistrationActivity extends BaseActivity{
         Map<String, Object> userAttributes = new HashMap<>();
         userAttributes.put(id, userLoginInfo);
         reference.updateChildren(userAttributes);
+        updateUserName(name.getText().toString());
         super.handler.post(super.runnable);
+    }
 
+    private void updateUserName(String name) {
+        UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+        super.user.updateProfile(profileChangeRequest).addOnFailureListener(onFailureListenerProfileChange);
     }
 
     private void setDataToConstructor() {
         usersInfoTable = new UserLoginInfoTable(
                 name.getText().toString(), lastName.getText().toString(), surName.getText().toString(),
-                "photo_def_url", Integer.valueOf(number.getText().toString()), email.getText().toString(),
-                super.auth.getCurrentUser().getUid(), "some_id");
+                "photo_uri", Integer.valueOf(number.getText().toString()), email.getText().toString(),
+                super.auth.getCurrentUser().getUid(), "company_uri");
     }
 
     private void createAccount(String email, String password) {

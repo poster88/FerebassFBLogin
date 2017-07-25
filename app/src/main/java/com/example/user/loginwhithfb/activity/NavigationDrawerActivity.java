@@ -27,7 +27,6 @@ import com.example.user.loginwhithfb.fragment.MyAccountFragment;
 import com.example.user.loginwhithfb.fragment.MyOrdersFragment;
 import com.example.user.loginwhithfb.fragment.WishListFragment;
 import com.example.user.loginwhithfb.other.CircleTransform;
-import com.example.user.loginwhithfb.other.CurrentUserData;
 import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.BindView;
@@ -43,23 +42,23 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
     private Runnable pendingRunnable = new Runnable() {
         @Override
         public void run() {
-            Fragment fragment = getHomeFragment();
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-            fragmentTransaction.replace(R.id.frame, fragment, CURRENT_TAG);
+            fragmentTransaction.replace(R.id.frame, getHomeFragment(), CURRENT_TAG);
             fragmentTransaction.commitAllowingStateLoss();
         }
     };
-
-    private ActionBarDrawerToggle toggle(){
-        return new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                updateUI(drawerView);
-            }
-        };
-    }
+    private Runnable updateUI = new Runnable() {
+        @Override
+        public void run() {
+            TextView userName = ButterKnife.findById(navHeader, R.id.name);
+            TextView userEmail = ButterKnife.findById(navHeader, R.id.email);
+            ImageView userPhoto = ButterKnife.findById(navHeader, R.id.img_profile);
+            userName.setText(NavigationDrawerActivity.super.user.getDisplayName());
+            userEmail.setText(NavigationDrawerActivity.super.user.getEmail());
+            Glide.with(NavigationDrawerActivity.this).load(NavigationDrawerActivity.super.user.getPhotoUrl()).crossFade().thumbnail(0.5f).bitmapTransform(new CircleTransform(NavigationDrawerActivity.this)).diskCacheStrategy(DiskCacheStrategy.ALL).into(userPhoto);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,26 +70,23 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         navHeader = navigationView.getHeaderView(0);
         loadNavHeader();
         setUpNavigationView();
+        checkSaveInstanceState(savedInstanceState);
+    }
+
+    private void checkSaveInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
+            if (!user.isAnonymous()){
+                handler.post(updateUI);
+            }
             CURRENT_TAG = TAG_HOME;
             loadHomeFragment();
         }
     }
 
-    private void updateUI(View view){
-        TextView userName = ButterKnife.findById(view, R.id.name);
-        TextView userEmail = ButterKnife.findById(view, R.id.email);
-        ImageView userPhoto = ButterKnife.findById(view, R.id.img_profile);
-        userName.setText(user.getDisplayName());
-        userEmail.setText(user.getEmail());
-        Glide.with(this).load(user.getPhotoUrl()).crossFade().thumbnail(0.5f).bitmapTransform(new CircleTransform(this)).diskCacheStrategy(DiskCacheStrategy.ALL).into(userPhoto);
-    }
-
     private void loadNavHeader() {
-        if (user.isAnonymous()){
+        if (super.user != null && super.user.isAnonymous()){
            innitWidgets();
         }else {
-            updateUI(navHeader);
             TextView logOut = ButterKnife.findById(navHeader, R.id.log_out);
             logOut.setVisibility(View.VISIBLE);
             logOut.setOnClickListener(this);
@@ -130,8 +126,13 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
 
     private void setUpNavigationView() {
         navigationView.setNavigationItemSelectedListener(this);
-        drawer.addDrawerListener(toggle());
-        toggle().syncState();
+        innitToggle();
+    }
+
+    private void innitToggle() {
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
     }
 
     @Override
@@ -172,6 +173,10 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
             fragment = new InformationFragment();
         }
         return fragment;
+    }
+
+    private void setDataListener(){
+
     }
 
     @Override

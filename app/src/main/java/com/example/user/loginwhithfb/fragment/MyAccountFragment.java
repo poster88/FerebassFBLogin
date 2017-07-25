@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.MyChildEventListener;
+import com.example.user.loginwhithfb.MyValueEventListener;
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.activity.BaseActivity;
 import com.example.user.loginwhithfb.activity.ChangeNumberActivity;
@@ -30,6 +32,7 @@ import com.example.user.loginwhithfb.activity.ChangePassActivity;
 import com.example.user.loginwhithfb.activity.ChangePersonalDataActivity;
 import com.example.user.loginwhithfb.activity.RegistrationActivity;
 import com.example.user.loginwhithfb.model.UploadPhotoModel;
+import com.example.user.loginwhithfb.model.UserLoginInfoTable;
 import com.example.user.loginwhithfb.other.CircleTransform;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -38,7 +41,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -52,11 +58,38 @@ import butterknife.OnClick;
 public class MyAccountFragment extends BaseFragment {
     @BindView(R.id.acc_user_photo) ImageView userImg;
     @BindView(R.id.email_verify_status_img) ImageView verEmailStatusImg;
-    //@BindView(R.id.acc_user_name) TextView userName;
-    //@BindView(R.id.acc_user_last_name) TextView userLastName;
+    @BindView(R.id.acc_user_name) TextView userName;
+    @BindView(R.id.acc_user_last_name) TextView userLastName;
     @BindView(R.id.acc_user_surname) TextView userSurname;
     TextView textView;
     TextView textViewLastName;
+
+    private DatabaseReference refUserInfTable;
+    final String USER_INFO_TABLE = "UserLoginInfoTable";
+    private UserLoginInfoTable userModel;
+    private Handler handler;
+    private View view;
+
+    private MyValueEventListener myValueEventListener = new MyValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            for (DataSnapshot data: dataSnapshot.getChildren()){
+                userModel = data.getValue(UserLoginInfoTable.class);
+                TextView textView = (TextView)view.findViewById(R.id.acc_user_name);
+                textView.setText(userModel.getName());
+                //textViewLastName.setText(userModel.getLastName());
+                //userName.setText(userModel.getName());
+                //userLastName.setText(userModel.getLastName());
+                //userSurname.setText(userModel.getSurname());
+            }
+        }
+    };
+    private Runnable getData = new Runnable() {
+        @Override
+        public void run() {
+
+        }
+    };
 
     private Uri photoUri;
     private String photoUrl;
@@ -117,16 +150,22 @@ public class MyAccountFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_my_account, container, false);
+        view = inflater.inflate(R.layout.fragment_my_account, container, false);
         setFragmentForBinder(this, view);
         setHasOptionsMenu(true);
-        checkCurUser(super.user);
+        handler = new Handler();
+        if (savedInstanceState == null){
+            //handler.post(getData);
+        }
+        //checkCurUser(super.user);
+
         textView = (TextView)view.findViewById(R.id.acc_user_name);
         textViewLastName = (TextView)view.findViewById(R.id.acc_user_last_name);
-        textView.setText(BaseActivity.userModel.getName());
-        textViewLastName.setText(BaseActivity.userModel.getLastName());
-
         DatabaseReference ref = super.database.getReference(USER_INFO_TABLE);
+
+        refUserInfTable = MyAccountFragment.super.database.getReference(USER_INFO_TABLE);
+        Query query = refUserInfTable.orderByChild("uID").equalTo(MyAccountFragment.super.user.getUid());
+        query.addListenerForSingleValueEvent(myValueEventListener);
 
         /*ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -145,11 +184,11 @@ public class MyAccountFragment extends BaseFragment {
             }
         });*/
 
-        ref.addChildEventListener(this);
+        //ref.addChildEventListener(this);
         return view;
     }
 
-    @Override
+   /* @Override
     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
         for (DataSnapshot data: dataSnapshot.getChildren()){
             if (data.getKey().equals("name")){
@@ -157,7 +196,7 @@ public class MyAccountFragment extends BaseFragment {
                 break;
             }
         }
-    }
+    }*/
 
     private void checkCurUser(FirebaseUser user) {
         if (!user.isAnonymous()){
@@ -281,33 +320,6 @@ public class MyAccountFragment extends BaseFragment {
         }
         return true;
     }
-
-
-
-    /*private DatabaseReference reference;
-    final String USER_INFO_TABLE = "UserLoginInfoTable";
-    private UserLoginInfoTable userModel;
-
-
-    private void findUserData(){
-        reference = super.database.getReference(USER_INFO_TABLE);
-        Query query = reference.orderByChild("email").equalTo(super.user.getEmail());
-        query.addListenerForSingleValueEvent(new MyValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot data: dataSnapshot.getChildren()){
-                    userModel = data.getValue(UserLoginInfoTable.class);
-                    TextView textView = (TextView)getView().findViewById(R.id.acc_user_name);
-                    textView.setText(userModel.getName());
-                    textView.setText(userModel.getName());
-                    textViewLastName.setText(userModel.getLastName());
-                    //userName.setText(userModel.getName());
-                    //userLastName.setText(userModel.getLastName());
-                    //userSurname.setText(userModel.getSurname());
-                }
-            }
-        });
-    }*/
 }
 
 

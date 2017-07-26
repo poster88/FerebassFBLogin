@@ -5,10 +5,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.R;
+import com.example.user.loginwhithfb.other.CircleTransform;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -19,6 +23,7 @@ import butterknife.OnClick;
 public class LoginActivity extends BaseActivity {
     @BindView(R.id.emailEdit) EditText emailEdit;
     @BindView(R.id.passEdit) EditText passEdit;
+    @BindView(R.id.logo_image) ImageView logoImage;
 
     private OnCompleteListener onCompleteListenerSignIn = new OnCompleteListener() {
         @Override
@@ -61,6 +66,7 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
         super.setActivityForBinder(this);
         checkUserData();
+        //Glide.with(this).load(R.drawable.app_logo_2).crossFade().thumbnail(0.5f).bitmapTransform(new CircleTransform(this)).diskCacheStrategy(DiskCacheStrategy.ALL).into(logoImage);
     }
 
     private void checkUserData(){

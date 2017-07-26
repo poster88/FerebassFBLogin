@@ -1,5 +1,6 @@
 package com.example.user.loginwhithfb.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -71,6 +72,7 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         loadNavHeader();
         setUpNavigationView();
         checkSaveInstanceState(savedInstanceState);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
     }
 
     private void checkSaveInstanceState(Bundle savedInstanceState) {

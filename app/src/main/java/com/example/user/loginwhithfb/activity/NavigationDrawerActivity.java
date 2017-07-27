@@ -148,7 +148,12 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
             loadHomeFragment();
             return;
         }
-        NavigationDrawerActivity.super.exitProgram();
+        if (!super.user.isAnonymous()){
+            NavigationDrawerActivity.super.exitProgram();
+            return;
+        }
+        super.startCurActivity(this, LoginActivity.class);
+        finish();
     }
 
     private Fragment getHomeFragment(){
@@ -175,10 +180,6 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
             fragment = new InformationFragment();
         }
         return fragment;
-    }
-
-    private void setDataListener(){
-
     }
 
     @Override

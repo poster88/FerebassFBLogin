@@ -19,6 +19,7 @@
     <string name="activity_title_registration">User registration</string>
     <string name="activity_title_company_info">Company info</string>
     <string name="activity_title_change_user_data">Change user data</string>
+    <string name="activity_title_sent_pass">Sent a password</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -37,6 +38,8 @@
     <!-- registration errors -->
     <string name="err_msg_name">Name is empty</string>
     <string name="err_msg_email">Email is not valid</string>
+    <string name="err_msg_check_email">Check your email</string>
+    <string name="err_msg_empty_email">Email is empty</string>
     <string name="err_msg_password">Field is empty</string>
     <string name="err_msg_password_length">Password length must be min 6 character</string>
     <string name="err_msg_last_name">Last name is empty</string>

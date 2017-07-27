@@ -38,17 +38,6 @@ public class LoginActivity extends BaseActivity {
         }
     };
 
-    private OnCompleteListener onCompleteListenerSentPass = new OnCompleteListener() {
-        @Override
-        public void onComplete(@NonNull Task task) {
-            if (task.isSuccessful()) {
-                LoginActivity.super.showToast(LoginActivity.this, "Password sent to your email");
-            }else {
-                LoginActivity.super.showToast(LoginActivity.this, "Fail to sent : " + task.getException());
-            }
-        }
-    };
-
     private OnCompleteListener onCompleteListenerAnonSignIn = new OnCompleteListener() {
         @Override
         public void onComplete(@NonNull Task task) {
@@ -56,6 +45,7 @@ public class LoginActivity extends BaseActivity {
                 LoginActivity.super.showToast(LoginActivity.this, "Exception : " + task.getException());
             }else {
                 LoginActivity.super.startCurActivity(LoginActivity.this, NavigationDrawerActivity.class);
+                finish();
             }
         }
     };
@@ -111,8 +101,13 @@ public class LoginActivity extends BaseActivity {
 
     @OnClick(R.id.sent_pass_on_email)
     public void sendPassResetEmail() {
-        //TODO: create custom alertDialog
+        super.startCurActivity(this, SentPassToEmailActivity.class);
         /*String emailAddress = auth.getCurrentUser().getEmail();
         auth.sendPasswordResetEmail(emailAddress).addOnCompleteListener(onCompleteListenerSentPass);*/
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.exitProgram();
     }
 }

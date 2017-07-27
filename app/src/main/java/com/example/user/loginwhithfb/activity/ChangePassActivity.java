@@ -106,11 +106,11 @@ public class ChangePassActivity extends BaseActivity{
                 .addOnCompleteListener(onCompleteListenerResPasByEmail);
     }
 
-    /*@Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_change_pass, menu);
+        getMenuInflater().inflate(R.menu.menu_accept_changes, menu);
         return true;
-    }*/
+    }
 
     private boolean validatePassword(String newPass, String repPass) {
         //TODO: перемістити в баз клас валідацію
@@ -149,11 +149,5 @@ public class ChangePassActivity extends BaseActivity{
         inputLayoutNewPass.setErrorEnabled(false);
         inputLayoutRepNewPass.setErrorEnabled(false);
         return true;
-    }
-
-    private void requestFocus(View view) {
-        if (view.requestFocus()) {
-            this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        }
     }
 }

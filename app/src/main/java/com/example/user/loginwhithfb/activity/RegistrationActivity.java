@@ -14,10 +14,8 @@ import android.widget.EditText;
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.model.UserLoginInfoTable;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.HashMap;
@@ -62,19 +60,13 @@ public class RegistrationActivity extends BaseActivity{
             hideProgressDialog();
         }
     };
-    private OnFailureListener onFailureListenerProfileChange = new OnFailureListener() {
-        @Override
-        public void onFailure(@NonNull Exception e) {
-            RegistrationActivity.super.showToast(RegistrationActivity.this, "Fail to update user profile");
-        }
-    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registaration);
         super.setActivityForBinder(this);
-        reference = database.getReference(USER_INFO_TABLE);
+        reference = super.database.getReference(USER_INFO_TABLE);
     }
 
     private void addUser(){
@@ -84,40 +76,20 @@ public class RegistrationActivity extends BaseActivity{
         Map<String, Object> userAttributes = new HashMap<>();
         userAttributes.put(id, userLoginInfo);
         reference.updateChildren(userAttributes);
-        updateUserName(name.getText().toString());
+        super.updateUserNameAuth(name.getText().toString());
         super.handler.post(super.runnable);
-    }
-
-    private void updateUserName(String name) {
-        UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
-        super.user.updateProfile(profileChangeRequest).addOnFailureListener(onFailureListenerProfileChange);
     }
 
     private void setDataToConstructor() {
         usersInfoTable = new UserLoginInfoTable(
                 name.getText().toString(), lastName.getText().toString(), surName.getText().toString(),
-                "photo_uri", Integer.valueOf(number.getText().toString()), email.getText().toString(),
-                super.auth.getCurrentUser().getUid(), "company_uri");
+                "default_uri", Integer.valueOf(number.getText().toString()), email.getText().toString(),
+                super.auth.getCurrentUser().getUid(), "default_uri");
     }
 
     private void createAccount(String email, String password) {
         showProgressDialog("Wait...");
         super.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(onCompleteListenerCreateUser);
-    }
-
-    private boolean validateEmail() {
-        String curEmail = email.getText().toString().trim();
-        if (curEmail.isEmpty() || !isValidEmail(curEmail)) {
-            inputLayoutEmail.setError(getString(R.string.err_msg_email));
-            requestFocus(email);
-            return false;
-        }
-        inputLayoutEmail.setErrorEnabled(false);
-        return true;
-    }
-
-    private boolean isValidEmail(String eMail) {
-        return !TextUtils.isEmpty(eMail) && android.util.Patterns.EMAIL_ADDRESS.matcher(eMail).matches();
     }
 
     private boolean validatePassword() {
@@ -168,17 +140,6 @@ public class RegistrationActivity extends BaseActivity{
         return true;
     }
 
-    private boolean validateMobileNumber() {
-        if (number.getText().toString().trim().isEmpty()){
-            inputLayoutMobNum.setError(getString(R.string.err_msg_mob_number));
-            requestFocus(number);
-            return false;
-        }else {
-            inputLayoutMobNum.setErrorEnabled(false);
-        }
-        return true;
-    }
-
     private boolean validateSurName() {
         if (surName.getText().toString().trim().isEmpty()) {
             inputLayoutSurName.setError(getString(R.string.err_msg_sur_name));
@@ -212,14 +173,13 @@ public class RegistrationActivity extends BaseActivity{
         return true;
     }
 
-    private void requestFocus(View view) {
-        if (view.requestFocus()) {
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        }
-    }
-
     private void submitForm() {
-        if (!validateName() || !validateLastName() || !validateSurName() || !validateMobileNumber() || !validateEmail() || !validatePassword()) {
+        if (!validateName() ||
+                !validateLastName() ||
+                !validateSurName() ||
+                !super.isValidNumber(number, inputLayoutMobNum) ||
+                !super.isValidEmail(email, inputLayoutEmail) ||
+                !validatePassword()) {
             return;
         }
         createAccount(email.getText().toString(), password.getText().toString());

@@ -1,24 +1,35 @@
 package com.example.user.loginwhithfb.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.user.loginwhithfb.MyValueEventListener;
+import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.model.CompaniesInfoTable;
 import com.example.user.loginwhithfb.model.UserLoginInfoTable;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -67,6 +78,12 @@ public class BaseActivity extends AppCompatActivity {
             }
         }
     };
+    private OnFailureListener onFailureListenerProfileChange = new OnFailureListener() {
+        @Override
+        public void onFailure(@NonNull Exception e) {
+            showToast(getBaseContext(), "Fail to update user profile");
+        }
+    };
 
     protected Handler handler;
     protected Runnable runnable = new Runnable() {
@@ -90,8 +107,6 @@ public class BaseActivity extends AppCompatActivity {
             checkUser();
         }
     }
-
-
 
     private void checkUser() {
         if (user != null){
@@ -165,5 +180,64 @@ public class BaseActivity extends AppCompatActivity {
             super.onBackPressed();
         }
         setExitTimer();
+    }
+
+    protected void showAlertDialog(String title, String message, int icon, boolean cancelable, String positiveBtnTitle, String negativeBtnTitle, DialogInterface.OnClickListener posBtnClickListener, DialogInterface.OnClickListener negBtnClickListener) {
+        AlertDialog.Builder ab = new AlertDialog.Builder(this);
+        ab.setTitle(title);
+        ab.setMessage(message);
+        ab.setIcon(icon);
+        ab.setCancelable(cancelable);
+        ab.setPositiveButton(positiveBtnTitle, posBtnClickListener);
+        ab.setNegativeButton(negativeBtnTitle, negBtnClickListener);
+        ab.show();
+    }
+
+    protected void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    protected void updateUserNameAuth(String name) {
+        UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+        user.updateProfile(profileChangeRequest).addOnFailureListener(onFailureListenerProfileChange);
+    }
+
+    protected boolean isValidEmail(EditText eMail, TextInputLayout inputLayoutEmail) {
+        String mail = eMail.getText().toString().trim();
+        if (TextUtils.isEmpty(mail)){
+            inputLayoutEmail.setError(getString(R.string.err_msg_empty_email));
+            requestFocus(eMail);
+            return false;
+        }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(mail).matches()){
+            inputLayoutEmail.setError(getString(R.string.err_msg_email));
+            requestFocus(eMail);
+            return false;
+        }
+        inputLayoutEmail.setErrorEnabled(false);
+        return true;
+    }
+
+    protected boolean isValidPassword(){
+
+        return true;
+    }
+
+    protected boolean isValidNumber(EditText number, TextInputLayout inputLayoutMobNum){
+        if (number.getText().length() == 0){
+            inputLayoutMobNum.setError(getString(R.string.err_msg_mob_number));
+            requestFocus(number);
+            return false;
+        }
+        inputLayoutMobNum.setErrorEnabled(false);
+        return true;
+    }
+
+
+    protected void requestFocus(View view) {
+        if (view.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
     }
 }

@@ -219,11 +219,33 @@ public class BaseActivity extends AppCompatActivity {
         return true;
     }
 
-    protected boolean isValidPassword(){
-
-        return true;
+    protected boolean isValidPassword(EditText password, TextInputLayout inputLayoutPassword, EditText repPassword, TextInputLayout inputLayoutRepPassword){
+        if (checkLengthPass(password, inputLayoutPassword) && checkLengthPass(repPassword, inputLayoutRepPassword)){
+            if (password.getText().toString().equals(repPassword.getText().toString())){
+                return true;
+            }
+            password.setText("");
+            repPassword.setText("");
+            requestFocus(password);
+            inputLayoutPassword.setError(getString(R.string.err_msg_check_pass));
+        }
+        return false;
     }
 
+    protected boolean checkLengthPass(EditText password, TextInputLayout inputLayoutPassword) {
+        if (password.getText().toString().trim().isEmpty()){
+            inputLayoutPassword.setError(getString(R.string.err_msg_password));
+            requestFocus(password);
+            return false;
+        }
+        if (password.getText().length() < 6){
+            inputLayoutPassword.setError(getString(R.string.err_msg_password_length));
+            requestFocus(password);
+            return false;
+        }
+        inputLayoutPassword.setErrorEnabled(false);
+        return true;
+    }
     protected boolean isValidNumber(EditText number, TextInputLayout inputLayoutMobNum){
         if (number.getText().length() == 0){
             inputLayoutMobNum.setError(getString(R.string.err_msg_mob_number));
@@ -234,8 +256,16 @@ public class BaseActivity extends AppCompatActivity {
         return true;
     }
 
-
-    protected void requestFocus(View view) {
+    protected boolean isValidPersonalData(EditText data, TextInputLayout inputLayoutData){
+        if (data.getText().toString().trim().isEmpty()){
+            inputLayoutData.setError(getString(R.string.err_msg_data));
+            requestFocus(data);
+            return false;
+        }
+        inputLayoutData.setErrorEnabled(false);
+        return true;
+    }
+    private void requestFocus(View view) {
         if (view.requestFocus()) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }

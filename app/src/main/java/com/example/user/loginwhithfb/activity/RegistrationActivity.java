@@ -5,9 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.text.TextUtils;
-import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -54,8 +51,9 @@ public class RegistrationActivity extends BaseActivity{
                 addUser();
                 RegistrationActivity.super.showToast(RegistrationActivity.this, "User account is created");
                 RegistrationActivity.super.startCurActivity(RegistrationActivity.this, NavigationDrawerActivity.class);
+                finish();
             }else {
-                RegistrationActivity.super.showToast(RegistrationActivity.this, "Failed to create user account. " + task.getException().getMessage());
+                inputLayoutEmail.setError(task.getException().getMessage());
             }
             hideProgressDialog();
         }
@@ -88,98 +86,14 @@ public class RegistrationActivity extends BaseActivity{
     }
 
     private void createAccount(String email, String password) {
-        showProgressDialog("Wait...");
+        super.showProgressDialog("Wait...");
         super.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(onCompleteListenerCreateUser);
     }
 
-    private boolean validatePassword() {
-        if (!checkIfEmpty() || !checkLength()){
-            return false;
-        }
-        if (!password.getText().toString().equals(repeatPass.getText().toString())){
-            inputLayoutRepPass.setErrorEnabled(false);
-            password.setText("");
-            repeatPass.setText("");
-            requestFocus(password);
-            inputLayoutPass.setError(getString(R.string.err_msg_check_pass));
-            return false;
-        }
-        inputLayoutPass.setErrorEnabled(false);
-        inputLayoutRepPass.setErrorEnabled(false);
-        return true;
-    }
-
-    private boolean checkLength() {
-        if (password.getText().length() < 6) {
-            //TODO: розібратись з inputLayoutRepPass.setErrorEnabled(false)
-            inputLayoutRepPass.setErrorEnabled(false);
-            inputLayoutPass.setError(getString(R.string.err_msg_password_length));
-            requestFocus(password);
-            return false;
-        } else if (repeatPass.getText().length() < 6) {
-            inputLayoutPass.setErrorEnabled(false);
-            inputLayoutRepPass.setError(getString(R.string.err_msg_password_length));
-            requestFocus(repeatPass);
-            return false;
-        }
-        return true;
-    }
-
-    private boolean checkIfEmpty() {
-        if (password.getText().toString().trim().isEmpty()) {
-            inputLayoutRepPass.setErrorEnabled(false);
-            inputLayoutPass.setError(getString(R.string.err_msg_password));
-            requestFocus(password);
-            return false;
-        } else if (repeatPass.getText().toString().trim().isEmpty()) {
-            inputLayoutPass.setErrorEnabled(false);
-            inputLayoutRepPass.setError(getString(R.string.err_msg_rep_pass));
-            requestFocus(repeatPass);
-            return false;
-        }
-        return true;
-    }
-
-    private boolean validateSurName() {
-        if (surName.getText().toString().trim().isEmpty()) {
-            inputLayoutSurName.setError(getString(R.string.err_msg_sur_name));
-            requestFocus(surName);
-            return false;
-        } else {
-            inputLayoutSurName.setErrorEnabled(false);
-        }
-        return true;
-    }
-
-    private boolean validateLastName() {
-        if (lastName.getText().toString().trim().isEmpty()) {
-            inputLayoutLastName.setError(getString(R.string.err_msg_last_name));
-            requestFocus(lastName);
-            return false;
-        } else {
-            inputLayoutLastName.setErrorEnabled(false);
-        }
-        return true;
-    }
-
-    private boolean validateName() {
-        if (name.getText().toString().trim().isEmpty()) {
-            inputLayoutName.setError(getString(R.string.err_msg_name));
-            requestFocus(name);
-            return false;
-        } else {
-            inputLayoutName.setErrorEnabled(false);
-        }
-        return true;
-    }
-
     private void submitForm() {
-        if (!validateName() ||
-                !validateLastName() ||
-                !validateSurName() ||
-                !super.isValidNumber(number, inputLayoutMobNum) ||
-                !super.isValidEmail(email, inputLayoutEmail) ||
-                !validatePassword()) {
+        if (!super.isValidPersonalData(name, inputLayoutName) || !super.isValidPersonalData(lastName, inputLayoutLastName) ||
+                !super.isValidPersonalData(surName, inputLayoutSurName) || !super.isValidNumber(number, inputLayoutMobNum) ||
+                !super.isValidEmail(email, inputLayoutEmail) || !super.isValidPassword(password, inputLayoutPass, repeatPass, inputLayoutRepPass)) {
             return;
         }
         createAccount(email.getText().toString(), password.getText().toString());

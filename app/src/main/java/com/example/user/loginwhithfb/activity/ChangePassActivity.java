@@ -8,8 +8,6 @@ import android.support.design.widget.TextInputLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.example.user.loginwhithfb.R;
@@ -17,7 +15,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -41,6 +38,7 @@ public class ChangePassActivity extends BaseActivity{
                 updateUserPass();
             }else {
                 ChangePassActivity.super.showToast(ChangePassActivity.this, "Reathenticate  fail! " + task.getException());
+                ChangePassActivity.super.hideProgressDialog();
             }
         }
     };
@@ -48,12 +46,12 @@ public class ChangePassActivity extends BaseActivity{
         @Override
         public void onComplete(@NonNull Task<Void> task) {
             if (task.isSuccessful()) {
-                hideProgressDialog();
-                ChangePassActivity.super.showToast(ChangePassActivity.this, "Password updated! " + task.getException());
-                //user.reload()????????;
+                ChangePassActivity.super.showToast(ChangePassActivity.this, "Password updated! " + task.getException().getMessage());
+                //user.reload();
             }else{
-                ChangePassActivity.super.showToast(ChangePassActivity.this, "Fail update password! " + task.getException());
+                ChangePassActivity.super.showToast(ChangePassActivity.this, "Fail update password! " + task.getException().getMessage());
             }
+            ChangePassActivity.super.hideProgressDialog();
         }
     };
     private OnCompleteListener onCompleteListenerResPasByEmail = new OnCompleteListener() {
@@ -71,7 +69,6 @@ public class ChangePassActivity extends BaseActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_pass);
-        //подивитись тул бар налаштування
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         super.setActivityForBinder(this);
     }
@@ -80,23 +77,27 @@ public class ChangePassActivity extends BaseActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home){
-            onBackPressed();
+            finish();
             return true;
         }
         if (id == R.id.accept_changes_menu_btn){
-            if (validatePassword(setNewPassword.getText().toString(), setRepPassword.getText().toString())){
-                super.showProgressDialog("Wait...");
-                super.user = FirebaseAuth.getInstance().getCurrentUser();
-                AuthCredential credential = EmailAuthProvider.getCredential(super.user.getEmail(), setOldPassword.getText().toString());
-                super.user.reauthenticate(credential).addOnCompleteListener(onCompleteListenerReAuth);
-            }
+            checkCredentials();
         }
         return true;
     }
 
+    private void checkCredentials() {
+        if (super.checkLengthPass(setOldPassword, inputLayoutOldPass)){
+            if (super.isValidPassword(setNewPassword, inputLayoutNewPass, setRepPassword, inputLayoutRepNewPass)){
+                super.showProgressDialog("Wait...");
+                AuthCredential credential = EmailAuthProvider.getCredential(super.user.getEmail(), setOldPassword.getText().toString());
+                super.user.reauthenticate(credential).addOnCompleteListener(onCompleteListenerReAuth);
+            }
+        }
+    }
+
     private void updateUserPass() {
-        super.user.updatePassword(setNewPassword.getText().toString())
-                .addOnCompleteListener(onCompleteListenerChangePass);
+        super.user.updatePassword(setNewPassword.getText().toString()).addOnCompleteListener(onCompleteListenerChangePass);
     }
 
     @OnClick(R.id.forgotPassLayout)
@@ -112,7 +113,7 @@ public class ChangePassActivity extends BaseActivity{
         return true;
     }
 
-    private boolean validatePassword(String newPass, String repPass) {
+    /*private boolean validatePassword(String newPass, String repPass) {
         //TODO: перемістити в баз клас валідацію
         if (newPass.trim().isEmpty()){
             inputLayoutRepNewPass.setErrorEnabled(false);
@@ -149,5 +150,5 @@ public class ChangePassActivity extends BaseActivity{
         inputLayoutNewPass.setErrorEnabled(false);
         inputLayoutRepNewPass.setErrorEnabled(false);
         return true;
-    }
+    }*/
 }

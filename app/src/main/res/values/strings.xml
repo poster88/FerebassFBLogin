@@ -36,7 +36,7 @@
     <string name="hint_new_password">A new password</string>
 
     <!-- registration errors -->
-    <string name="err_msg_name">Name is empty</string>
+    <string name="err_msg_data">Field is empty</string>
     <string name="err_msg_email">Email is not valid</string>
     <string name="err_msg_check_email">Check your email</string>
     <string name="err_msg_empty_email">Email is empty</string>
@@ -45,7 +45,6 @@
     <string name="err_msg_last_name">Last name is empty</string>
     <string name="err_msg_sur_name">Surname is empty</string>
     <string name="err_msg_mob_number">Mobile number is empty</string>
-    <string name="err_msg_rep_pass">Field is empty</string>
     <string name="err_msg_check_pass">Passwords are difference</string>
 
     <!-- navigation drawer strings -->

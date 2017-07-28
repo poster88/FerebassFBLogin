@@ -1,6 +1,7 @@
 package com.example.user.loginwhithfb.fragment;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,18 +19,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.user.loginwhithfb.MyChildEventListener;
 import com.example.user.loginwhithfb.MyValueEventListener;
 import com.example.user.loginwhithfb.R;
-import com.example.user.loginwhithfb.activity.BaseActivity;
 import com.example.user.loginwhithfb.activity.ChangeNumberActivity;
 import com.example.user.loginwhithfb.activity.ChangePassActivity;
 import com.example.user.loginwhithfb.activity.ChangePersonalDataActivity;
+import com.example.user.loginwhithfb.activity.LoginActivity;
 import com.example.user.loginwhithfb.activity.RegistrationActivity;
 import com.example.user.loginwhithfb.model.UploadPhotoModel;
 import com.example.user.loginwhithfb.model.UserLoginInfoTable;
@@ -38,17 +39,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -61,6 +63,8 @@ public class MyAccountFragment extends BaseFragment {
     @BindView(R.id.acc_user_name) TextView userName;
     @BindView(R.id.acc_user_last_name) TextView userLastName;
     @BindView(R.id.acc_user_surname) TextView userSurname;
+    private EditText passEdit;
+    private View dialog;
     TextView textView;
     TextView textViewLastName;
 
@@ -69,6 +73,7 @@ public class MyAccountFragment extends BaseFragment {
     private UserLoginInfoTable userModel;
     private Handler handler;
     private View view;
+    private String tempUid;
 
     private MyValueEventListener myValueEventListener = new MyValueEventListener() {
         @Override
@@ -146,6 +151,54 @@ public class MyAccountFragment extends BaseFragment {
             MyAccountFragment.super.startCurActivity(getContext(), RegistrationActivity.class);
         }
     };
+    private OnCompleteListener deleteUserListener = new OnCompleteListener() {
+        @Override
+        public void onComplete(@NonNull Task task) {
+            MyAccountFragment.super.hideProgressDialog();
+            if (task.isSuccessful()){
+                MyAccountFragment.super.showToast(getContext(), "User account deleted.");
+                deleteUserFromDB();
+                MyAccountFragment.super.startCurActivity(getContext(), LoginActivity.class);
+            }else {
+                MyAccountFragment.super.showAlertDialogOneBtn("Fail to delete account!", task.getException().getMessage(), "OK", negBtnClickListener);
+            }
+        }
+    };
+    private MyValueEventListener deleteUserAccListener = new MyValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            for (DataSnapshot data: dataSnapshot.getChildren()){
+                refUserInfTable.child(data.getKey()).removeValue();
+            }
+        }
+    };
+    private void deleteUserFromDB() {
+        refUserInfTable = super.database.getReference(USER_INFO_TABLE);
+        Query query = refUserInfTable.orderByChild("uID").equalTo(tempUid);
+        query.addListenerForSingleValueEvent(deleteUserAccListener);
+    }
+    private OnCompleteListener credentialComplete = new OnCompleteListener() {
+        @Override
+        public void onComplete(@NonNull Task task) {
+            if (task.isSuccessful()){
+                MyAccountFragment.super.user.delete().addOnCompleteListener(deleteUserListener);
+            }else {
+                MyAccountFragment.super.hideProgressDialog();
+                MyAccountFragment.super.showAlertDialogOneBtn("Password check fail!", task.getException().getMessage(), "OK", negBtnClickListener);
+            }
+        }
+    };
+    private DialogInterface.OnClickListener setCheckCredential = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            if (passEdit.getText().length() != 0){
+                MyAccountFragment.super.hideSoftKeyboard(getActivity());
+                reAuthUser(MyAccountFragment.super.user.getEmail(), passEdit.getText().toString());
+            }else {
+                MyAccountFragment.super.showAlertDialogOneBtn("Password verify fail!", "Password field is empty", "OK", negBtnClickListener);
+            }
+        }
+    };
 
     @Nullable
     @Override
@@ -214,20 +267,21 @@ public class MyAccountFragment extends BaseFragment {
 
     private void verifyEmail(){
         if (!super.user.isEmailVerified()){
-            super.showAlertDialog("Email verification", "Do you want to verify your email?",
-                    android.R.drawable.ic_dialog_alert, false, "Send", "Cancel", posBtnClickListener, negBtnClickListener);
+            super.showAlertDialog("Email verification", "Do you want to verify your email?", android.R.drawable.ic_dialog_alert,
+                    false, "Send", "Cancel", posBtnClickListener, negBtnClickListener);
             return;
         }
         MyAccountFragment.super.showToast(getContext(), "Your email already verified");
     }
 
-    @OnClick({R.id.acc_card_view_person, R.id.acc_card_view_person_number, R.id.acc_card_view_person_email, R.id.acc_card_view_mail_check, R.id.acc_card_view_person_company})
+    @OnClick({R.id.acc_card_view_person, R.id.acc_card_view_person_number, R.id.acc_card_view_person_email,
+            R.id.acc_card_view_mail_check, R.id.acc_card_view_person_company})
     public void pickActionBtn(CardView view){
         if (!super.user.isAnonymous()){
             pickActivity(view.getId());
             return;
         }
-        showAlertDialog("Information", "Pls, register first.", android.R.drawable.ic_menu_info_details,
+        super.showAlertDialog("Information", "Pls, register first.", android.R.drawable.ic_menu_info_details,
                 false, "Register now", "Cancel", onRegistrationListener, negBtnClickListener);
     }
 
@@ -313,12 +367,25 @@ public class MyAccountFragment extends BaseFragment {
             if (item.getItemId() == R.id.action_change_password){
                 MyAccountFragment.super.startCurActivity(getContext(), ChangePassActivity.class);
             }else if (item.getItemId() == R.id.action_delete_account){
-               //TODO: create method del acc
+                deleteUser();
             }
         }else {
             MyAccountFragment.super.showToast(getContext(), "Please create a user, to use this menu");
         }
         return true;
+    }
+
+    private void deleteUser() {
+        tempUid = MyAccountFragment.super.user.getUid();
+        dialog = this.getLayoutInflater(getArguments()).inflate(R.layout.password_layout, null);
+        passEdit = ButterKnife.findById(dialog, R.id.set_line_password);
+        super.showAlertDialogWithView("Check up your credentials", dialog, android.R.drawable.ic_dialog_alert,
+                false, "Check", "Cancel", setCheckCredential, negBtnClickListener);
+    }
+
+    private void reAuthUser(String email, String pass){
+        AuthCredential credential = EmailAuthProvider.getCredential(email, pass);
+        super.user.reauthenticate(credential).addOnCompleteListener(credentialComplete);
     }
 }
 

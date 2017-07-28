@@ -100,9 +100,11 @@ public class SentPassToEmailActivity extends BaseActivity{
     }
 
     private void checkUserData() {
-        if (super.user == null || super.user.isAnonymous()){
-            findUserEmailInDB();
-        }else {
+        if (super.isValidEmail(setEmail, inputLayoutSentEmail)){
+            if (super.user == null || super.user.isAnonymous() ) {
+                findUserEmailInDB();
+                return;
+            }
             sentPassword(super.user.getEmail());
         }
     }

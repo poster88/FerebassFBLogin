@@ -1,5 +1,6 @@
 package com.example.user.loginwhithfb.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -9,6 +10,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.user.loginwhithfb.MyChildEventListener;
@@ -51,10 +54,10 @@ public class BaseFragment extends Fragment {
         user = FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    protected void showProgressDialog() {
-        if (progressDialog == null && !progressDialog.isShowing()) {
+    protected void showProgressDialog(String msg) {
+        if (progressDialog == null) {
             progressDialog = new ProgressDialog(getContext());
-            progressDialog.setMessage(getString(R.string.loading));
+            progressDialog.setMessage(msg);
             progressDialog.setIndeterminate(true);
         }
         progressDialog.show();
@@ -87,6 +90,33 @@ public class BaseFragment extends Fragment {
         ab.setPositiveButton(positiveBtnTitle, posBtnClickListener);
         ab.setNegativeButton(negativeBtnTitle, negBtnClickListener);
         ab.show();
+    }
+
+    protected void showAlertDialogWithView(String title, View view, int icon, boolean cancelable, String positiveBtnTitle, String negativeBtnTitle, DialogInterface.OnClickListener posBtnClickListener, DialogInterface.OnClickListener negBtnClickListener) {
+        AlertDialog.Builder ab = new AlertDialog.Builder(getContext());
+        ab.setView(view);
+        ab.setTitle(title);
+        ab.setIcon(icon);
+        ab.setCancelable(cancelable);
+        ab.setPositiveButton(positiveBtnTitle, posBtnClickListener);
+        ab.setNegativeButton(negativeBtnTitle, negBtnClickListener);
+        ab.create();
+        ab.show();
+    }
+
+    protected void showAlertDialogOneBtn(String title, String message, String btnTitle, DialogInterface.OnClickListener btnClickListener){
+        AlertDialog.Builder ab = new AlertDialog.Builder(getContext());
+        ab.setTitle(title);
+        ab.setIcon(android.R.drawable.stat_sys_warning);
+        ab.setMessage(message);
+        ab.setNegativeButton(btnTitle, btnClickListener);
+        ab.create();
+        ab.show();
+    }
+
+    protected void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 
     @Override

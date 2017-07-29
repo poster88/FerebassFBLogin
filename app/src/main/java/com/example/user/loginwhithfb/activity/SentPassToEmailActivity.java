@@ -44,9 +44,7 @@ public class SentPassToEmailActivity extends BaseActivity{
     private DialogInterface.OnClickListener onClickListenerSentEmail = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            dialog.dismiss();
             sentPassword(setEmail.getText().toString());
-
         }
     };
     private DialogInterface.OnClickListener onClickListenerCancel = new DialogInterface.OnClickListener() {
@@ -77,6 +75,13 @@ public class SentPassToEmailActivity extends BaseActivity{
         setContentView(R.layout.activity_sent_pass_to_email);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         super.setActivityForBinder(this);
+        initUserData();
+    }
+
+    private void initUserData() {
+        if (!super.user.isAnonymous()){
+            setEmail.setText(userModel.getEmail());
+        }
     }
 
     @Override
@@ -87,13 +92,12 @@ public class SentPassToEmailActivity extends BaseActivity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
         super.hideSoftKeyboard(this);
-        if (id == android.R.id.home){
+        if (item.getItemId() == android.R.id.home){
             finish();
             return true;
         }
-        if (id == item.getItemId()){
+        if (item.getItemId() == item.getItemId()){
             checkUserData();
         }
         return true;
@@ -105,7 +109,7 @@ public class SentPassToEmailActivity extends BaseActivity{
                 findUserEmailInDB();
                 return;
             }
-            sentPassword(super.user.getEmail());
+            setPositiveAlertDialog(setEmail.getText().toString());
         }
     }
 
@@ -117,9 +121,8 @@ public class SentPassToEmailActivity extends BaseActivity{
     }
 
     private void setPositiveAlertDialog(String email){
-        SentPassToEmailActivity.super.showAlertDialog(
-                "Send email", "Sent pass to the " + email + "?", android.R.drawable.ic_menu_info_details,
-                false, "OK", "Cancel", onClickListenerSentEmail, onClickListenerCancel
+        super.showAlertDialog("Send email", "Send pass to the " + email + " ?", android.R.drawable.ic_menu_info_details,
+                false, "Send", "Cancel", onClickListenerSentEmail, onClickListenerCancel
         );
     }
 

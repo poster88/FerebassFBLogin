@@ -19,7 +19,7 @@
             android:textSize="14sp"
             android:hint="@string/hint_email"
             android:inputType="textEmailAddress"
-            android:singleLine="true" />
+            android:lines="1" />
     </android.support.design.widget.TextInputLayout>
 
 

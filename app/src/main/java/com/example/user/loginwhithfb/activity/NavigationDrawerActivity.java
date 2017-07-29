@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.event.UpdateUIEvent;
+import com.example.user.loginwhithfb.eventbus.BusProvider;
 import com.example.user.loginwhithfb.fragment.CompanyChatFragment;
 import com.example.user.loginwhithfb.fragment.InformationFragment;
 import com.example.user.loginwhithfb.fragment.NewsFragment;
@@ -51,21 +52,6 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
             fragmentTransaction.commitAllowingStateLoss();
         }
     };
-    private Runnable updateUI = new Runnable() {
-        @Override
-        public void run() {
-
-            if (NavigationDrawerActivity.super.userModel == null){
-                System.out.println("model is null");
-            }else {
-                System.out.println(NavigationDrawerActivity.super.userModel.toString() + " from RUN");
-            }
-
-            //userName.setText(NavigationDrawerActivity.super.user.getDisplayName());
-            //userEmail.setText(NavigationDrawerActivity.super.user.getEmail());
-            //
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +59,7 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         setContentView(R.layout.activity_navigation_drawer);
         setActivityForBinder(this);
         setSupportActionBar(toolbar);
+
         handler = new Handler();
         navHeader = navigationView.getHeaderView(0);
         loadNavHeader();
@@ -83,12 +70,11 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
 
     @Subscribe
     public void updateInterface(UpdateUIEvent event){
-        System.out.println(NavigationDrawerActivity.super.userModel.toString() + "from EventBuss");
         TextView userName = ButterKnife.findById(navHeader, R.id.name);
         TextView userEmail = ButterKnife.findById(navHeader, R.id.email);
         ImageView userPhoto = ButterKnife.findById(navHeader, R.id.img_profile);
-        userName.setText(NavigationDrawerActivity.super.userModel.getName());
-        userEmail.setText(NavigationDrawerActivity.super.userModel.getEmail());
+        userName.setText(userModel.getName());
+        userEmail.setText(userModel.getEmail());
         Glide.with(NavigationDrawerActivity.this)
                 .load(NavigationDrawerActivity.super.user.getPhotoUrl())
                 .crossFade().thumbnail(0.5f)
@@ -98,11 +84,12 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
 
     private void checkSaveInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            if (!user.isAnonymous()){
-                handler.post(updateUI);
-            }
             CURRENT_TAG = TAG_HOME;
             loadHomeFragment();
+
+            userRef = super.database.getReference(USER_INFO_TABLE).orderByChild("uID").equalTo(super.user.getUid());
+            System.out.println("init userRef");
+            userRef.addValueEventListener(super.onUidUserDataListener);
         }
     }
 

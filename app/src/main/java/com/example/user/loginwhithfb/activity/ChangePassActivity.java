@@ -102,9 +102,7 @@ public class ChangePassActivity extends BaseActivity{
 
     @OnClick(R.id.forgotPassLayout)
     public void sendPassResetEmail(){
-        //добавити діалогове вікно
-        super.auth.sendPasswordResetEmail(super.user.getEmail())
-                .addOnCompleteListener(onCompleteListenerResPasByEmail);
+        super.startCurActivity(this, SentPassToEmailActivity.class);
     }
 
     @Override
@@ -112,43 +110,4 @@ public class ChangePassActivity extends BaseActivity{
         getMenuInflater().inflate(R.menu.menu_accept_changes, menu);
         return true;
     }
-
-    /*private boolean validatePassword(String newPass, String repPass) {
-        //TODO: перемістити в баз клас валідацію
-        if (newPass.trim().isEmpty()){
-            inputLayoutRepNewPass.setErrorEnabled(false);
-            inputLayoutNewPass.setError(getString(R.string.err_msg_password));
-            requestFocus(setNewPassword);
-            return false;
-        }
-        if (repPass.trim().isEmpty()){
-            inputLayoutNewPass.setErrorEnabled(false);
-            inputLayoutRepNewPass.setError(getString(R.string.err_msg_password));
-            requestFocus(setRepPassword);
-            return false;
-        }
-        if (newPass.trim().length() < 6){
-            inputLayoutRepNewPass.setErrorEnabled(false);
-            inputLayoutNewPass.setError(getString(R.string.err_msg_password_length));
-            requestFocus(setNewPassword);
-            return false;
-        }
-        if (repPass.trim().length() < 6){
-            inputLayoutNewPass.setErrorEnabled(false);
-            inputLayoutRepNewPass.setError(getString(R.string.err_msg_password_length));
-            requestFocus(setRepPassword);
-            return false;
-        }
-        if (!newPass.equals(repPass)) {
-            inputLayoutRepNewPass.setErrorEnabled(false);
-            setNewPassword.setText("");
-            setRepPassword.setText("");
-            requestFocus(setNewPassword);
-            inputLayoutNewPass.setError(getString(R.string.err_msg_check_pass));
-            return false;
-        }
-        inputLayoutNewPass.setErrorEnabled(false);
-        inputLayoutRepNewPass.setErrorEnabled(false);
-        return true;
-    }*/
 }

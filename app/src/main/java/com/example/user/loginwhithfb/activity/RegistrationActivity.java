@@ -47,15 +47,14 @@ public class RegistrationActivity extends BaseActivity{
     private OnCompleteListener onCompleteListenerCreateUser = new OnCompleteListener<AuthResult>() {
         @Override
         public void onComplete(@NonNull Task<AuthResult> task) {
+            hideProgressDialog();
             if (task.isSuccessful()) {
                 addUser();
                 RegistrationActivity.super.showToast(RegistrationActivity.this, "User account is created");
-                RegistrationActivity.super.startCurActivity(RegistrationActivity.this, NavigationDrawerActivity.class);
-                finish();
-            }else {
-                inputLayoutEmail.setError(task.getException().getMessage());
+                onBackPressed();
+                return;
             }
-            hideProgressDialog();
+            inputLayoutEmail.setError(task.getException().getMessage());
         }
     };
 
@@ -74,8 +73,6 @@ public class RegistrationActivity extends BaseActivity{
         Map<String, Object> userAttributes = new HashMap<>();
         userAttributes.put(id, userLoginInfo);
         reference.updateChildren(userAttributes);
-        super.updateUserNameAuth(name.getText().toString());
-        super.handler.post(super.runnable);
     }
 
     private void setDataToConstructor() {
@@ -83,11 +80,6 @@ public class RegistrationActivity extends BaseActivity{
                 name.getText().toString(), lastName.getText().toString(), surName.getText().toString(),
                 "default_uri", Integer.valueOf(number.getText().toString()), email.getText().toString(),
                 super.auth.getCurrentUser().getUid(), "default_uri");
-    }
-
-    private void createAccount(String email, String password) {
-        super.showProgressDialog("Wait...");
-        super.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(onCompleteListenerCreateUser);
     }
 
     private void submitForm() {
@@ -99,13 +91,23 @@ public class RegistrationActivity extends BaseActivity{
         createAccount(email.getText().toString(), password.getText().toString());
     }
 
+    private void createAccount(String email, String password) {
+        super.showProgressDialog("Registration...");
+        super.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(onCompleteListenerCreateUser);
+    }
+
     @OnClick({R.id.reg_back_btn, R.id.reg_next_btn})
     public void pickAction(Button button){
         if (button.getId() == R.id.reg_next_btn){
             submitForm();
-        }else {
-            RegistrationActivity.super.startCurActivity(RegistrationActivity.this, LoginActivity.class);
-            finish();
+            return;
         }
+        onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        RegistrationActivity.super.startCurActivity(RegistrationActivity.this, LoginActivity.class);
+        finish();
     }
 }

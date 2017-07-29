@@ -19,7 +19,7 @@
     <string name="activity_title_registration">User registration</string>
     <string name="activity_title_company_info">Company info</string>
     <string name="activity_title_change_user_data">Change user data</string>
-    <string name="activity_title_sent_pass">Sent a password</string>
+    <string name="activity_title_sent_pass">Sent email</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 

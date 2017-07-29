@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_change_pass"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -11,7 +13,8 @@
     <android.support.design.widget.TextInputLayout
         android:id="@+id/layout_acc_old_password"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:passwordToggleEnabled = "true">
 
         <EditText
             android:id="@+id/set_old_password"
@@ -26,7 +29,8 @@
     <android.support.design.widget.TextInputLayout
         android:id="@+id/layout_acc_password"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:passwordToggleEnabled = "true">
 
         <EditText
             android:id="@+id/set_new_password"
@@ -41,7 +45,8 @@
     <android.support.design.widget.TextInputLayout
         android:id="@+id/layout_acc_rep_pass"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:passwordToggleEnabled = "true">
 
         <EditText
             android:id="@+id/set_acc_rep_pass"

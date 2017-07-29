@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -58,23 +59,33 @@
             android:layout_below="@+id/user_login_image"
             android:src="@drawable/locked" />
 
-        <EditText
-            android:id="@+id/passEdit"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/oval"
-            android:singleLine="true"
-            android:hint="@string/pass"
-            android:padding="8dp"
-            android:maxLines="1"
-            android:lines="1"
-            android:textSize="14sp"
             android:layout_marginTop="8dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
             android:layout_below="@+id/emailEdit"
             android:layout_toRightOf="@+id/user_login_image"
-            android:layout_alignLeft="@+id/loginContainer" />
+            android:layout_alignLeft="@+id/loginContainer"
+            app:passwordToggleEnabled = "true"
+            app:hintEnabled="false">
+
+            <EditText
+                android:id="@+id/passEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/oval"
+                android:singleLine="true"
+                android:hint="@string/pass"
+                android:padding="8dp"
+                android:maxLines="1"
+                android:lines="1"
+                android:textSize="14sp"
+                android:inputType="textPassword"/>
+        </android.support.design.widget.TextInputLayout>
+
+
     </RelativeLayout>
 
     <LinearLayout

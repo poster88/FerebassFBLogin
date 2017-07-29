@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.R;
+import com.example.user.loginwhithfb.event.UpdateUIEvent;
 import com.example.user.loginwhithfb.fragment.CompanyChatFragment;
 import com.example.user.loginwhithfb.fragment.InformationFragment;
 import com.example.user.loginwhithfb.fragment.NewsFragment;
@@ -29,6 +30,7 @@ import com.example.user.loginwhithfb.fragment.MyOrdersFragment;
 import com.example.user.loginwhithfb.fragment.WishListFragment;
 import com.example.user.loginwhithfb.other.CircleTransform;
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.otto.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,12 +54,16 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
     private Runnable updateUI = new Runnable() {
         @Override
         public void run() {
-            TextView userName = ButterKnife.findById(navHeader, R.id.name);
-            TextView userEmail = ButterKnife.findById(navHeader, R.id.email);
-            ImageView userPhoto = ButterKnife.findById(navHeader, R.id.img_profile);
-            userName.setText(NavigationDrawerActivity.super.user.getDisplayName());
-            userEmail.setText(NavigationDrawerActivity.super.user.getEmail());
-            Glide.with(NavigationDrawerActivity.this).load(NavigationDrawerActivity.super.user.getPhotoUrl()).crossFade().thumbnail(0.5f).bitmapTransform(new CircleTransform(NavigationDrawerActivity.this)).diskCacheStrategy(DiskCacheStrategy.ALL).into(userPhoto);
+
+            if (NavigationDrawerActivity.super.userModel == null){
+                System.out.println("model is null");
+            }else {
+                System.out.println(NavigationDrawerActivity.super.userModel.toString() + " from RUN");
+            }
+
+            //userName.setText(NavigationDrawerActivity.super.user.getDisplayName());
+            //userEmail.setText(NavigationDrawerActivity.super.user.getEmail());
+            //
         }
     };
 
@@ -73,6 +79,21 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         setUpNavigationView();
         checkSaveInstanceState(savedInstanceState);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
+    }
+
+    @Subscribe
+    public void updateInterface(UpdateUIEvent event){
+        System.out.println(NavigationDrawerActivity.super.userModel.toString() + "from EventBuss");
+        TextView userName = ButterKnife.findById(navHeader, R.id.name);
+        TextView userEmail = ButterKnife.findById(navHeader, R.id.email);
+        ImageView userPhoto = ButterKnife.findById(navHeader, R.id.img_profile);
+        userName.setText(NavigationDrawerActivity.super.userModel.getName());
+        userEmail.setText(NavigationDrawerActivity.super.userModel.getEmail());
+        Glide.with(NavigationDrawerActivity.this)
+                .load(NavigationDrawerActivity.super.user.getPhotoUrl())
+                .crossFade().thumbnail(0.5f)
+                .bitmapTransform(new CircleTransform(NavigationDrawerActivity.this))
+                .diskCacheStrategy(DiskCacheStrategy.ALL).into(userPhoto);
     }
 
     private void checkSaveInstanceState(Bundle savedInstanceState) {

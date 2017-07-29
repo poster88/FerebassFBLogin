@@ -15,7 +15,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -24,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.user.loginwhithfb.MyValueEventListener;
 import com.example.user.loginwhithfb.R;
+import com.example.user.loginwhithfb.event.UpdateUIEvent;
 import com.example.user.loginwhithfb.model.CompaniesInfoTable;
 import com.example.user.loginwhithfb.model.UserLoginInfoTable;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -34,6 +34,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.squareup.otto.Bus;
 
 import butterknife.ButterKnife;
 
@@ -75,6 +76,7 @@ public class BaseActivity extends AppCompatActivity {
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot data: dataSnapshot.getChildren()){
                 userModel = data.getValue(UserLoginInfoTable.class);
+                bus.post(new UpdateUIEvent());
             }
         }
     };
@@ -86,6 +88,7 @@ public class BaseActivity extends AppCompatActivity {
     };
 
     protected Handler handler;
+    protected Bus bus;
     protected Runnable runnable = new Runnable() {
         @Override
         public void run() {
@@ -99,11 +102,13 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null){
+            handler = new Handler();
+            bus = new Bus();
+            bus.register(this);
             fragmentManager = getSupportFragmentManager();
             database = FirebaseDatabase.getInstance();
             auth = FirebaseAuth.getInstance();
             user = auth.getCurrentUser();
-            handler = new Handler();
             checkUser();
         }
     }
@@ -111,8 +116,7 @@ public class BaseActivity extends AppCompatActivity {
     private void checkUser() {
         if (user != null){
             if (!user.isAnonymous()){
-                handler.post(runnable);
-                Log.d("TAG", "handler.post(runnable)");
+                runnable.run();
             }
         }
     }

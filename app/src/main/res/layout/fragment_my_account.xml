@@ -24,29 +24,35 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:clickable="true"
-                android:src="@drawable/ic_person_black_24dp" />
+                android:src="@drawable/user" />
             <TextView
                 android:id="@+id/acc_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Name :"
+                android:layout_marginLeft="8dp"
+                android:text="Name "
                 android:textSize="16dp"
                 android:layout_toRightOf="@+id/acc_user_photo"
-                android:layout_alignParentTop="true" />
+                android:layout_alignParentTop="true"
+                android:textStyle="bold"/>
             <TextView
                 android:id="@+id/acc_user_last_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Last name : "
+                android:layout_marginLeft="8dp"
+                android:text="Last name"
                 android:textSize="16dp"
+                android:textStyle="bold"
                 android:layout_toRightOf="@+id/acc_user_photo"
                 android:layout_below="@+id/acc_user_name"/>
             <TextView
                 android:id="@+id/acc_user_surname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Surname : "
+                android:layout_marginLeft="8dp"
+                android:text="Surname "
                 android:textSize="16dp"
+                android:textStyle="bold"
                 android:layout_toRightOf="@+id/acc_user_photo"
                 android:layout_below="@+id/acc_user_last_name"/>
         </RelativeLayout>
@@ -71,16 +77,17 @@
                 android:id="@+id/acc_img_number"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_contact_phone_black_24dp" />
+                android:src="@drawable/phone_number" />
 
             <TextView
                 android:id="@+id/acc_user_telephone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
+                android:layout_marginTop="6dp"
                 android:layout_toRightOf="@id/acc_img_number"
-                android:clickable="true"
-                android:text="Your number : "
+                android:text="Your number "
+                android:textStyle="bold"
                 android:textSize="16dp" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
@@ -102,14 +109,16 @@
                 android:id="@+id/acc_img_email"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_email_black_24dp" />
+                android:src="@drawable/email" />
             <TextView
                 android:id="@+id/acc_user_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
                 android:layout_toRightOf="@+id/acc_img_email"
-                android:text="Your email: "
+                android:textStyle="bold"
+                android:layout_marginTop="6dp"
+                android:text="Your email"
                 android:textSize="16dp" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
@@ -120,7 +129,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/MyCardViewStyle"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="7dp"
         card_view:cardCornerRadius="4dp"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground">
@@ -133,25 +142,19 @@
                 android:id="@+id/acc_img_check_em_status"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_check_circle_black_24dp" />
+                android:src="@drawable/envelope"
+                android:layout_alignParentStart="true" />
 
             <TextView
                 android:id="@+id/email_verify_status_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16dp"
-                android:text="@string/verify_label_status"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="6dp"
                 android:layout_toRightOf="@id/acc_img_check_em_status"
-                android:layout_marginLeft="12dp"/>
-
-            <ImageView
-                android:id="@+id/email_verify_status_img"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@id/email_verify_status_label"
-                android:src="@drawable/ic_fiber_manual_record_reg_24dp"/>
+                android:text="@string/verify_label_status"
+                android:textStyle="bold"
+                android:textSize="16dp" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 
@@ -174,36 +177,24 @@
                 android:id="@+id/acc_img_company"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_store_black_24dp" />
+                android:src="@drawable/factory"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true" />
 
             <TextView
                 android:id="@+id/company_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Company info"
-                android:clickable="true"
-                android:layout_toRightOf="@id/acc_img_company"
-                android:layout_marginLeft="12dp" />
+                android:textStyle="bold"
+                android:layout_marginLeft="12dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="6dp"
+                android:layout_toEndOf="@+id/acc_img_company"
+                android:layout_marginStart="13dp"
+                android:textSize="16dp"/>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
-
-    <ImageView
-        android:id="@+id/acc_change_photo"
-        android:layout_below="@id/acc_user_photo"
-        android:clickable="true"
-        android:src="@drawable/edit_im"
-        android:layout_width="30dp"
-        android:layout_height="30dp" />
-
-    <TextView
-        android:id="@+id/user_data_info"
-        android:text="Day of birthday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        android:clickable="true"
-        android:layout_below="@+id/change_user_pass_btn"/>
-
     <TextView
         android:id="@+id/company_search"
         android:layout_width="wrap_content"

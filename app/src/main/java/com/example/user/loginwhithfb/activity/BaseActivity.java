@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.CountDownTimer;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -17,11 +16,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.user.loginwhithfb.MyValueEventListener;
+import com.example.user.loginwhithfb.lisntener.MyValueEventListener;
 import com.example.user.loginwhithfb.R;
-import com.example.user.loginwhithfb.application.MyApplication;
+import com.example.user.loginwhithfb.event.UpdateItem;
 import com.example.user.loginwhithfb.eventbus.BusProvider;
 import com.example.user.loginwhithfb.event.UpdateUIEvent;
+import com.example.user.loginwhithfb.model.CompaniesInfoTable;
 import com.example.user.loginwhithfb.model.UserLoginInfoTable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -38,6 +38,7 @@ import butterknife.ButterKnife;
 public class BaseActivity extends AppCompatActivity {
 
     protected final String USER_INFO_TABLE = "UserLoginInfoTable";
+    protected final String COMP_INF_TABLE = "CompaniesInfoTable";
     protected final String TAG_HOME = "Products catalog";
     protected final String TAG_ACCOUNT = "My account";
     protected final String TAG_ORDER = "My orders";
@@ -54,15 +55,11 @@ public class BaseActivity extends AppCompatActivity {
 
     public static UserLoginInfoTable userModel;
     public static Query userRef;
+    public static CompaniesInfoTable companiesInfoTable;
+    public static Query refCompanyTable;
 
     private boolean isUserClickedBackButton = false;
 
-    private FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
-        @Override
-        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-            user = firebaseAuth.getCurrentUser();
-        }
-    };
     protected MyValueEventListener onUidUserDataListener = new MyValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -73,6 +70,15 @@ public class BaseActivity extends AppCompatActivity {
         }
     };
 
+    protected MyValueEventListener onCompanyInfoTableListener = new MyValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            for (DataSnapshot data: dataSnapshot.getChildren()){
+                companiesInfoTable = data.getValue(CompaniesInfoTable.class);
+                BusProvider.getInstance().post(new UpdateItem());
+            }
+        }
+    };
 
     protected void setActivityForBinder(Activity activity){
         ButterKnife.bind(activity);
@@ -204,25 +210,10 @@ public class BaseActivity extends AppCompatActivity {
         inputLayoutData.setErrorEnabled(false);
         return true;
     }
+
     private void requestFocus(View view) {
         if (view.requestFocus()) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        auth.addAuthStateListener(authStateListener);
-        BusProvider.getInstance().register(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (authStateListener != null){
-            auth.removeAuthStateListener(authStateListener);
-            BusProvider.getInstance().unregister(this);
         }
     }
 }

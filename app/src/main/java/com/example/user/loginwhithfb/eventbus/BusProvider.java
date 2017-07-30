@@ -8,12 +8,12 @@ import com.squareup.otto.Bus;
  */
 
 public class BusProvider {
-    private static Bus bus;
+    private static Bus bus = new Bus();
 
     public static Bus getInstance() {
-        if (bus == null){
-            bus = new Bus();
-        }
         return bus;
+    }
+
+    public BusProvider() {
     }
 }

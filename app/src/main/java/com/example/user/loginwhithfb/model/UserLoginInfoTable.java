@@ -12,7 +12,7 @@ public class UserLoginInfoTable {
     private String lastName;
     private String surname;
     private String photoUrl;
-    private int mobileNumber;
+    private long mobileNumber;
     private String email;
     private String uID;
     private String companyUid;
@@ -20,7 +20,7 @@ public class UserLoginInfoTable {
     public UserLoginInfoTable() {
     }
 
-    public UserLoginInfoTable(String name, String lastName, String surname, String photoUrl, int mobileNumber, String email, String uID, String companyUid) {
+    public UserLoginInfoTable(String name, String lastName, String surname, String photoUrl, long mobileNumber, String email, String uID, String companyUid) {
         this.name = name;
         this.lastName = lastName;
         this.surname = surname;
@@ -76,7 +76,7 @@ public class UserLoginInfoTable {
         this.photoUrl = photoUrl;
     }
 
-    public int getMobileNumber() {
+    public long getMobileNumber() {
         return mobileNumber;
     }
 

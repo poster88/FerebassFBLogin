@@ -78,7 +78,7 @@ public class RegistrationActivity extends BaseActivity{
     private void setDataToConstructor() {
         usersInfoTable = new UserLoginInfoTable(
                 name.getText().toString(), lastName.getText().toString(), surName.getText().toString(),
-                "default_uri", Integer.valueOf(number.getText().toString()), email.getText().toString(),
+                "default_uri", Long.parseLong(number.getText().toString()), email.getText().toString(),
                 super.auth.getCurrentUser().getUid(), "default_uri");
     }
 

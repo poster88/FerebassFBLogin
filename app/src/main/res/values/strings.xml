@@ -57,7 +57,7 @@
     <string name="myNews">News</string>
 
     <!-- account fragment strings -->
-    <string name="verify_label_status">Verify email status : </string>
+    <string name="verify_label_status">Verify email status</string>
 
     <!-- company info strings -->
     <string name="activity_company_info_name">Company name : </string>

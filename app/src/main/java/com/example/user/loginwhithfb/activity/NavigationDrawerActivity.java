@@ -1,6 +1,7 @@
 package com.example.user.loginwhithfb.activity;
 
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -53,43 +54,50 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         }
     };
 
+    private FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
+        @Override
+        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            user = firebaseAuth.getCurrentUser();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_drawer);
         setActivityForBinder(this);
         setSupportActionBar(toolbar);
-
         handler = new Handler();
         navHeader = navigationView.getHeaderView(0);
         loadNavHeader();
         setUpNavigationView();
         checkSaveInstanceState(savedInstanceState);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
+
+        userRef = super.database.getReference(USER_INFO_TABLE).orderByChild("uID").equalTo(super.user.getUid());
+        refCompanyTable = super.database.getReference(COMP_INF_TABLE).orderByChild("companyId").equalTo(null);
     }
 
     @Subscribe
-    public void updateInterface(UpdateUIEvent event){
+    public void updateUI(UpdateUIEvent event){
         TextView userName = ButterKnife.findById(navHeader, R.id.name);
         TextView userEmail = ButterKnife.findById(navHeader, R.id.email);
         ImageView userPhoto = ButterKnife.findById(navHeader, R.id.img_profile);
         userName.setText(userModel.getName());
         userEmail.setText(userModel.getEmail());
-        Glide.with(NavigationDrawerActivity.this)
-                .load(NavigationDrawerActivity.super.user.getPhotoUrl())
-                .crossFade().thumbnail(0.5f)
-                .bitmapTransform(new CircleTransform(NavigationDrawerActivity.this))
-                .diskCacheStrategy(DiskCacheStrategy.ALL).into(userPhoto);
+        if (!userModel.getPhotoUrl().equals("default_uri")){
+            Glide.with(NavigationDrawerActivity.this)
+                    .load(Uri.parse(NavigationDrawerActivity.userModel.getPhotoUrl()))
+                    .crossFade().thumbnail(0.5f)
+                    .bitmapTransform(new CircleTransform(NavigationDrawerActivity.this))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL).into(userPhoto);
+        }
     }
 
     private void checkSaveInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             CURRENT_TAG = TAG_HOME;
             loadHomeFragment();
-
-            userRef = super.database.getReference(USER_INFO_TABLE).orderByChild("uID").equalTo(super.user.getUid());
-            System.out.println("init userRef");
-            userRef.addValueEventListener(super.onUidUserDataListener);
         }
     }
 
@@ -220,5 +228,26 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         }
         loadHomeFragment();
         return true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (super.user != null && !super.user.isAnonymous()){
+            BusProvider.getInstance().register(this);
+            super.auth.addAuthStateListener(authStateListener);
+            userRef.addValueEventListener(onUidUserDataListener);
+            refCompanyTable.addValueEventListener(onCompanyInfoTableListener);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (super.user != null && !super.user.isAnonymous()){
+            BusProvider.getInstance().unregister(this);
+            super.auth.removeAuthStateListener(authStateListener);
+            refCompanyTable.removeEventListener(onCompanyInfoTableListener);
+        }
     }
 }

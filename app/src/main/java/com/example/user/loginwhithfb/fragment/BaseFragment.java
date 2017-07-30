@@ -11,18 +11,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.user.loginwhithfb.MyChildEventListener;
-import com.example.user.loginwhithfb.MyValueEventListener;
-import com.example.user.loginwhithfb.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import butterknife.ButterKnife;
@@ -36,7 +30,7 @@ public class BaseFragment extends Fragment {
 
     protected FirebaseDatabase database;
     protected FirebaseUser user;
-    protected StorageReference storageRef;
+    protected StorageReference refUsersPhoto;
     protected ProgressDialog progressDialog;
 
     protected final String USER_INFO_TABLE = "UserLoginInfoTable";
@@ -52,6 +46,7 @@ public class BaseFragment extends Fragment {
         super.onCreate(savedInstanceState);
         database = FirebaseDatabase.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
+        refUsersPhoto = FirebaseStorage.getInstance().getReference(USERS_IMAGES);
     }
 
     protected void showProgressDialog(String msg) {

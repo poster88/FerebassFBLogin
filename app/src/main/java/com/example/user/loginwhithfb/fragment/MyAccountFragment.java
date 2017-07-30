@@ -1,14 +1,12 @@
 package com.example.user.loginwhithfb.fragment;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -25,14 +23,16 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.user.loginwhithfb.MyValueEventListener;
+import com.example.user.loginwhithfb.lisntener.MyValueEventListener;
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.activity.ChangeNumberActivity;
 import com.example.user.loginwhithfb.activity.ChangePassActivity;
 import com.example.user.loginwhithfb.activity.ChangePersonalDataActivity;
 import com.example.user.loginwhithfb.activity.LoginActivity;
+import com.example.user.loginwhithfb.activity.NavigationDrawerActivity;
 import com.example.user.loginwhithfb.activity.RegistrationActivity;
-import com.example.user.loginwhithfb.model.UploadPhotoModel;
+import com.example.user.loginwhithfb.event.UpdateUIEvent;
+import com.example.user.loginwhithfb.eventbus.BusProvider;
 import com.example.user.loginwhithfb.model.UserLoginInfoTable;
 import com.example.user.loginwhithfb.other.CircleTransform;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -42,12 +42,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.otto.Produce;
+import com.squareup.otto.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,43 +61,20 @@ import butterknife.OnClick;
 
 public class MyAccountFragment extends BaseFragment {
     @BindView(R.id.acc_user_photo) ImageView userImg;
-    @BindView(R.id.email_verify_status_img) ImageView verEmailStatusImg;
     @BindView(R.id.acc_user_name) TextView userName;
     @BindView(R.id.acc_user_last_name) TextView userLastName;
     @BindView(R.id.acc_user_surname) TextView userSurname;
+    @BindView(R.id.acc_user_telephone) TextView userNumber;
+    @BindView(R.id.acc_user_email) TextView userEmail;
+    @BindView(R.id.email_verify_status_label) TextView emailStatus;
+    @BindView(R.id.acc_img_check_em_status) ImageView emailStatusImg;
+
     private EditText passEdit;
     private View dialog;
-    TextView textView;
-    TextView textViewLastName;
 
     private DatabaseReference refUserInfTable;
-    final String USER_INFO_TABLE = "UserLoginInfoTable";
-    private UserLoginInfoTable userModel;
-    private Handler handler;
     private View view;
     private String tempUid;
-
-    private MyValueEventListener myValueEventListener = new MyValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            for (DataSnapshot data: dataSnapshot.getChildren()){
-                userModel = data.getValue(UserLoginInfoTable.class);
-                TextView textView = (TextView)view.findViewById(R.id.acc_user_name);
-                textView.setText(userModel.getName());
-                //textViewLastName.setText(userModel.getLastName());
-                //userName.setText(userModel.getName());
-                //userLastName.setText(userModel.getLastName());
-                //userSurname.setText(userModel.getSurname());
-            }
-        }
-    };
-    private Runnable getData = new Runnable() {
-        @Override
-        public void run() {
-
-        }
-    };
-
     private Uri photoUri;
     private String photoUrl;
 
@@ -111,30 +90,48 @@ public class MyAccountFragment extends BaseFragment {
     };
     private OnSuccessListener<UploadTask.TaskSnapshot> onSuccessListenerAddPhoto = new OnSuccessListener<UploadTask.TaskSnapshot>() {
         @Override
-        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-            photoUrl = taskSnapshot.getDownloadUrl().toString();
-            UploadPhotoModel model = new UploadPhotoModel(user.getUid(), photoUrl);
-            MyAccountFragment.super.database.getReference(REF_USER_PHOTO).push().setValue(model);
-            changeUserProfile(photoUrl);
+        public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
+            FirebaseStorage.getInstance().getReferenceFromUrl(NavigationDrawerActivity.userModel.getPhotoUrl()).delete()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()){
+                        photoUrl = taskSnapshot.getDownloadUrl().toString();
+                        NavigationDrawerActivity.userModel.setPhotoUrl(photoUrl);
+                        BusProvider.getInstance().post(new UpdateUIEvent());
+                        refUserInfTable.addListenerForSingleValueEvent(onUserKeyFinder);
+                    }else {
+                        System.out.println(task.getException().getMessage());
+                    }
+                }
+            });
         }
     };
-    private OnFailureListener onFailureListenerProfileChange = new OnFailureListener() {
+
+    private MyValueEventListener onUserKeyFinder = new MyValueEventListener() {
         @Override
-        public void onFailure(@NonNull Exception e) {
-            MyAccountFragment.super.showToast(getContext(), "Fail to update user profile");
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            for (DataSnapshot data: dataSnapshot.getChildren()){
+                if (MyAccountFragment.super.user.getUid().equals(data.getValue(UserLoginInfoTable.class).getuID())){
+                    updateUserProfile(data.getKey());
+                }
+            }
         }
     };
+
+    private void updateUserProfile(String userKey) {
+        refUserInfTable.child(userKey).setValue(NavigationDrawerActivity.userModel);
+    }
     private OnFailureListener onFailureListenerAddPhoto = new OnFailureListener() {
         @Override
         public void onFailure(@NonNull Exception e) {
-            MyAccountFragment.super.showToast(getContext(), "Fail to add storage");
+            MyAccountFragment.super.showToast(getContext(), "Fail to add storage  : " + e.getMessage());
         }
     };
     private DialogInterface.OnClickListener posBtnClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            MyAccountFragment.super.user.sendEmailVerification()
-                    .addOnCompleteListener(onCompleteListenerSentEmailVerify);
+            MyAccountFragment.super.user.sendEmailVerification().addOnCompleteListener(onCompleteListenerSentEmailVerify);
             MyAccountFragment.super.showToast(getContext(), "Email was sent");
         }
     };
@@ -173,7 +170,6 @@ public class MyAccountFragment extends BaseFragment {
         }
     };
     private void deleteUserFromDB() {
-        refUserInfTable = super.database.getReference(USER_INFO_TABLE);
         Query query = refUserInfTable.orderByChild("uID").equalTo(tempUid);
         query.addListenerForSingleValueEvent(deleteUserAccListener);
     }
@@ -206,56 +202,37 @@ public class MyAccountFragment extends BaseFragment {
         view = inflater.inflate(R.layout.fragment_my_account, container, false);
         setFragmentForBinder(this, view);
         setHasOptionsMenu(true);
-        handler = new Handler();
-        if (savedInstanceState == null){
-            //handler.post(getData);
-        }
-        //checkCurUser(super.user);
-
-        textView = (TextView)view.findViewById(R.id.acc_user_name);
-        textViewLastName = (TextView)view.findViewById(R.id.acc_user_last_name);
-        DatabaseReference ref = super.database.getReference(USER_INFO_TABLE);
-
-        refUserInfTable = MyAccountFragment.super.database.getReference(USER_INFO_TABLE);
-        Query query = refUserInfTable.orderByChild("uID").equalTo(MyAccountFragment.super.user.getUid());
-        query.addListenerForSingleValueEvent(myValueEventListener);
-
-        /*ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot data: dataSnapshot.getChildren()){
-                    UserLoginInfoTable userLoginInfoTable = data.getValue(UserLoginInfoTable.class);
-                    textView.setText(userLoginInfoTable.getName());
-                    textViewLastName.setText(userLoginInfoTable.getLastName());
-                    ((TextView)view.findViewById(R.id.acc_user_surname)).setText(userLoginInfoTable.getSurname());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
-
-        //ref.addChildEventListener(this);
+        checkCurUser(super.user);
+        refUserInfTable = super.database.getReference(USER_INFO_TABLE);
         return view;
     }
 
-   /* @Override
-    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-        for (DataSnapshot data: dataSnapshot.getChildren()){
-            if (data.getKey().equals("name")){
-                textView.setText(data.getValue().toString());
-                break;
-            }
+    @Subscribe
+    public void updateUI(UpdateUIEvent event){
+        System.out.println("in UI ivent");
+        if (NavigationDrawerActivity.userModel != null){
+            userName.setText(NavigationDrawerActivity.userModel.getName());
+            userLastName.setText(NavigationDrawerActivity.userModel.getLastName());
+            userSurname.setText(NavigationDrawerActivity.userModel.getSurname());
+            userNumber.setText(String.valueOf(NavigationDrawerActivity.userModel.getMobileNumber()));
+            userEmail.setText(NavigationDrawerActivity.userModel.getEmail());
+            checkCurUser(super.user);
+            //TODO: добавити інфу про компанію
         }
-    }*/
+    }
+
+    @Produce
+    public UpdateUIEvent update(){
+        return new UpdateUIEvent();
+    }
 
     private void checkCurUser(FirebaseUser user) {
         if (!user.isAnonymous()){
-            loadUserPhoto(user.getPhotoUrl(), userImg);
-            if (user.isEmailVerified()){
-                verEmailStatusImg.setImageResource(R.drawable.ic_fiber_manual_record_green_24dp);
+            if (!NavigationDrawerActivity.userModel.getPhotoUrl().equals("default_uri")){
+                loadUserPhoto(Uri.parse(NavigationDrawerActivity.userModel.getPhotoUrl()), userImg);
+            }
+            if (super.user.isEmailVerified()){
+                emailStatusImg.setImageResource(R.drawable.mail);
             }
         }
     }
@@ -292,6 +269,7 @@ public class MyAccountFragment extends BaseFragment {
             MyAccountFragment.super.startCurActivity(getContext(), ChangeNumberActivity.class);
         }else if (id == R.id.acc_card_view_person_email){
             //TODO: create method email edit;
+
         }else if (id == R.id.acc_card_view_mail_check){
             verifyEmail();
         }else if (id == R.id.acc_card_view_person_company){
@@ -303,7 +281,7 @@ public class MyAccountFragment extends BaseFragment {
         System.out.println("changeCompany");
     }
 
-    @OnClick(R.id.acc_change_photo)
+    @OnClick(R.id.acc_user_photo)
     public void editPhoto(){
         requestPermissions();
     }
@@ -345,15 +323,10 @@ public class MyAccountFragment extends BaseFragment {
     }
 
     private void savePhotoInStorage() {
-        StorageReference onlineStoragePhotoRef = super.storageRef.child(photoUri.getLastPathSegment());
+        StorageReference onlineStoragePhotoRef = super.refUsersPhoto.child(photoUri.getLastPathSegment());
         onlineStoragePhotoRef.putFile(photoUri)
                 .addOnSuccessListener(onSuccessListenerAddPhoto)
                 .addOnFailureListener(onFailureListenerAddPhoto);
-    }
-
-    private void changeUserProfile(String url) {
-        UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setPhotoUri(Uri.parse(url)).build();
-        super.user.updateProfile(profileChangeRequest).addOnFailureListener(onFailureListenerProfileChange);
     }
 
     @Override
@@ -386,6 +359,22 @@ public class MyAccountFragment extends BaseFragment {
     private void reAuthUser(String email, String pass){
         AuthCredential credential = EmailAuthProvider.getCredential(email, pass);
         super.user.reauthenticate(credential).addOnCompleteListener(credentialComplete);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (super.user != null && !user.isAnonymous()){
+            BusProvider.getInstance().register(this);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (user != null && !user.isAnonymous()){
+            BusProvider.getInstance().unregister(this);
+        }
     }
 }
 

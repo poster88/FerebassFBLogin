@@ -54,7 +54,7 @@ public class ChangePersonalDataActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_per_data);
         super.setActivityForBinder(this);
-        userRef.addValueEventListener(super.onUidUserDataListener);
+        //userRef.addValueEventListener(super.onUidUserDataListener);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         reference = super.database.getReference(USER_INFO_TABLE);
         userUid = super.user.getUid();

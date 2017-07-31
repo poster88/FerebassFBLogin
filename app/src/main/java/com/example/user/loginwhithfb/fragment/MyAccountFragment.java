@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -23,6 +24,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.user.loginwhithfb.activity.BaseActivity;
+import com.example.user.loginwhithfb.activity.SearchCompanyActivity;
 import com.example.user.loginwhithfb.lisntener.MyValueEventListener;
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.activity.ChangeNumberActivity;
@@ -70,11 +73,13 @@ public class MyAccountFragment extends BaseFragment {
     @BindView(R.id.acc_img_check_em_status) ImageView emailStatusImg;
 
     private EditText passEdit;
-    private View dialog;
-
+    private TextInputLayout inputLayoutEmail;
+    private EditText setEmail;
     private DatabaseReference refUserInfTable;
     private View view;
+    private View dialog;
     private String tempUid;
+    private String tempEmail;
     private Uri photoUri;
     private String photoUrl;
 
@@ -83,7 +88,7 @@ public class MyAccountFragment extends BaseFragment {
         public void onComplete(@NonNull Task task) {
             if (task.isSuccessful()){
                 MyAccountFragment.super.user.reload();
-                MyAccountFragment.super.showToast(getContext(), "Email was sent");
+                MyAccountFragment.super.showToast(getContext(), "Email was sent.");
             }else {
                 MyAccountFragment.super.showToast(getContext(), "Failed verify email.");
             }
@@ -105,7 +110,7 @@ public class MyAccountFragment extends BaseFragment {
                 BusProvider.getInstance().post(new UpdateUIEvent());
                 refUserInfTable.addListenerForSingleValueEvent(onUserKeyFinder);
             }else {
-                System.out.println(task.getException().getMessage());
+                MyAccountFragment.super.showToast(getContext(), task.getException().getMessage());
             }
         }
     };
@@ -119,14 +124,13 @@ public class MyAccountFragment extends BaseFragment {
             }
         }
     };
-
     private void updateUserProfile(String userKey) {
-        refUserInfTable.child(userKey).setValue(NavigationDrawerActivity.userModel);
+        refUserInfTable.child(userKey).setValue(BaseActivity.userModel);
     }
     private OnFailureListener onFailureListenerAddPhoto = new OnFailureListener() {
         @Override
         public void onFailure(@NonNull Exception e) {
-            MyAccountFragment.super.showToast(getContext(), "Fail to add storage  : " + e.getMessage());
+            MyAccountFragment.super.showToast(getContext(), "Fail to add storage. " + e.getMessage());
         }
     };
     private DialogInterface.OnClickListener posBtnClickListener = new DialogInterface.OnClickListener() {
@@ -188,9 +192,89 @@ public class MyAccountFragment extends BaseFragment {
         public void onClick(DialogInterface dialog, int which) {
             if (passEdit.getText().length() != 0){
                 MyAccountFragment.super.hideSoftKeyboard(getActivity());
-                reAuthUser(MyAccountFragment.super.user.getEmail(), passEdit.getText().toString());
+                reAuthUser(MyAccountFragment.super.user.getEmail(), passEdit.getText().toString(), credentialComplete);
             }else {
                 MyAccountFragment.super.showAlertDialogOneBtn("Password verify fail!", "Password field is empty", "OK", negBtnClickListener);
+            }
+        }
+    };
+
+    private DialogInterface.OnClickListener setCheckCredentialEmail = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            if (passEdit.getText().length() != 0){
+                MyAccountFragment.super.hideSoftKeyboard(getActivity());
+                reAuthUser(MyAccountFragment.super.user.getEmail(), passEdit.getText().toString(), credentialCompleteEmail);
+            }else {
+                MyAccountFragment.super.showAlertDialogOneBtn("Password verify fail!", "Password field is empty", "OK", negBtnClickListener);
+            }
+        }
+    };
+    private OnCompleteListener credentialCompleteEmail = new OnCompleteListener() {
+        @Override
+        public void onComplete(@NonNull Task task) {
+            if (task.isSuccessful()){
+                showDialogChangeEmail();
+            }else {
+                MyAccountFragment.super.hideProgressDialog();
+                MyAccountFragment.super.showAlertDialogOneBtn("Password check fail!", task.getException().getMessage(), "OK", negBtnClickListener);
+            }
+        }
+    };
+
+    private void showDialogChangeEmail() {
+        dialog = this.getLayoutInflater(getArguments()).inflate(R.layout.email_layout, null);
+        setEmail = ButterKnife.findById(dialog, R.id.change_email);
+        inputLayoutEmail = ButterKnife.findById(dialog, R.id.layout_change_email);
+        MyAccountFragment.super.hideSoftKeyboard(getActivity());
+        setEmail.setText(BaseActivity.userModel.getEmail());
+        super.showAlertDialogWithView("Change your email", dialog, android.R.drawable.ic_dialog_alert,
+                false, "Check", "Cancel", onChangeEmail, negBtnClickListener);
+    }
+
+    private DialogInterface.OnClickListener onChangeEmail = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            tempEmail = setEmail.getText().toString();
+            checkEmail();
+        }
+    };
+
+    private void checkEmail() {
+        if (MyAccountFragment.super.isValidEmail(setEmail, inputLayoutEmail)){
+            if (!tempEmail.equals(MyAccountFragment.super.user.getEmail())){
+                MyAccountFragment.super.showProgressDialog("Changing ...");
+                MyAccountFragment.super.user.updateEmail(setEmail.getText().toString()).addOnCompleteListener(onUpdateEmail);
+                return;
+            }
+        }
+        hideSoftKeyboard(getActivity());
+        super.showToast(getContext(), "Check up your email.");
+    }
+
+    private OnCompleteListener onUpdateEmail = new OnCompleteListener() {
+        @Override
+        public void onComplete(@NonNull Task task) {
+            MyAccountFragment.super.hideProgressDialog();
+            if (task.isSuccessful()){
+                BaseActivity.userModel.setEmail(tempEmail);
+                changeEmailInDB();
+            }else {
+                showToast(getContext(), "Failed to update Email. " + task.getException().getMessage());
+            }
+        }
+    };
+
+    private void changeEmailInDB() {
+        BaseActivity.userRef.addListenerForSingleValueEvent(onChangeEmailListener);
+        super.showToast(getContext(), "Email is updated!");
+    }
+
+    private MyValueEventListener onChangeEmailListener = new MyValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            for (DataSnapshot data: dataSnapshot.getChildren()){
+                updateUserProfile(data.getKey());
             }
         }
     };
@@ -201,7 +285,6 @@ public class MyAccountFragment extends BaseFragment {
         view = inflater.inflate(R.layout.fragment_my_account, container, false);
         setFragmentForBinder(this, view);
         setHasOptionsMenu(true);
-        //checkCurUser(super.user);
         refUserInfTable = super.database.getReference(USER_INFO_TABLE);
         return view;
     }
@@ -215,7 +298,6 @@ public class MyAccountFragment extends BaseFragment {
             userNumber.setText(String.valueOf(NavigationDrawerActivity.userModel.getMobileNumber()));
             userEmail.setText(NavigationDrawerActivity.userModel.getEmail());
             checkCurUser(super.user);
-            //TODO: добавити інфу про компанію
         }
     }
 
@@ -262,20 +344,16 @@ public class MyAccountFragment extends BaseFragment {
 
     private void pickActivity(int id){
         if (id == R.id.acc_card_view_person){
-            MyAccountFragment.super.startCurActivity(getContext(), ChangePersonalDataActivity.class);
+            super.startCurActivity(getContext(), ChangePersonalDataActivity.class);
         }else if (id == R.id.acc_card_view_person_number){
-            MyAccountFragment.super.startCurActivity(getContext(), ChangeNumberActivity.class);
+            super.startCurActivity(getContext(), ChangeNumberActivity.class);
         }else if (id == R.id.acc_card_view_person_email){
-            //TODO: create method email edit;
+            changeUserEmail();
         }else if (id == R.id.acc_card_view_mail_check){
             verifyEmail();
         }else if (id == R.id.acc_card_view_person_company){
-            changeCompany();
+            super.startCurActivity(getContext(), SearchCompanyActivity.class);
         }
-    }
-
-    private void changeCompany(){
-        System.out.println("changeCompany");
     }
 
     @OnClick(R.id.acc_user_photo)
@@ -353,9 +431,16 @@ public class MyAccountFragment extends BaseFragment {
                 false, "Check", "Cancel", setCheckCredential, negBtnClickListener);
     }
 
-    private void reAuthUser(String email, String pass){
+    private void changeUserEmail() {
+        dialog = this.getLayoutInflater(getArguments()).inflate(R.layout.password_layout, null);
+        passEdit = ButterKnife.findById(dialog, R.id.set_line_password);
+        super.showAlertDialogWithView("Check up your credentials", dialog, android.R.drawable.ic_dialog_alert,
+                false, "Check", "Cancel", setCheckCredentialEmail, negBtnClickListener);
+    }
+
+    private void reAuthUser(String email, String pass, OnCompleteListener listener){
         AuthCredential credential = EmailAuthProvider.getCredential(email, pass);
-        super.user.reauthenticate(credential).addOnCompleteListener(credentialComplete);
+        super.user.reauthenticate(credential).addOnCompleteListener(listener);
     }
 
     @Override

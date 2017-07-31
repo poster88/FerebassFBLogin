@@ -8,11 +8,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.user.loginwhithfb.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
@@ -107,6 +112,28 @@ public class BaseFragment extends Fragment {
         ab.setNegativeButton(btnTitle, btnClickListener);
         ab.create();
         ab.show();
+    }
+
+    protected boolean isValidEmail(EditText eMail, TextInputLayout inputLayoutEmail) {
+        String mail = eMail.getText().toString().trim();
+        if (TextUtils.isEmpty(mail)){
+            inputLayoutEmail.setError(getString(R.string.err_msg_empty_email));
+            requestFocus(eMail);
+            return false;
+        }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(mail).matches()){
+            inputLayoutEmail.setError(getString(R.string.err_msg_email));
+            requestFocus(eMail);
+            return false;
+        }
+        inputLayoutEmail.setErrorEnabled(false);
+        return true;
+    }
+
+    private void requestFocus(View view) {
+        if (view.requestFocus()) {
+            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
     }
 
     protected void hideSoftKeyboard(Activity activity) {

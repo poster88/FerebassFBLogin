@@ -2,19 +2,15 @@ package com.example.user.loginwhithfb.activity;
 
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-//
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.model.CompaniesInfoTable;
 import com.google.firebase.database.DataSnapshot;
@@ -34,9 +30,7 @@ import butterknife.BindView;
  * Created by POSTER on 04.07.2017.
  */
 
-public class SearchCompanyActivity extends BaseActivity implements AdapterView.OnItemClickListener,
-        MaterialSearchView.SearchViewListener {
-
+public class SearchCompanyActivity extends BaseActivity implements AdapterView.OnItemClickListener, MaterialSearchView.SearchViewListener {
     @BindView(R.id.search_view) MaterialSearchView searchView;
     @BindView(R.id.toolbar_search) Toolbar toolbar;
     @BindView(R.id.companyList) ListView companyList;
@@ -49,6 +43,7 @@ public class SearchCompanyActivity extends BaseActivity implements AdapterView.O
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot data: dataSnapshot.getChildren()) {
+
                 String companyId = data.getValue(CompaniesInfoTable.class).getCompanyId();
                 String companyName = data.getValue(CompaniesInfoTable.class).getCompanyName();
                 companyData.put(companyId, companyName);
@@ -96,7 +91,6 @@ public class SearchCompanyActivity extends BaseActivity implements AdapterView.O
         super.setActivityForBinder(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         reference = database.getReference(COMPANY_INFO_TABLE);
         innitCompanyList();
         setListeners();

@@ -1,74 +1,52 @@
 package com.example.user.loginwhithfb.activity;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.user.loginwhithfb.R;
+import com.example.user.loginwhithfb.lisntener.MyValueEventListener;
 import com.example.user.loginwhithfb.model.UserLoginInfoTable;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by POSTER on 05.07.2017.
  */
 
-public class ChangeNumberActivity extends AppCompatActivity {
+public class ChangeNumberActivity extends BaseActivity {
     @BindView(R.id.set_new_number) EditText numberEdit;
 
-    private FirebaseDatabase database;
     private DatabaseReference reference;
-    private FirebaseUser user;
     private String userUid;
-    private ProgressDialog progressDialog;
     private String userKey;
-    private UserLoginInfoTable userModel;
-    private boolean flag;
+    private MyValueEventListener onNumberChangeListener = new MyValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            ChangeNumberActivity.super.hideProgressDialog();
+            for (DataSnapshot data: dataSnapshot.getChildren()) {
+                if (userUid.equals(data.getValue(UserLoginInfoTable.class).getuID())){
+                    userKey = data.getKey();
+                    numberEdit.setText(String.valueOf(userModel.getMobileNumber()));
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_number);
-        ButterKnife.bind(this);
+        super.setActivityForBinder(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        database = FirebaseDatabase.getInstance();
-        reference = database.getReference("UserLoginInfoTable");
-        userUid = user.getUid();
-        showProgressDialog();
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot data: dataSnapshot.getChildren()) {
-                    if (userUid.equals(data.getValue(UserLoginInfoTable.class).getuID())){
-                        userKey = data.getKey();
-                        userModel = data.getValue(UserLoginInfoTable.class);
-                        numberEdit.setText(String.valueOf(userModel.getMobileNumber()));
-                        hideProgressDialog();
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        reference = super.database.getReference(USER_INFO_TABLE);
+        userUid = super.user.getUid();
+        super.showProgressDialog("Loading data ... ");
+        reference.addListenerForSingleValueEvent(onNumberChangeListener);
     }
 
     @Override
@@ -76,34 +54,19 @@ public class ChangeNumberActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.accept_changes_menu_btn){
             changeNumber(Integer.valueOf(numberEdit.getText().toString()), userKey, userModel);
         }
-        onBackPressed();
+        finish();
         return true;
     }
 
-    private void changeNumber(int number, String key, UserLoginInfoTable model){
+    private void changeNumber(long number, String key, UserLoginInfoTable model){
         model.setMobileNumber(number);
         reference.child(key).setValue(model);
-        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+        super.showToast(this, "Saved");
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_accept_changes, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    public void showProgressDialog() {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage(getString(R.string.loading));
-            progressDialog.setIndeterminate(true);
-        }
-        progressDialog.show();
-    }
-
-    public void hideProgressDialog() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
+        return true;
     }
 }

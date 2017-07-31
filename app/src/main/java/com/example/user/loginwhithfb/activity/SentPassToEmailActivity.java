@@ -94,7 +94,7 @@ public class SentPassToEmailActivity extends BaseActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         super.hideSoftKeyboard(this);
         if (item.getItemId() == android.R.id.home){
-            finish();
+            onBackPressed();
             return true;
         }
         if (item.getItemId() == item.getItemId()){

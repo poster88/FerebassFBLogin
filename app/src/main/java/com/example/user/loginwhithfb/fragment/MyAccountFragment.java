@@ -83,31 +83,32 @@ public class MyAccountFragment extends BaseFragment {
         public void onComplete(@NonNull Task task) {
             if (task.isSuccessful()){
                 MyAccountFragment.super.user.reload();
+                MyAccountFragment.super.showToast(getContext(), "Email was sent");
             }else {
-                MyAccountFragment.super.showToast(getContext(), "Failed verify email : ");
+                MyAccountFragment.super.showToast(getContext(), "Failed verify email.");
             }
         }
     };
     private OnSuccessListener<UploadTask.TaskSnapshot> onSuccessListenerAddPhoto = new OnSuccessListener<UploadTask.TaskSnapshot>() {
         @Override
         public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
-            FirebaseStorage.getInstance().getReferenceFromUrl(NavigationDrawerActivity.userModel.getPhotoUrl()).delete()
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()){
-                        photoUrl = taskSnapshot.getDownloadUrl().toString();
-                        NavigationDrawerActivity.userModel.setPhotoUrl(photoUrl);
-                        BusProvider.getInstance().post(new UpdateUIEvent());
-                        refUserInfTable.addListenerForSingleValueEvent(onUserKeyFinder);
-                    }else {
-                        System.out.println(task.getException().getMessage());
-                    }
-                }
-            });
+            photoUrl = taskSnapshot.getDownloadUrl().toString();
+            FirebaseStorage.getInstance().getReferenceFromUrl(NavigationDrawerActivity.userModel.getPhotoUrl())
+                    .delete().addOnCompleteListener(deleteListener);
         }
     };
-
+    private OnCompleteListener<Void> deleteListener = new OnCompleteListener<Void>() {
+        @Override
+        public void onComplete(@NonNull Task<Void> task) {
+            if (task.isSuccessful()){
+                NavigationDrawerActivity.userModel.setPhotoUrl(photoUrl);
+                BusProvider.getInstance().post(new UpdateUIEvent());
+                refUserInfTable.addListenerForSingleValueEvent(onUserKeyFinder);
+            }else {
+                System.out.println(task.getException().getMessage());
+            }
+        }
+    };
     private MyValueEventListener onUserKeyFinder = new MyValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -132,7 +133,6 @@ public class MyAccountFragment extends BaseFragment {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             MyAccountFragment.super.user.sendEmailVerification().addOnCompleteListener(onCompleteListenerSentEmailVerify);
-            MyAccountFragment.super.showToast(getContext(), "Email was sent");
         }
     };
     private DialogInterface.OnClickListener negBtnClickListener = new DialogInterface.OnClickListener() {
@@ -141,7 +141,6 @@ public class MyAccountFragment extends BaseFragment {
             dialog.dismiss();
         }
     };
-
     private DialogInterface.OnClickListener onRegistrationListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
@@ -202,14 +201,13 @@ public class MyAccountFragment extends BaseFragment {
         view = inflater.inflate(R.layout.fragment_my_account, container, false);
         setFragmentForBinder(this, view);
         setHasOptionsMenu(true);
-        checkCurUser(super.user);
+        //checkCurUser(super.user);
         refUserInfTable = super.database.getReference(USER_INFO_TABLE);
         return view;
     }
 
     @Subscribe
     public void updateUI(UpdateUIEvent event){
-        System.out.println("in UI ivent");
         if (NavigationDrawerActivity.userModel != null){
             userName.setText(NavigationDrawerActivity.userModel.getName());
             userLastName.setText(NavigationDrawerActivity.userModel.getLastName());
@@ -231,7 +229,7 @@ public class MyAccountFragment extends BaseFragment {
             if (!NavigationDrawerActivity.userModel.getPhotoUrl().equals("default_uri")){
                 loadUserPhoto(Uri.parse(NavigationDrawerActivity.userModel.getPhotoUrl()), userImg);
             }
-            if (super.user.isEmailVerified()){
+            if (user.isEmailVerified()){
                 emailStatusImg.setImageResource(R.drawable.mail);
             }
         }
@@ -269,7 +267,6 @@ public class MyAccountFragment extends BaseFragment {
             MyAccountFragment.super.startCurActivity(getContext(), ChangeNumberActivity.class);
         }else if (id == R.id.acc_card_view_person_email){
             //TODO: create method email edit;
-
         }else if (id == R.id.acc_card_view_mail_check){
             verifyEmail();
         }else if (id == R.id.acc_card_view_person_company){

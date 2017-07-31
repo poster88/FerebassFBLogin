@@ -7,11 +7,10 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.example.user.loginwhithfb.R;
+import com.example.user.loginwhithfb.lisntener.MyValueEventListener;
 import com.example.user.loginwhithfb.model.UserLoginInfoTable;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
 
@@ -29,23 +28,18 @@ public class ChangePersonalDataActivity extends BaseActivity {
     private String userKey;
     private UserLoginInfoTable userModel;
 
-    private ValueEventListener onUserDataListener = new ValueEventListener() {
+    private MyValueEventListener onUserDataListener = new MyValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
+            ChangePersonalDataActivity.super.hideProgressDialog();
             for (DataSnapshot data: dataSnapshot.getChildren()){
                 if (userUid.equals(data.getValue(UserLoginInfoTable.class).getuID())){
                     userKey = data.getKey();
                     userModel = data.getValue(UserLoginInfoTable.class);
                     setDataToEditText();
-                    ChangePersonalDataActivity.super.hideProgressDialog();
                     break;
                 }
             }
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-            ChangePersonalDataActivity.super.hideProgressDialog();
         }
     };
 
@@ -54,12 +48,11 @@ public class ChangePersonalDataActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_per_data);
         super.setActivityForBinder(this);
-        //userRef.addValueEventListener(super.onUidUserDataListener);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         reference = super.database.getReference(USER_INFO_TABLE);
         userUid = super.user.getUid();
         super.showProgressDialog("Loading data ...");
-        reference.addValueEventListener(onUserDataListener);
+        reference.addListenerForSingleValueEvent(onUserDataListener);
     }
 
     private void setDataToEditText() {
@@ -71,7 +64,7 @@ public class ChangePersonalDataActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_accept_changes, menu);
-        return super.onCreateOptionsMenu(menu);
+        return true /*super.onCreateOptionsMenu(menu)*/;
     }
 
     @Override
@@ -79,14 +72,14 @@ public class ChangePersonalDataActivity extends BaseActivity {
         if (item.getItemId() == R.id.accept_changes_menu_btn){
             saveChanges(newName.getText().toString(), newLastName.getText().toString(), newSurName.getText().toString());
         }
-        onBackPressed();
+        finish();
         return true;
     }
 
-    private void saveChanges(String name, String lastName, String surmname) {
+    private void saveChanges(String name, String lastName, String surname) {
         userModel.setName(name);
         userModel.setLastName(lastName);
-        userModel.setSurname(surmname);
+        userModel.setSurname(surname);
         reference.child(userKey).setValue(userModel);
         super.showToast(this, "Saved");
     }

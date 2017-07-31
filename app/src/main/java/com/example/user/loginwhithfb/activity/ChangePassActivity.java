@@ -3,9 +3,7 @@ package com.example.user.loginwhithfb.activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -37,30 +35,21 @@ public class ChangePassActivity extends BaseActivity{
             if (task.isSuccessful()){
                 updateUserPass();
             }else {
-                ChangePassActivity.super.showToast(ChangePassActivity.this, "Reathenticate  fail! " + task.getException());
+                ChangePassActivity.super.showToast(ChangePassActivity.this, "Reathenticate  fail! " + task.getException().getMessage());
                 ChangePassActivity.super.hideProgressDialog();
             }
         }
     };
-    private OnCompleteListener<Void> onCompleteListenerChangePass = new OnCompleteListener<Void>() {
-        @Override
-        public void onComplete(@NonNull Task<Void> task) {
-            if (task.isSuccessful()) {
-                ChangePassActivity.super.showToast(ChangePassActivity.this, "Password updated! " + task.getException().getMessage());
-                //user.reload();
-            }else{
-                ChangePassActivity.super.showToast(ChangePassActivity.this, "Fail update password! " + task.getException().getMessage());
-            }
-            ChangePassActivity.super.hideProgressDialog();
-        }
-    };
-    private OnCompleteListener onCompleteListenerResPasByEmail = new OnCompleteListener() {
+    private OnCompleteListener onCompleteListenerChangePass = new OnCompleteListener<Void>() {
         @Override
         public void onComplete(@NonNull Task task) {
+            ChangePassActivity.super.hideProgressDialog();
             if (task.isSuccessful()) {
-                Snackbar.make(findViewById(R.id.activity_change_pass), "Email sent!", Snackbar.LENGTH_LONG).show();
-            } else {
-                Log.d("ERROR SEND PASS", " " + task.getException());
+                user.reload();
+                ChangePassActivity.super.showToast(getBaseContext(), "Password updated!");
+                finish();
+            }else{
+                ChangePassActivity.super.showToast(ChangePassActivity.this, "Fail update password! " + task.getException().getMessage());
             }
         }
     };
@@ -69,18 +58,17 @@ public class ChangePassActivity extends BaseActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_pass);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         super.setActivityForBinder(this);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home){
+        if (item.getItemId() == android.R.id.home){
             finish();
             return true;
         }
-        if (id == R.id.accept_changes_menu_btn){
+        if (item.getItemId() == R.id.accept_changes_menu_btn){
             checkCredentials();
         }
         return true;

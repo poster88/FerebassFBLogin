@@ -86,10 +86,10 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         userName.setText(userModel.getName());
         userEmail.setText(userModel.getEmail());
         if (!userModel.getPhotoUrl().equals("default_uri")){
-            Glide.with(NavigationDrawerActivity.this)
+            Glide.with(getApplicationContext())
                     .load(Uri.parse(NavigationDrawerActivity.userModel.getPhotoUrl()))
                     .crossFade().thumbnail(0.5f)
-                    .bitmapTransform(new CircleTransform(NavigationDrawerActivity.this))
+                    .bitmapTransform(new CircleTransform(getApplicationContext()))
                     .diskCacheStrategy(DiskCacheStrategy.ALL).into(userPhoto);
         }
     }

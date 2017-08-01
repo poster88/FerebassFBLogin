@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -43,7 +44,6 @@ public class SearchCompanyActivity extends BaseActivity implements AdapterView.O
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot data: dataSnapshot.getChildren()) {
-
                 String companyId = data.getValue(CompaniesInfoTable.class).getCompanyId();
                 String companyName = data.getValue(CompaniesInfoTable.class).getCompanyName();
                 companyData.put(companyId, companyName);
@@ -109,6 +109,14 @@ public class SearchCompanyActivity extends BaseActivity implements AdapterView.O
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search_item, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        searchView.setMenuItem(item);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home){
@@ -117,15 +125,6 @@ public class SearchCompanyActivity extends BaseActivity implements AdapterView.O
         }
         return super.onOptionsItemSelected(item);
     }
-
-    /*@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        /*getMenuInflater().inflate(R.menu.menu_search_item, menu);
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
-        return true;
-    }*/
 
     public boolean isProgressDialogShowing() {
         progressBar.setVisibility(View.VISIBLE);
@@ -138,13 +137,11 @@ public class SearchCompanyActivity extends BaseActivity implements AdapterView.O
         return false;
     }
 
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         List<String> list = new ArrayList<>(companyData.keySet());
         //SearchCompanyActivity.super.startCurActivity(this, AddRequestCompanyActivity.class)
         startActivity(new Intent(getBaseContext(), AddRequestCompanyActivity.class).putExtra("companyId", list.get(position)));
-        finish();
     }
 
     @Override

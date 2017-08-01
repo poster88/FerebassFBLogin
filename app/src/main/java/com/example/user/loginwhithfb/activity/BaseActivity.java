@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.user.loginwhithfb.event.UpdateCompanyUI;
 import com.example.user.loginwhithfb.lisntener.MyValueEventListener;
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.event.UpdateItem;
@@ -75,7 +76,7 @@ public class BaseActivity extends AppCompatActivity {
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot data: dataSnapshot.getChildren()){
                 companiesInfoTable = data.getValue(CompaniesInfoTable.class);
-                BusProvider.getInstance().post(new UpdateItem());
+                BusProvider.getInstance().post(new UpdateCompanyUI());
             }
         }
     };

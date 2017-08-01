@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.R;
+import com.example.user.loginwhithfb.event.UpdateCompanyUI;
 import com.example.user.loginwhithfb.event.UpdateUIEvent;
 import com.example.user.loginwhithfb.eventbus.BusProvider;
 import com.example.user.loginwhithfb.fragment.CompanyChatFragment;
@@ -75,7 +76,6 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         getWindow().setStatusBarColor(Color.TRANSPARENT);
 
         userRef = super.database.getReference(USER_INFO_TABLE).orderByChild("uID").equalTo(super.user.getUid());
-        refCompanyTable = super.database.getReference(COMP_INF_TABLE).orderByChild("companyId").equalTo(null);
     }
 
     @Subscribe
@@ -91,6 +91,9 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
                     .crossFade().thumbnail(0.5f)
                     .bitmapTransform(new CircleTransform(getApplicationContext()))
                     .diskCacheStrategy(DiskCacheStrategy.ALL).into(userPhoto);
+        }
+        if (!userModel.getCompanyUid().equals("default_uri")){
+            refCompanyTable = database.getReference(COMP_INF_TABLE).child(userModel.getCompanyUid());
         }
     }
 
@@ -237,7 +240,9 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
             BusProvider.getInstance().register(this);
             super.auth.addAuthStateListener(authStateListener);
             userRef.addValueEventListener(onUidUserDataListener);
-            refCompanyTable.addValueEventListener(onCompanyInfoTableListener);
+            if (onCompanyInfoTableListener != null){
+                refCompanyTable.addValueEventListener(onCompanyInfoTableListener);
+            }
         }
     }
 
@@ -248,6 +253,10 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
             BusProvider.getInstance().unregister(this);
             super.auth.removeAuthStateListener(authStateListener);
             refCompanyTable.removeEventListener(onCompanyInfoTableListener);
+            if (onCompanyInfoTableListener != null){
+                refCompanyTable.removeEventListener(onCompanyInfoTableListener);
+            }
         }
     }
+
 }

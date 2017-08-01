@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_info_company"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp">
+
+    <ImageView
+        android:id="@+id/info_company_logo_img"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/warehouse"/>
+
+    <TextView
+        android:id="@+id/info_company_name_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/info_company_logo_img"
+        android:layout_marginLeft="16dp"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:text="Company name:"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/info_company_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="16dp"
+        android:textSize="16dp"
+        android:text="Test name"
+        android:layout_toRightOf="@+id/info_company_logo_img"
+        android:layout_below="@+id/info_company_name_label" />
+
+    <TextView
+        android:id="@+id/info_company_desc_label"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="8dp"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:text="About:"
+        android:layout_below="@+id/info_company_logo_img"/>
+
+    <TextView
+        android:id="@+id/info_company_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/info_company_desc_label"
+        android:layout_marginTop="4dp"
+        android:textSize="16dp"
+        android:text="Test descr"
+        />
+
+    <TextView
+        android:id="@+id/info_key_product_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/info_company_desc"
+        android:layout_marginTop="8dp"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:text="Key products:" />
+
+    <TextView
+        android:id="@+id/info_key_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/info_key_product_label"
+        android:layout_marginTop="4dp"
+        android:textSize="16dp"
+        android:text="key pr1, key pr2"
+        />
+
+    <TextView
+        android:id="@+id/info_my_position_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:text="My position:"
+        android:layout_below="@+id/info_key_product" />
+
+    <TextView
+        android:id="@+id/info_my_position"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/info_my_position_label"
+        android:layout_marginTop="4dp"
+        android:textSize="16dp"
+        android:text="test position"
+        />
+</RelativeLayout>

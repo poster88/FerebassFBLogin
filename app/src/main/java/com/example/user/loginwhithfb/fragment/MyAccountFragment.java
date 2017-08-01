@@ -20,12 +20,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.activity.BaseActivity;
 import com.example.user.loginwhithfb.activity.SearchCompanyActivity;
+import com.example.user.loginwhithfb.event.UpdateCompanyUI;
 import com.example.user.loginwhithfb.lisntener.MyValueEventListener;
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.activity.ChangeNumberActivity;
@@ -82,6 +84,7 @@ public class MyAccountFragment extends BaseFragment {
     private String tempEmail;
     private Uri photoUri;
     private String photoUrl;
+    private RelativeLayout companyInfoLayout;
 
     private OnCompleteListener onCompleteListenerSentEmailVerify = new OnCompleteListener() {
         @Override
@@ -175,6 +178,7 @@ public class MyAccountFragment extends BaseFragment {
     private void deleteUserFromDB() {
         Query query = refUserInfTable.orderByChild("uID").equalTo(tempUid);
         query.addListenerForSingleValueEvent(deleteUserAccListener);
+        //TODO: delete all users ref link
     }
     private OnCompleteListener credentialComplete = new OnCompleteListener() {
         @Override
@@ -283,6 +287,7 @@ public class MyAccountFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_my_account, container, false);
+        companyInfoLayout = (RelativeLayout)view.findViewById(R.id.layout_info_company);
         setFragmentForBinder(this, view);
         setHasOptionsMenu(true);
         refUserInfTable = super.database.getReference(USER_INFO_TABLE);
@@ -304,6 +309,16 @@ public class MyAccountFragment extends BaseFragment {
     @Produce
     public UpdateUIEvent update(){
         return new UpdateUIEvent();
+    }
+
+    @Subscribe
+    public void updateCompanyUserInfo(UpdateCompanyUI event){
+        System.out.println("UpdateCompanyUI event");
+    }
+
+    @Produce
+    public UpdateCompanyUI updateCompanyUI(){
+        return new UpdateCompanyUI();
     }
 
     private void checkCurUser(FirebaseUser user) {

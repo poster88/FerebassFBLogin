@@ -25,6 +25,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?attr/progressBarStyle"
+            android:paddingTop="24dp"
+            android:layout_width="@dimen/profile_width"
+            android:layout_height="@dimen/profile_height" />
+
         <ImageView
             android:id="@+id/img_profile"
             android:layout_width="@dimen/profile_width"

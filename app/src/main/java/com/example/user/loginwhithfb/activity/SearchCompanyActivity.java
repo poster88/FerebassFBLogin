@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import com.example.user.loginwhithfb.R;
+import com.example.user.loginwhithfb.lisntener.MyValueEventListener;
 import com.example.user.loginwhithfb.model.CompaniesInfoTable;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,25 +41,22 @@ public class SearchCompanyActivity extends BaseActivity implements AdapterView.O
     private Map<String, String> companyData;
     private DatabaseReference reference;
     private final String COMPANY_INFO_TABLE = "CompaniesInfoTable";
-    private ValueEventListener dataListener = new ValueEventListener() {
+    private MyValueEventListener dataListener = new MyValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot data: dataSnapshot.getChildren()) {
                 String companyId = data.getValue(CompaniesInfoTable.class).getCompanyId();
                 String companyName = data.getValue(CompaniesInfoTable.class).getCompanyName();
-                companyData.put(companyId, companyName);
+                if (!userModel.getCompanyUid().equals(companyId)){
+                    companyData.put(companyId, companyName);
+                }
             }
             ArrayAdapter adapter = new ArrayAdapter(SearchCompanyActivity.this, android.R.layout.simple_list_item_1, companyData.values().toArray());
             companyList.setAdapter(adapter);
             isProgressDialogHide();
         }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-            SearchCompanyActivity.super.showToast(SearchCompanyActivity.this, "Error : " + databaseError.getMessage());
-            isProgressDialogHide();
-        }
     };
+
     private MaterialSearchView.OnQueryTextListener queryTextListener = new MaterialSearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
@@ -105,7 +103,7 @@ public class SearchCompanyActivity extends BaseActivity implements AdapterView.O
     private void innitCompanyList() {
         isProgressDialogShowing();
         companyData = new HashMap<>();
-        reference.addValueEventListener(dataListener);
+        reference.addListenerForSingleValueEvent(dataListener);
     }
 
     @Override
@@ -140,7 +138,6 @@ public class SearchCompanyActivity extends BaseActivity implements AdapterView.O
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         List<String> list = new ArrayList<>(companyData.keySet());
-        //SearchCompanyActivity.super.startCurActivity(this, AddRequestCompanyActivity.class)
         startActivity(new Intent(getBaseContext(), AddRequestCompanyActivity.class).putExtra("companyId", list.get(position)));
     }
 
@@ -153,5 +150,10 @@ public class SearchCompanyActivity extends BaseActivity implements AdapterView.O
     public void onSearchViewClosed() {
         ArrayAdapter adapter = new ArrayAdapter(SearchCompanyActivity.this, android.R.layout.simple_list_item_1, companyData.values().toArray());
         companyList.setAdapter(adapter);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

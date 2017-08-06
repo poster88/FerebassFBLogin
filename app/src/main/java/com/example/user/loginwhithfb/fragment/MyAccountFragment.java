@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -38,6 +39,7 @@ import com.example.user.loginwhithfb.activity.NavigationDrawerActivity;
 import com.example.user.loginwhithfb.activity.RegistrationActivity;
 import com.example.user.loginwhithfb.event.UpdateUIEvent;
 import com.example.user.loginwhithfb.eventbus.BusProvider;
+import com.example.user.loginwhithfb.model.CompaniesInfoTable;
 import com.example.user.loginwhithfb.model.UserLoginInfoTable;
 import com.example.user.loginwhithfb.other.CircleTransform;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -55,6 +57,14 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.zip.Inflater;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -80,11 +90,13 @@ public class MyAccountFragment extends BaseFragment {
     private DatabaseReference refUserInfTable;
     private View view;
     private View dialog;
+    private View companyView;
     private String tempUid;
     private String tempEmail;
     private Uri photoUri;
     private String photoUrl;
-    private RelativeLayout companyInfoLayout;
+    private LinearLayout infoCompContainer;
+    private Inflater inflater;
 
     private OnCompleteListener onCompleteListenerSentEmailVerify = new OnCompleteListener() {
         @Override
@@ -287,7 +299,6 @@ public class MyAccountFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_my_account, container, false);
-        companyInfoLayout = (RelativeLayout)view.findViewById(R.id.layout_info_company);
         setFragmentForBinder(this, view);
         setHasOptionsMenu(true);
         refUserInfTable = super.database.getReference(USER_INFO_TABLE);
@@ -313,12 +324,45 @@ public class MyAccountFragment extends BaseFragment {
 
     @Subscribe
     public void updateCompanyUserInfo(UpdateCompanyUI event){
-        System.out.println("UpdateCompanyUI event");
+        RelativeLayout labelContainer = (RelativeLayout)view.findViewById(R.id.acc_company_label_container);
+        RelativeLayout infoCompanyLayout = (RelativeLayout)view.findViewById(R.id.layout_info_company);
+        if (NavigationDrawerActivity.companiesInfoTable != null){
+            if (labelContainer.getVisibility() == View.VISIBLE){
+                labelContainer.setVisibility(View.GONE);
+                infoCompanyLayout.setVisibility(View.VISIBLE);
+            }
+            initCompanyWidgetsData(infoCompanyLayout);
+        }else {
+            labelContainer.setVisibility(View.VISIBLE);
+            infoCompanyLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void initCompanyWidgetsData(View view) {
+        ((TextView)view.findViewById(R.id.info_company_name)).setText(NavigationDrawerActivity.companiesInfoTable.getCompanyName());
+        ((TextView)view.findViewById(R.id.info_company_desc)).setText(NavigationDrawerActivity.companiesInfoTable.getCompanyDescr());
+        ((TextView)view.findViewById(R.id.info_key_product)).setText(createStringText(NavigationDrawerActivity.companiesInfoTable.getCompanyProducts()));
+        ((TextView)view.findViewById(R.id.info_my_position)).setText(getUserPositionInCompany(NavigationDrawerActivity.companiesInfoTable.getPositions()));
+        if (!NavigationDrawerActivity.companiesInfoTable.getCompanyLogoUri().toString().equals("default_uri")){
+            loadImage(Uri.parse(NavigationDrawerActivity.companiesInfoTable.getCompanyLogoUri()), ((ImageView)view.findViewById(R.id.info_company_logo_img)));
+        }
     }
 
     @Produce
     public UpdateCompanyUI updateCompanyUI(){
         return new UpdateCompanyUI();
+    }
+
+    private String getUserPositionInCompany(Object positions){
+        String position = "Request in progress";
+        Map<String, Object> data = (Map<String, Object>) positions;
+        for (Map.Entry<String, Object> pos: data.entrySet()) {
+            if (pos.getValue().toString().contains(user.getUid())){
+                position = pos.getKey();
+                break;
+            }
+        }
+        return position;
     }
 
     private void checkCurUser(FirebaseUser user) {
@@ -335,6 +379,19 @@ public class MyAccountFragment extends BaseFragment {
     private void loadUserPhoto(Uri uri, ImageView view) {
         Glide.with(this).load(uri).crossFade().thumbnail(0.5f).bitmapTransform(new CircleTransform(getContext()))
                 .diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
+    }
+
+    private void loadImage(Uri uri, ImageView view){
+        Glide.with(this).load(uri).crossFade().thumbnail(0.5f)
+                .diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
+    }
+
+    private String createStringText(Object o){
+        ArrayList<String> keys = ((ArrayList<String>) o);
+        StringBuilder builder = new StringBuilder();
+        for (String value : keys) builder.append(value).append(", ");
+        if (keys.size()> 0) builder.deleteCharAt(builder.length() - 2);
+        return builder.toString();
     }
 
     private void verifyEmail(){

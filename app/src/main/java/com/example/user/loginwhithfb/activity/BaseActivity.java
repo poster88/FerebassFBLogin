@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.CountDownTimer;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -14,8 +15,11 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.event.UpdateCompanyUI;
 import com.example.user.loginwhithfb.lisntener.MyValueEventListener;
 import com.example.user.loginwhithfb.R;
@@ -29,6 +33,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 
@@ -56,6 +62,7 @@ public class BaseActivity extends AppCompatActivity {
 
     public static UserLoginInfoTable userModel;
     public static Query userRef;
+
     public static CompaniesInfoTable companiesInfoTable;
     public static Query refCompanyTable;
 
@@ -74,10 +81,8 @@ public class BaseActivity extends AppCompatActivity {
     protected MyValueEventListener onCompanyInfoTableListener = new MyValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            for (DataSnapshot data: dataSnapshot.getChildren()){
-                companiesInfoTable = data.getValue(CompaniesInfoTable.class);
-                BusProvider.getInstance().post(new UpdateCompanyUI());
-            }
+            companiesInfoTable = dataSnapshot.getValue(CompaniesInfoTable.class);
+            BusProvider.getInstance().post(new UpdateCompanyUI());
         }
     };
 
@@ -216,5 +221,18 @@ public class BaseActivity extends AppCompatActivity {
         if (view.requestFocus()) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
+    }
+
+    protected void loadImage(Uri uri, ImageView view){
+        Glide.with(this).load(uri).crossFade().thumbnail(0.5f)
+                .diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
+    }
+
+    protected String createStringText(Object o){
+        ArrayList<String> keys = ((ArrayList<String>) o);
+        StringBuilder builder = new StringBuilder();
+        for (String value : keys) builder.append(value).append(", ");
+        if (keys.size()> 0) builder.deleteCharAt(builder.length() - 2);
+        return builder.toString();
     }
 }

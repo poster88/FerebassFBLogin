@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -74,7 +75,6 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         setUpNavigationView();
         checkSaveInstanceState(savedInstanceState);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
-
         userRef = super.database.getReference(USER_INFO_TABLE).orderByChild("uID").equalTo(super.user.getUid());
     }
 
@@ -86,6 +86,8 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         userName.setText(userModel.getName());
         userEmail.setText(userModel.getEmail());
         if (!userModel.getPhotoUrl().equals("default_uri")){
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+            progressBar.setProgress(getTaskId());
             Glide.with(getApplicationContext())
                     .load(Uri.parse(NavigationDrawerActivity.userModel.getPhotoUrl()))
                     .crossFade().thumbnail(0.5f)
@@ -94,6 +96,11 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         }
         if (!userModel.getCompanyUid().equals("default_uri")){
             refCompanyTable = database.getReference(COMP_INF_TABLE).child(userModel.getCompanyUid());
+            refCompanyTable.addValueEventListener(onCompanyInfoTableListener);
+        }else {
+            companiesInfoTable = null;
+            refCompanyTable = null;
+            BusProvider.getInstance().post(new UpdateCompanyUI());
         }
     }
 
@@ -239,8 +246,10 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         if (super.user != null && !super.user.isAnonymous()){
             BusProvider.getInstance().register(this);
             super.auth.addAuthStateListener(authStateListener);
-            userRef.addValueEventListener(onUidUserDataListener);
-            if (onCompanyInfoTableListener != null){
+            if (userRef != null){
+                userRef.addValueEventListener(onUidUserDataListener);
+            }
+            if (refCompanyTable != null){
                 refCompanyTable.addValueEventListener(onCompanyInfoTableListener);
             }
         }
@@ -252,11 +261,12 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         if (super.user != null && !super.user.isAnonymous()){
             BusProvider.getInstance().unregister(this);
             super.auth.removeAuthStateListener(authStateListener);
-            refCompanyTable.removeEventListener(onCompanyInfoTableListener);
-            if (onCompanyInfoTableListener != null){
+            if (onUidUserDataListener != null && userRef != null){
+                userRef.removeEventListener(onUidUserDataListener);
+            }
+            if (onCompanyInfoTableListener != null && refCompanyTable != null){
                 refCompanyTable.removeEventListener(onCompanyInfoTableListener);
             }
         }
     }
-
 }

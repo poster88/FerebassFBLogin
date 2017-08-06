@@ -2,36 +2,83 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" 
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="6dp">
     
     
     <ImageView
         android:layout_gravity="center_horizontal"
         android:id="@+id/company_logo"
-        android:src="@color/colorBluGray300"
-        android:layout_width="40dp"
-        android:layout_height="40dp" />
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/warehouse"/>
     
     <LinearLayout
         android:id="@+id/company_info_req"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        
+
+        <TextView
+            android:id="@+id/company_name_req_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:text="Company name"/>
+
         <TextView
             android:id="@+id/company_name_req"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:hint="must be a company name"
-            android:layout_marginTop="10dp"
-            android:layout_height="wrap_content" />
+            android:textSize="16dp"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/company_desc_req_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="About"
+            android:textSize="16dp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/company_desc_req"
             android:hint="must be a description"
-            android:layout_marginTop="10dp"
+            android:textSize="16dp"
+            android:layout_marginTop="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-        
+
+        <TextView
+            android:id="@+id/company_key_pr_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Key products"
+            android:textSize="16dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/company_key_pr"
+            android:hint="must be a products"
+            android:textSize="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/spinner_choose_position_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Company positions"
+            android:textSize="16dp"
+            android:textStyle="bold"/>
+
         <Spinner
             android:id="@+id/spinner_choose_position"
             android:layout_width="match_parent"
@@ -39,11 +86,14 @@
         </Spinner>
     </LinearLayout>
 
-    <TextView
+    <Button
         android:id="@+id/sendRequestBtn"
-        android:text="Sent"
+        android:layout_width="120dp"
         android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:background="@drawable/colorbutton"
         android:layout_marginTop="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:text="Send"
+        android:textSize="14sp"
+        android:textAllCaps="false" />
 </LinearLayout>

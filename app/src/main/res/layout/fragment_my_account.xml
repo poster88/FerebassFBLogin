@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/MyCardViewStyle"
-            android:layout_marginTop="7dp"
+            android:layout_margin="6dp"
             card_view:cardCornerRadius="4dp"
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground">
@@ -66,7 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/MyCardViewStyle"
-            android:layout_marginTop="7dp"
+            android:layout_margin="6dp"
             card_view:cardCornerRadius="4dp"
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground">
@@ -99,7 +99,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/MyCardViewStyle"
-            android:layout_marginTop="7dp"
+            android:layout_margin="6dp"
             card_view:cardCornerRadius="4dp"
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground">
@@ -129,7 +129,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/MyCardViewStyle"
-            android:layout_marginTop="7dp"
+            android:layout_margin="6dp"
             card_view:cardCornerRadius="4dp"
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground">
@@ -163,43 +163,48 @@
             style="@style/MyCardViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
+            android:layout_margin="6dp"
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground"
             card_view:cardCornerRadius="4dp"
             android:layout_marginBottom="6dp">
 
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/acc_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/acc_img_company"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:src="@drawable/factory" />
+                <RelativeLayout
+                    android:id="@+id/acc_company_label_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/company_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginStart="13dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_toEndOf="@+id/acc_img_company"
-                    android:text="Company info"
-                    android:textSize="16dp"
-                    android:textStyle="bold"/>
+                    <ImageView
+                        android:id="@+id/acc_img_company"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/factory" />
+
+                    <TextView
+                        android:id="@+id/company_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginStart="13dp"
+                        android:text="Add company "
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/acc_img_company" />
+                </RelativeLayout>
 
                 <include
-                    android:visibility="gone"
+                    layout="@layout/company_info_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    layout="@layout/company_info_layout"/>
-            </RelativeLayout>
+                    android:visibility="gone" />
+            </LinearLayout>
         </android.support.v7.widget.CardView>
     </LinearLayout>
 </ScrollView>

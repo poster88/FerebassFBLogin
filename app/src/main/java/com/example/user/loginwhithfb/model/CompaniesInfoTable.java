@@ -112,4 +112,33 @@ public class CompaniesInfoTable {
             this.members = members;
         }
     }
+
+    public class CompanyProducts {
+        private String id;
+        private String prodName;
+
+        public CompanyProducts(String id, String prodName) {
+            this.id = id;
+            this.prodName = prodName;
+        }
+
+        public CompanyProducts() {
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getProdName() {
+            return prodName;
+        }
+
+        public void setProdName(String prodName) {
+            this.prodName = prodName;
+        }
+    }
 }

@@ -31,7 +31,6 @@ public class ProductCatalogFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_product_cat, container, false);
         setFragmentForBinder(this, view);
-        System.out.println("oncreate view ");
         return view;
     }
 
@@ -40,12 +39,10 @@ public class ProductCatalogFragment extends BaseFragment {
         if (NavigationDrawerActivity.companiesInfoTable != null){
             testItem.setText(NavigationDrawerActivity.companiesInfoTable.getCompanyName());
         }
-        System.out.println(" from update item");
     }
 
     @Produce
     public UpdateItem update(){
-        System.out.println("default");
         return new UpdateItem();
     }
 

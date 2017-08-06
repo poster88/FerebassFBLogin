@@ -12,19 +12,19 @@ public class RequestToAddClientToCompaniesTable {
     private String dataRequest;
     private String clientUid;
     private String companyId;
-    private String contactPersonUid;
     private String statusRequest;
+    private String position;
 
     public RequestToAddClientToCompaniesTable() {
     }
 
-    public RequestToAddClientToCompaniesTable(String id, String dataRequest, String clientUid, String companyName, String contactPersonUid, String statusRequest) {
-        this.requestId = id;
+    public RequestToAddClientToCompaniesTable(String requestId, String dataRequest, String clientUid, String companyId, String statusRequest, String position) {
+        this.requestId = requestId;
         this.dataRequest = dataRequest;
         this.clientUid = clientUid;
-        this.companyId = companyName;
-        this.contactPersonUid = contactPersonUid;
+        this.companyId = companyId;
         this.statusRequest = statusRequest;
+        this.position = position;
     }
 
     public Map<String, Object> toMap(){
@@ -33,8 +33,8 @@ public class RequestToAddClientToCompaniesTable {
         result.put("dataRequest" , dataRequest);
         result.put("clientUid" , clientUid);
         result.put("companyId" , companyId);
-        result.put("contactPersonUid" , contactPersonUid);
         result.put("statusRequest" , statusRequest);
+        result.put("position" , position);
         return result;
     }
 
@@ -62,12 +62,12 @@ public class RequestToAddClientToCompaniesTable {
         this.clientUid = clientUid;
     }
 
-    public String getContactPersonUid() {
-        return contactPersonUid;
+    public String getCompanyId() {
+        return companyId;
     }
 
-    public void setContactPersonUid(String contactPersonUid) {
-        this.contactPersonUid = contactPersonUid;
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
     }
 
     public String getStatusRequest() {
@@ -78,11 +78,11 @@ public class RequestToAddClientToCompaniesTable {
         this.statusRequest = statusRequest;
     }
 
-    public String getCompanyId() {
-        return companyId;
+    public String getPosition() {
+        return position;
     }
 
-    public void setCompanyId(String companyId) {
-        this.companyId = companyId;
+    public void setPosition(String position) {
+        this.position = position;
     }
 }

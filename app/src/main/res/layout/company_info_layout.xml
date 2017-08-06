@@ -3,14 +3,13 @@
     android:id="@+id/layout_info_company"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="16dp">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/info_company_logo_img"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:src="@drawable/warehouse"/>
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/warehouse" />
 
     <TextView
         android:id="@+id/info_company_name_label"
@@ -30,7 +29,6 @@
         android:layout_marginTop="4dp"
         android:layout_marginLeft="16dp"
         android:textSize="16dp"
-        android:text="Test name"
         android:layout_toRightOf="@+id/info_company_logo_img"
         android:layout_below="@+id/info_company_name_label" />
 
@@ -50,9 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/info_company_desc_label"
         android:layout_marginTop="4dp"
-        android:textSize="16dp"
-        android:text="Test descr"
-        />
+        android:textSize="16dp" />
 
     <TextView
         android:id="@+id/info_key_product_label"
@@ -70,9 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/info_key_product_label"
         android:layout_marginTop="4dp"
-        android:textSize="16dp"
-        android:text="key pr1, key pr2"
-        />
+        android:textSize="16dp" />
 
     <TextView
         android:id="@+id/info_my_position_label"
@@ -91,6 +85,5 @@
         android:layout_below="@+id/info_my_position_label"
         android:layout_marginTop="4dp"
         android:textSize="16dp"
-        android:text="test position"
         />
 </RelativeLayout>

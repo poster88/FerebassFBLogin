@@ -1,9 +1,10 @@
 package com.example.user.loginwhithfb.activity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -11,7 +12,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.user.loginwhithfb.R;
+import com.example.user.loginwhithfb.lisntener.MyValueEventListener;
 import com.example.user.loginwhithfb.model.CompaniesInfoTable;
 import com.example.user.loginwhithfb.model.RequestToAddClientToCompaniesTable;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,37 +31,59 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
  * Created by POSTER on 07.07.2017.
  */
 
-public class AddRequestCompanyActivity extends AppCompatActivity{
+public class AddRequestCompanyActivity extends BaseActivity{
     @BindView(R.id.company_logo) ImageView companyLogo;
     @BindView(R.id.company_name_req) TextView companyName;
     @BindView(R.id.company_desc_req) TextView companyDescr;
+    @BindView(R.id.company_key_pr) TextView keyProducts;
     @BindView(R.id.spinner_choose_position) Spinner spinChoosePos;
 
-    private ProgressDialog progressDialog;
-    private FirebaseDatabase database;
     private DatabaseReference refCompany;
     private String companyKey;
     private CompaniesInfoTable companiesInfoModel;
+    private List<String> listPositions;
 
     private final String URL_COMPANY_INFO_TABLE = "https://fir-projectdb.firebaseio.com/CompaniesInfoTable";
     private final String URL_REQ_TO_ADD_CLIENT_TABLE = "https://fir-projectdb.firebaseio.com/RequestToAddClientToCompaniesTable";
     private final String COMPANY_ID = "companyId";
-    private ValueEventListener valueEventListener = new ValueEventListener() {
+    private MyValueEventListener onDataSetListener = new MyValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-
+            companiesInfoModel = dataSnapshot.getValue(CompaniesInfoTable.class);
+            innitDataToWidgets();
         }
-
+    };
+    private MyValueEventListener onRequestCreated = new MyValueEventListener() {
         @Override
-        public void onCancelled(DatabaseError databaseError) {
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            AddRequestCompanyActivity.super.hideProgressDialog();
+            if (checkUsersRequestExist(dataSnapshot)){
+                createRequestAddUser();
+                AddRequestCompanyActivity.super.showToast(getBaseContext(), "Request created.");
+                finish();
+            }else {
+                AddRequestCompanyActivity.super.showToast(getBaseContext(), "Request is already sent");
+            }
+        }
+    };
+    private DialogInterface.OnClickListener negOnclickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            dialog.dismiss();
+        }
+    };
 
+    private DialogInterface.OnClickListener posListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            DatabaseReference refRequestTable = AddRequestCompanyActivity.super.database.getReferenceFromUrl(URL_REQ_TO_ADD_CLIENT_TABLE);
+            refRequestTable.addListenerForSingleValueEvent(onRequestCreated);
         }
     };
 
@@ -66,36 +91,29 @@ public class AddRequestCompanyActivity extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_create_req_add_company);
         super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
+        super.setActivityForBinder(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        database = FirebaseDatabase.getInstance();
         try {
             companyKey = getIntent().getStringExtra(COMPANY_ID);
-            refCompany = database.getReferenceFromUrl(URL_COMPANY_INFO_TABLE + "/" + companyKey);
+            refCompany = super.database.getReferenceFromUrl(URL_COMPANY_INFO_TABLE + "/" + companyKey);
         }catch (Exception e){
             e.printStackTrace();
+            return;
         }
-        refCompany.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                companiesInfoModel = dataSnapshot.getValue(CompaniesInfoTable.class);
-                innitDataToWidgets();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("onCancelled: " + databaseError.getMessage());
-            }
-        });
+        refCompany.addListenerForSingleValueEvent(onDataSetListener);
     }
 
     private void innitDataToWidgets() {
         companyName.setText(companiesInfoModel.getCompanyName());
         companyDescr.setText(companiesInfoModel.getCompanyDescr());
+        keyProducts.setText(super.createStringText(companiesInfoModel.getCompanyProducts()));
         Map<String, Object> data = (Map<String, Object>) companiesInfoModel.getPositions();
-        List<String> listPositions = new ArrayList<>(data.keySet());
+        listPositions = new ArrayList<>(data.keySet());
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listPositions);
         spinChoosePos.setAdapter(adapter);
+        if (!companiesInfoModel.getCompanyLogoUri().toString().equals("default_uri")){
+            super.loadImage(Uri.parse(companiesInfoModel.getCompanyLogoUri()), companyLogo);
+        }
     }
 
     @Override
@@ -110,30 +128,14 @@ public class AddRequestCompanyActivity extends AppCompatActivity{
 
     @OnClick(R.id.sendRequestBtn)
     public void sendRequest(){
-        showProgressDialog();
-        DatabaseReference refRequestTable = database.getReferenceFromUrl(URL_REQ_TO_ADD_CLIENT_TABLE);
-        refRequestTable.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (checkUsersRequestExist(dataSnapshot)){
-                    createRequestAddUser();
-                }else {
-                    Toast.makeText(getBaseContext(), "Request is already sent", Toast.LENGTH_SHORT).show();
-                }
-                hideProgressDialog();
-            }
+        super.showProgressDialog("Creating request...");
+        super.showAlertDialog("Send request", "Send request to a new company?", android.R.drawable.ic_menu_edit,
+                false, "Send", "Cancel", posListener, negOnclickListener);
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                hideProgressDialog();
-                onBackPressed();
-            }
-        });
-        super.onBackPressed();
     }
 
     private boolean checkUsersRequestExist(DataSnapshot dataSnapshot) {
-        String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userUid = super.user.getUid();
         for (DataSnapshot data: dataSnapshot.getChildren()){
             String clientUid = data.getValue(RequestToAddClientToCompaniesTable.class).getClientUid();
             String companyId = data.getValue(RequestToAddClientToCompaniesTable.class).getCompanyId();
@@ -148,26 +150,10 @@ public class AddRequestCompanyActivity extends AppCompatActivity{
         DatabaseReference reference = database.getReferenceFromUrl(URL_REQ_TO_ADD_CLIENT_TABLE);
         String id = reference.push().getKey();
         RequestToAddClientToCompaniesTable request = new RequestToAddClientToCompaniesTable(
-                id, new Date().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid(), companyKey, null, "in process"
-        );
+                id, new Date().toString(), super.user.getUid(), companyKey, "in process", listPositions.get(spinChoosePos.getSelectedItemPosition()));
         Map<String, Object> newTable = new HashMap<>();
         Map<String, Object> tempMap = request.toMap();
         newTable.put(id, tempMap);
         reference.updateChildren(newTable);
-    }
-
-    public void showProgressDialog() {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage(getString(R.string.loading));
-            progressDialog.setIndeterminate(true);
-        }
-        progressDialog.show();
-    }
-
-    public void hideProgressDialog() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
     }
 }

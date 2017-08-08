@@ -23,7 +23,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.user.loginwhithfb.event.UpdateCompanyUI;
 import com.example.user.loginwhithfb.lisntener.MyValueEventListener;
 import com.example.user.loginwhithfb.R;
-import com.example.user.loginwhithfb.event.UpdateItem;
 import com.example.user.loginwhithfb.eventbus.BusProvider;
 import com.example.user.loginwhithfb.event.UpdateUIEvent;
 import com.example.user.loginwhithfb.model.CompaniesInfoTable;

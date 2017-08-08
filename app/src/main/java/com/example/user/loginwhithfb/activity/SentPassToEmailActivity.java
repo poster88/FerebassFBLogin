@@ -79,7 +79,7 @@ public class SentPassToEmailActivity extends BaseActivity{
     }
 
     private void initUserData() {
-        if (!super.user.isAnonymous()){
+        if (super.user != null && !super.user.isAnonymous()){
             setEmail.setText(userModel.getEmail());
         }
     }

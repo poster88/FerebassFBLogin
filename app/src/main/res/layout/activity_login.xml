@@ -14,7 +14,7 @@
         android:src="@drawable/dove_of_peace"
         android:layout_alignParentRight="true"
         android:tint="@color/colorPrimary"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginRight="16dp" />
 
     <RelativeLayout
         android:id="@+id/loginContainer"
@@ -30,7 +30,7 @@
             android:layout_marginTop="28dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:src="@drawable/users_1" />
+            android:src="@drawable/email" />
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/inputTextEmail"
@@ -58,17 +58,17 @@
             android:id="@+id/user_pass_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginTop="30dp"
             android:layout_marginRight="16dp"
             android:layout_below="@+id/user_login_image"
-            android:src="@drawable/email" />
+            android:src="@drawable/key"
+            android:layout_alignStart="@+id/user_login_image" />
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/inputTextPass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="6dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
             android:layout_below="@+id/inputTextEmail"
@@ -80,7 +80,6 @@
                 android:id="@+id/passEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/oval"
                 android:hint="@string/pass"
                 android:padding="8dp"
                 android:lines="1"

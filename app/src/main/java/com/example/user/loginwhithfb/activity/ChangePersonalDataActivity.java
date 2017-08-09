@@ -64,7 +64,7 @@ public class ChangePersonalDataActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_accept_changes, menu);
-        return true /*super.onCreateOptionsMenu(menu)*/;
+        return true;
     }
 
     @Override

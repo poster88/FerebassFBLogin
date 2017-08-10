@@ -9,42 +9,45 @@ import java.util.Map;
  */
 
 public class CompaniesInfoTable {
-    private String id;
+    private String companyId;
     private String companyName;
     private String companyDescr;
     private String companyLogoUri;
     private Object companyProducts;
     private Object positions;
+    private Object wareHouse;
 
     public CompaniesInfoTable() {
     }
 
-    public CompaniesInfoTable(String id, String companyName, String companyDescr, String companyLogoUri, Object companyProducts, Object positions) {
-        this.id = id;
+    public CompaniesInfoTable(String id, String companyName, String companyDescr, String companyLogoUri, Object companyProducts, Object positions, Object wareHouse) {
+        this.companyId = id;
         this.companyName = companyName;
         this.companyDescr = companyDescr;
         this.companyLogoUri = companyLogoUri;
         this.companyProducts = companyProducts;
         this.positions = positions;
+        this.wareHouse = wareHouse;
     }
 
     public Map<String, Object> toMap(){
         HashMap<String, Object> result = new HashMap<>();
-        result.put("companyId", id);
+        result.put("companyId", companyId);
         result.put("companyName", companyName);
         result.put("companyDescr", companyDescr);
         result.put("companyLogoUri", companyLogoUri);
         result.put("companyProducts", companyProducts);
         result.put("positions", positions);
+        result.put("wareHouse", wareHouse);
         return result;
     }
 
-    public String getCompanyId() {
-        return id;
+    public String getcompanyId() {
+        return companyId;
     }
 
-    public void setCompanyId(String id) {
-        this.id = id;
+    public void setcompanyId(String id) {
+        this.companyId = id;
     }
 
     public String getCompanyName() {
@@ -87,58 +90,11 @@ public class CompaniesInfoTable {
         this.positions = positions;
     }
 
-    public class CompanyPosition {
-        private String position;
-        private ArrayList members;
-
-        public CompanyPosition(String position, ArrayList members) {
-            this.position = position;
-            this.members = members;
-        }
-
-        public String getPosition() {
-            return position;
-        }
-
-        public void setPosition(String position) {
-            this.position = position;
-        }
-
-        public ArrayList getMembers() {
-            return members;
-        }
-
-        public void setMembers(ArrayList members) {
-            this.members = members;
-        }
+    public Object getWareHouse() {
+        return wareHouse;
     }
 
-    public class CompanyProducts {
-        private String id;
-        private String prodName;
-
-        public CompanyProducts(String id, String prodName) {
-            this.id = id;
-            this.prodName = prodName;
-        }
-
-        public CompanyProducts() {
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getProdName() {
-            return prodName;
-        }
-
-        public void setProdName(String prodName) {
-            this.prodName = prodName;
-        }
+    public void setWareHouse(Object wareHouse) {
+        this.wareHouse = wareHouse;
     }
 }

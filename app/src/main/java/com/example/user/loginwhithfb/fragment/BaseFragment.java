@@ -39,6 +39,7 @@ public class BaseFragment extends Fragment {
     protected ProgressDialog progressDialog;
 
     protected final String USER_INFO_TABLE = "UserLoginInfoTable";
+    protected final String COMP_INF_TABLE = "CompaniesInfoTable";
     protected final static String USERS_IMAGES = "users_images";
     protected final static String REF_USER_PHOTO = "UsersPhoto";
     protected final static int PHOTO_REQUEST = 9002;

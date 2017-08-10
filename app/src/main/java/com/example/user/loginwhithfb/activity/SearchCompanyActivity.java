@@ -45,7 +45,7 @@ public class SearchCompanyActivity extends BaseActivity implements AdapterView.O
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot data: dataSnapshot.getChildren()) {
-                String companyId = data.getValue(CompaniesInfoTable.class).getCompanyId();
+                String companyId = data.getValue(CompaniesInfoTable.class).getcompanyId();
                 String companyName = data.getValue(CompaniesInfoTable.class).getCompanyName();
                 if (!userModel.getCompanyUid().equals(companyId)){
                     companyData.put(companyId, companyName);

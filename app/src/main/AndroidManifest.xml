@@ -55,5 +55,8 @@
         <activity android:name=".activity.SentPassToEmailActivity"
             android:label="@string/activity_title_sent_pass"
             android:screenOrientation="portrait"/>
+        <activity android:name=".activity.ProductListActivity"
+            android:label="@string/activity_title_products"
+            android:screenOrientation="portrait"/>
     </application>
 </manifest>

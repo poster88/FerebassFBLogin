@@ -16,9 +16,7 @@ import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.lisntener.MyValueEventListener;
 import com.example.user.loginwhithfb.model.CompaniesInfoTable;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;

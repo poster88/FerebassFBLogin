@@ -1,13 +1,20 @@
 package com.example.user.loginwhithfb.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.model.Product;
 
@@ -33,7 +40,7 @@ public class MyRecycleViewAdapter extends RecyclerView.Adapter<MyRecycleViewAdap
         @BindView(R.id.item_available_status) TextView itemStatus;
         @BindView(R.id.item_price) TextView itemPrice;
         @BindView(R.id.item_image) ImageView itemImage;
-
+        @BindView(R.id.progress_bar_item_card) ProgressBar progressBar;
 
         public ProductModelHolder(View itemView) {
             super(itemView);
@@ -51,8 +58,8 @@ public class MyRecycleViewAdapter extends RecyclerView.Adapter<MyRecycleViewAdap
         this.myClickListener = myClickListener;
     }
 
-    public MyRecycleViewAdapter(ArrayList<Product> myDataset, Context context){
-        dataSet = myDataset;
+    public MyRecycleViewAdapter(ArrayList<Product> myDataSet, Context context){
+        dataSet = myDataSet;
         this.context = context;
     }
 
@@ -64,13 +71,34 @@ public class MyRecycleViewAdapter extends RecyclerView.Adapter<MyRecycleViewAdap
     }
 
     @Override
-    public void onBindViewHolder(ProductModelHolder holder, int position) {
-        holder.itemName.setText("from holder");
-        holder.itemDescription.setText("from holder");
-        holder.itemCount.setText("from holder");
-        holder.itemStatus.setText("from holder");
-        holder.itemPrice.setText("from holder");
-        //holder.itemImage.setImageDrawable();
+    public void onBindViewHolder(final ProductModelHolder holder, int position) {
+        holder.itemName.setText(dataSet.get(position).getName());
+        holder.itemDescription.setText(dataSet.get(position).getDescription());
+        holder.itemCount.setText(String.valueOf(dataSet.get(position).getCount()));
+        if (dataSet.get(position).isAvailability()){
+            holder.itemStatus.setText("Наявний");
+        }else {
+            holder.itemStatus.setText("Не наявний");
+        }
+        holder.itemPrice.setText(String.valueOf(dataSet.get(position).getCount()));
+        if (!dataSet.get(position).getPhotoUries().equals("default_uri")){
+            Glide.with(context).load(Uri.parse(dataSet.get(position).getPhotoUries()))
+                    .listener(new RequestListener<Uri, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            holder.progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            holder.progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+                    }).diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.itemImage);
+        }else {
+            holder.itemImage.setImageResource(R.mipmap.ic_image);
+        }
     }
 
     @Override

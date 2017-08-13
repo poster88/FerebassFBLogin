@@ -41,7 +41,7 @@ public class Product {
         this.price = new Double(map.get("price").toString());
         this.weight = (String) map.get("weight");
         this.color = (String) map.get("color");
-        this.availability = Boolean.getBoolean(map.get("availability").toString());
+        this.availability = ((Boolean)map.get("availability")).booleanValue();
         this.count = new Integer(map.get("count").toString());
     }
 

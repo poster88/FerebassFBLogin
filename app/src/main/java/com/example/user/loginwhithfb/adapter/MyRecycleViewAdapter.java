@@ -17,6 +17,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.model.Product;
+import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 
@@ -31,9 +32,9 @@ public class MyRecycleViewAdapter extends RecyclerView.Adapter<MyRecycleViewAdap
     private ArrayList<Product> dataSet = new ArrayList();
     private Context context;
     private static MyClickListener myClickListener;
+    private DataSnapshot dataSnapshot;
 
-
-    public static class ProductModelHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ProductModelHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.item_name_label) TextView itemName;
         @BindView(R.id.item_description) TextView itemDescription;
         @BindView(R.id.item_count) TextView itemCount;
@@ -41,16 +42,11 @@ public class MyRecycleViewAdapter extends RecyclerView.Adapter<MyRecycleViewAdap
         @BindView(R.id.item_price) TextView itemPrice;
         @BindView(R.id.item_image) ImageView itemImage;
         @BindView(R.id.progress_bar_item_card) ProgressBar progressBar;
+        @BindView(R.id.item_add_wish_list) ImageView imageAddToList;
 
         public ProductModelHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            myClickListener.onItemClick(getAdapterPosition(), v);
         }
     }
 
@@ -58,20 +54,43 @@ public class MyRecycleViewAdapter extends RecyclerView.Adapter<MyRecycleViewAdap
         this.myClickListener = myClickListener;
     }
 
-    public MyRecycleViewAdapter(ArrayList<Product> myDataSet, Context context){
-        dataSet = myDataSet;
+    public MyRecycleViewAdapter(ArrayList<Product> myDataSet, DataSnapshot dataSnapshot, Context context){
+        this.dataSet = myDataSet;
         this.context = context;
+        this.dataSnapshot = dataSnapshot;
     }
 
     @Override
     public ProductModelHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card, parent, false);
         ProductModelHolder holder = new ProductModelHolder(view);
+
         return holder;
     }
 
+    private void loadPhoto(final ProductModelHolder holder, int position){
+        if (!dataSet.get(position).getPhotoUries().equals("default_uri")){
+            Glide.with(context).load(Uri.parse(dataSet.get(position).getPhotoUries())).listener(new RequestListener<Uri, GlideDrawable>() {
+                @Override
+                public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    holder.progressBar.setVisibility(View.GONE);
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    holder.progressBar.setVisibility(View.GONE);
+                    return false;
+                }
+            }).diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.itemImage);
+        }else {
+            holder.progressBar.setVisibility(View.GONE);
+            holder.itemImage.setImageResource(R.mipmap.ic_image);
+        }
+    }
+
     @Override
-    public void onBindViewHolder(final ProductModelHolder holder, int position) {
+    public void onBindViewHolder(final ProductModelHolder holder, final int position) {
         holder.itemName.setText(dataSet.get(position).getName());
         holder.itemDescription.setText(dataSet.get(position).getDescription());
         holder.itemCount.setText(String.valueOf(dataSet.get(position).getCount()));
@@ -80,24 +99,25 @@ public class MyRecycleViewAdapter extends RecyclerView.Adapter<MyRecycleViewAdap
         }else {
             holder.itemStatus.setText("Не наявний");
         }
-        holder.itemPrice.setText(String.valueOf(dataSet.get(position).getCount()));
-        if (!dataSet.get(position).getPhotoUries().equals("default_uri")){
-            Glide.with(context).load(Uri.parse(dataSet.get(position).getPhotoUries()))
-                    .listener(new RequestListener<Uri, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            holder.progressBar.setVisibility(View.GONE);
-                            return false;
-                        }
+        holder.itemPrice.setText(String.valueOf(dataSet.get(position).getPrice()));
+        loadPhoto(holder, position);
+        addToWithList(holder, position);
+    }
 
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            holder.progressBar.setVisibility(View.GONE);
-                            return false;
-                        }
-                    }).diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.itemImage);
+    private void addToWithList(final ProductModelHolder holder, final int position){
+        if (!dataSnapshot.hasChild(dataSet.get(position).getId())){
+            View.OnClickListener addToWithList = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    myClickListener.onItemClick(position, v);
+                    if (dataSet.get(position).isAvailability()){
+                        holder.imageAddToList.setImageResource(R.drawable.ic_favorite_black_24dp);
+                    }
+                }
+            };
+            holder.imageAddToList.setOnClickListener(addToWithList);
         }else {
-            holder.itemImage.setImageResource(R.mipmap.ic_image);
+            holder.imageAddToList.setImageResource(R.drawable.ic_favorite_black_24dp);
         }
     }
 

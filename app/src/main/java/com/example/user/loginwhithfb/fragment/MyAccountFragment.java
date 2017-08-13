@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -39,7 +38,6 @@ import com.example.user.loginwhithfb.activity.NavigationDrawerActivity;
 import com.example.user.loginwhithfb.activity.RegistrationActivity;
 import com.example.user.loginwhithfb.event.UpdateUIEvent;
 import com.example.user.loginwhithfb.eventbus.BusProvider;
-import com.example.user.loginwhithfb.model.CompaniesInfoTable;
 import com.example.user.loginwhithfb.model.UserLoginInfoTable;
 import com.example.user.loginwhithfb.other.CircleTransform;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -59,12 +57,7 @@ import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.zip.Inflater;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -90,13 +83,10 @@ public class MyAccountFragment extends BaseFragment {
     private DatabaseReference refUserInfTable;
     private View view;
     private View dialog;
-    private View companyView;
     private String tempUid;
     private String tempEmail;
     private Uri photoUri;
     private String photoUrl;
-    private LinearLayout infoCompContainer;
-    private Inflater inflater;
 
     private OnCompleteListener onCompleteListenerSentEmailVerify = new OnCompleteListener() {
         @Override
@@ -113,8 +103,13 @@ public class MyAccountFragment extends BaseFragment {
         @Override
         public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
             photoUrl = taskSnapshot.getDownloadUrl().toString();
-            FirebaseStorage.getInstance().getReferenceFromUrl(NavigationDrawerActivity.userModel.getPhotoUrl())
-                    .delete().addOnCompleteListener(deleteListener);
+            if (!NavigationDrawerActivity.userModel.getPhotoUrl().equals("default_uri")){
+                FirebaseStorage.getInstance().getReferenceFromUrl(NavigationDrawerActivity.userModel.getPhotoUrl()).delete().addOnCompleteListener(deleteListener);
+            }else {
+                NavigationDrawerActivity.userModel.setPhotoUrl(photoUrl);
+                BusProvider.getInstance().post(new UpdateUIEvent());
+                refUserInfTable.addListenerForSingleValueEvent(onUserKeyFinder);
+            }
         }
     };
     private OnCompleteListener<Void> deleteListener = new OnCompleteListener<Void>() {
@@ -190,7 +185,6 @@ public class MyAccountFragment extends BaseFragment {
     private void deleteUserFromDB() {
         Query query = refUserInfTable.orderByChild("uID").equalTo(tempUid);
         query.addListenerForSingleValueEvent(deleteUserAccListener);
-        //TODO: delete all users ref link
     }
     private OnCompleteListener credentialComplete = new OnCompleteListener() {
         @Override
@@ -405,6 +399,7 @@ public class MyAccountFragment extends BaseFragment {
 
     @OnClick({R.id.acc_card_view_person, R.id.acc_card_view_person_number, R.id.acc_card_view_person_email,
             R.id.acc_card_view_mail_check, R.id.acc_card_view_person_company})
+
     public void pickActionBtn(CardView view){
         if (!super.user.isAnonymous()){
             pickActivity(view.getId());

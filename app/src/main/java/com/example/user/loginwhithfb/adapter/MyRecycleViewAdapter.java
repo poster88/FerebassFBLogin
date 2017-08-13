@@ -60,17 +60,21 @@ public class MyRecycleViewAdapter extends RecyclerView.Adapter<MyRecycleViewAdap
         this.dataSnapshot = dataSnapshot;
     }
 
+    public MyRecycleViewAdapter(ArrayList<Product> myDataSet, Context context){
+        this.dataSet = myDataSet;
+        this.context = context;
+    }
+
     @Override
     public ProductModelHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card, parent, false);
         ProductModelHolder holder = new ProductModelHolder(view);
-
         return holder;
     }
 
     private void loadPhoto(final ProductModelHolder holder, int position){
-        if (!dataSet.get(position).getPhotoUries().equals("default_uri")){
-            Glide.with(context).load(Uri.parse(dataSet.get(position).getPhotoUries())).listener(new RequestListener<Uri, GlideDrawable>() {
+        if (!dataSet.get(position).getPhotoUri().equals("default_uri")){
+            Glide.with(context).load(Uri.parse(dataSet.get(position).getPhotoUri())).listener(new RequestListener<Uri, GlideDrawable>() {
                 @Override
                 public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
                     holder.progressBar.setVisibility(View.GONE);
@@ -99,9 +103,13 @@ public class MyRecycleViewAdapter extends RecyclerView.Adapter<MyRecycleViewAdap
         }else {
             holder.itemStatus.setText("Не наявний");
         }
-        holder.itemPrice.setText(String.valueOf(dataSet.get(position).getPrice()));
+        holder.itemPrice.setText(String.valueOf(dataSet.get(position).getPrice()) + " грн");
         loadPhoto(holder, position);
-        addToWithList(holder, position);
+        if (dataSnapshot != null) {
+            addToWithList(holder, position);
+        }else {
+            holder.imageAddToList.setVisibility(View.GONE);
+        }
     }
 
     private void addToWithList(final ProductModelHolder holder, final int position){

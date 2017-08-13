@@ -69,11 +69,11 @@ public class Product {
         this.description = description;
     }
 
-    public String getPhotoUries() {
+    public String getPhotoUri() {
         return photoUri;
     }
 
-    public void setPhotoUries(String photoUri) {
+    public void setPhotoUri(String photoUri) {
         this.photoUri = photoUri;
     }
 

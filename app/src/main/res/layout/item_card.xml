@@ -104,6 +104,16 @@
                 android:text="999"
                 android:layout_below="@+id/item_available_status" />
 
+            <Button
+                android:id="@+id/buy_btn"
+                android:text="Купити"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/item_price"
+                android:layout_centerHorizontal="true"/>
+
             <ImageView
                 android:id="@+id/item_add_wish_list"
                 android:layout_width="wrap_content"

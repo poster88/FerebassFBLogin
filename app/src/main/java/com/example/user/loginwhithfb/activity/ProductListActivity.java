@@ -1,5 +1,6 @@
 package com.example.user.loginwhithfb.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,7 +26,7 @@ import butterknife.BindView;
  * Created by POSTER on 12.08.2017.
  */
 
-public class ProductListActivity extends BaseActivity{
+public class ProductListActivity extends BaseActivity {
     @BindView(R.id.prod_items_recycle_view) RecyclerView recyclerView;
 
     private RecyclerView.Adapter adapter;
@@ -84,10 +85,15 @@ public class ProductListActivity extends BaseActivity{
     private MyRecycleViewAdapter.MyClickListener myClickListener = new MyRecycleViewAdapter.MyClickListener() {
         @Override
         public void onItemClick(int position, View v) {
-            DatabaseReference reference = database.getReferenceFromUrl("https://fir-projectdb.firebaseio.com/" + "WishListTable/" + ProductListActivity.super.user.getUid());
-            Map<String, Object> newTable = new HashMap<>();
-            newTable.put(products.get(position).getId(), products.get(position));
-            reference.updateChildren(newTable);
+            if (v.getId() == R.id.item_add_wish_list){
+                DatabaseReference reference = database.getReferenceFromUrl("https://fir-projectdb.firebaseio.com/" + "WishListTable/" + ProductListActivity.super.user.getUid());
+                Map<String, Object> newTable = new HashMap<>();
+                newTable.put(products.get(position).getId(), products.get(position));
+                reference.updateChildren(newTable);
+            }else if (v.getId() == R.id.buy_btn){
+                String reference = getIntent().getStringExtra("reference") + "/" + position + "/";
+                startActivity(new Intent(ProductListActivity.this, OrderActivity.class).putExtra("item_ref", reference));
+            }
         }
     };
 

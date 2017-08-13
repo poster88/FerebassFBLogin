@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="6dp"
+    android:layout_margin="3dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/order_user_name_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="From:"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            />
+        <EditText
+            android:id="@+id/order_user_name_edit"
+            android:textSize="16dp"
+            android:maxLength="256"
+            android:layout_marginTop="2dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:padding="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round"/>
+
+        <TextView
+            android:layout_marginTop="12dp"
+            android:id="@+id/order_user_adress_label"
+            android:textSize="18dp"
+            android:text="Delivery address:"
+            android:layout_marginLeft="8dp"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/order_user_adress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:maxLength="256"
+            android:padding="8dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/round"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="6dp"/>
+
+        <include
+            layout="@layout/item_card"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right">
+
+            <TextView
+                android:id="@+id/order_count_label"
+                android:text="Кількість:"
+                android:textStyle="bold"
+                android:layout_marginRight="5dp"
+                android:textSize="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/order_count_edit"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_width="wrap_content"
+                android:maxLines="1"
+                android:inputType="number"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:maxLength="5"
+                android:text="1"
+                android:padding="8dp"
+                android:background="@drawable/round"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="6dp"/>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/order_message"
+            android:hint="Message ..."
+            android:maxLength="256"
+            android:textSize="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/round"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="6dp"/>
+
+        <Button
+            android:id="@+id/create_order_btn"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:layout_marginTop="6dp"
+            android:textSize="14sp"
+            android:layout_gravity="center_horizontal"
+            android:text="Замовити"/>
+    </LinearLayout>
+</ScrollView>

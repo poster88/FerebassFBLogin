@@ -45,6 +45,7 @@ public class BaseActivity extends AppCompatActivity {
 
     protected final String USER_INFO_TABLE = "UserLoginInfoTable";
     protected final String COMP_INF_TABLE = "CompaniesInfoTable";
+    protected final String USER_ORDER_TABLE = "UserOrderTable";
     protected final String TAG_HOME = "Products catalog";
     protected final String TAG_ACCOUNT = "My account";
     protected final String TAG_ORDER = "My orders";
@@ -144,6 +145,16 @@ public class BaseActivity extends AppCompatActivity {
         ab.setCancelable(cancelable);
         ab.setPositiveButton(positiveBtnTitle, posBtnClickListener);
         ab.setNegativeButton(negativeBtnTitle, negBtnClickListener);
+        ab.show();
+    }
+
+    protected void showAlertDialogOneBtn(String title, String message, String btnTitle, DialogInterface.OnClickListener btnClickListener){
+        AlertDialog.Builder ab = new AlertDialog.Builder(this);
+        ab.setTitle(title);
+        ab.setIcon(android.R.drawable.stat_sys_warning);
+        ab.setMessage(message);
+        ab.setNegativeButton(btnTitle, btnClickListener);
+        ab.create();
         ab.show();
     }
 

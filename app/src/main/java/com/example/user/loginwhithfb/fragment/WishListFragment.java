@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.activity.BaseActivity;
 import com.example.user.loginwhithfb.adapter.MyRecycleViewAdapter;
-import com.example.user.loginwhithfb.adapter.WishListAdapter;
 import com.example.user.loginwhithfb.lisntener.MyValueEventListener;
 import com.example.user.loginwhithfb.model.Product;
 import com.google.firebase.database.DataSnapshot;

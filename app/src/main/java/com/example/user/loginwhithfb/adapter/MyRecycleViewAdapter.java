@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -43,6 +44,7 @@ public class MyRecycleViewAdapter extends RecyclerView.Adapter<MyRecycleViewAdap
         @BindView(R.id.item_image) ImageView itemImage;
         @BindView(R.id.progress_bar_item_card) ProgressBar progressBar;
         @BindView(R.id.item_add_wish_list) ImageView imageAddToList;
+        @BindView(R.id.buy_btn) Button buyBtn;
 
         public ProductModelHolder(View itemView) {
             super(itemView);
@@ -105,11 +107,22 @@ public class MyRecycleViewAdapter extends RecyclerView.Adapter<MyRecycleViewAdap
         }
         holder.itemPrice.setText(String.valueOf(dataSet.get(position).getPrice()) + " грн");
         loadPhoto(holder, position);
+        addToOrders(position, holder);
         if (dataSnapshot != null) {
             addToWithList(holder, position);
         }else {
             holder.imageAddToList.setVisibility(View.GONE);
         }
+    }
+
+    private void addToOrders(final int position, final ProductModelHolder holder){
+        View.OnClickListener buyClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myClickListener.onItemClick(position, v);
+            }
+        };
+        holder.buyBtn.setOnClickListener(buyClickListener);
     }
 
     private void addToWithList(final ProductModelHolder holder, final int position){

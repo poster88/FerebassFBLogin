@@ -6,7 +6,6 @@ import android.view.MenuItem;
 
 import com.example.user.loginwhithfb.R;
 import com.google.firebase.database.DatabaseReference;
-//import com.google.firebase.database.DatabaseReference;
 
 import butterknife.OnClick;
 

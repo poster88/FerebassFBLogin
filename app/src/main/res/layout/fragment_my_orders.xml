@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="6dp">
 
     <TextView
         android:id="@+id/label"
@@ -17,6 +18,7 @@
         android:textStyle="bold"/>
 
     <TextView
+        android:id="@+id/data_status"
         android:layout_below="@+id/label"
         android:layout_centerInParent="true"
         android:layout_width="fill_parent"
@@ -24,5 +26,11 @@
         android:textSize="12dp"
         android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
-        android:text="Edit fragment_my_orders.xml to change the appearance" />
+        android:text="No data" />
+
+    <ListView
+        android:visibility="gone"
+        android:id="@+id/order_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></ListView>
 </LinearLayout>

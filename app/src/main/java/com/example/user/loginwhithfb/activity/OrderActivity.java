@@ -134,6 +134,9 @@ public class OrderActivity extends BaseActivity {
             orderModel.setAddress(deliveryAddress.getText().toString());
             orderModel.setCount(Integer.valueOf(itemCount.getText().toString()));
             orderModel.setMessage(orderMessage.getText().toString());
+            orderModel.setPhotoUri(product.getPhotoUri());
+            orderModel.setItemName(product.getName());
+            orderModel.setItemPrice(String.valueOf(product.getPrice() + " грн"));
             Map<String, Object> newTable = new HashMap<>();
             Map<String, Object> tempMap = orderModel.toMap();
             newTable.put(orderRef.push().getKey(), tempMap);

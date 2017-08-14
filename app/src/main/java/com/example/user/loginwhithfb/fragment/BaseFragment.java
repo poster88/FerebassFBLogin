@@ -38,10 +38,11 @@ public class BaseFragment extends Fragment {
     protected StorageReference refUsersPhoto;
     protected ProgressDialog progressDialog;
 
-    protected final String USER_INFO_TABLE = "UserLoginInfoTable";
-    protected final String COMP_INF_TABLE = "CompaniesInfoTable";
+    protected final static String USER_INFO_TABLE = "UserLoginInfoTable";
+    protected final static String COMP_INF_TABLE = "CompaniesInfoTable";
     protected final static String USERS_IMAGES = "users_images";
     protected final static String REF_USER_PHOTO = "UsersPhoto";
+    protected final static String USER_ORDER_TABLE = "UserOrderTable";
     protected final static int PHOTO_REQUEST = 9002;
     protected final static int REQUEST_READ_PERMISSION = 9003;
     protected final static int RESULT_OK = -1;

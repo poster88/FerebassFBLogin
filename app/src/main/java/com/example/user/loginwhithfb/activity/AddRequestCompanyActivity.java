@@ -11,9 +11,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.user.loginwhithfb.R;
+import com.example.user.loginwhithfb.event.UpdateCompanyUI;
+import com.example.user.loginwhithfb.eventbus.BusProvider;
 import com.example.user.loginwhithfb.lisntener.MyValueEventListener;
 import com.example.user.loginwhithfb.model.CompaniesInfoTable;
 import com.example.user.loginwhithfb.model.RequestToAddClientToCompaniesTable;
+import com.example.user.loginwhithfb.model.UserLoginInfoTable;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
@@ -41,6 +44,7 @@ public class AddRequestCompanyActivity extends BaseActivity{
     private String companyKey;
     private CompaniesInfoTable companiesInfoModel;
     private List<String> listPositions;
+    private DatabaseReference refUserInfTable;
 
     private final String URL_COMPANY_INFO_TABLE = "https://fir-projectdb.firebaseio.com/CompaniesInfoTable";
     private final String URL_REQ_TO_ADD_CLIENT_TABLE = "https://fir-projectdb.firebaseio.com/RequestToAddClientToCompaniesTable";
@@ -148,5 +152,28 @@ public class AddRequestCompanyActivity extends BaseActivity{
         Map<String, Object> tempMap = request.toMap();
         newTable.put(id, tempMap);
         reference.updateChildren(newTable);
+        updateUserCompanyID();
     }
+
+    private void updateUserCompanyID(){
+        refUserInfTable = super.database.getReference(USER_INFO_TABLE);
+        BaseActivity.userModel.setCompanyUid(companyKey);
+        refUserInfTable.addListenerForSingleValueEvent(onUserKeyFinder);
+    }
+
+    private void updateUserProfile(String userKey) {
+        refUserInfTable.child(userKey).setValue(BaseActivity.userModel);
+    }
+
+    private MyValueEventListener onUserKeyFinder = new MyValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            for (DataSnapshot data: dataSnapshot.getChildren()){
+                if (user.getUid().equals(data.getValue(UserLoginInfoTable.class).getuID())){
+                    updateUserProfile(data.getKey());
+                    //BusProvider.getInstance().post(new UpdateCompanyUI());
+                }
+            }
+        }
+    };
 }

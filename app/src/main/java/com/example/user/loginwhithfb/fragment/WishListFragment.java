@@ -56,8 +56,10 @@ public class WishListFragment extends BaseFragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity().getBaseContext());
         recyclerView.setLayoutManager(layoutManager);
-        databaseReference = database.getReferenceFromUrl("https://fir-projectdb.firebaseio.com/" + "WishListTable/" + BaseActivity.userModel.getuID());
-        databaseReference.addValueEventListener(listener);
+        if (user != null && !user.isAnonymous()){
+            databaseReference = database.getReferenceFromUrl("https://fir-projectdb.firebaseio.com/" + "WishListTable/" + BaseActivity.userModel.getuID());
+            databaseReference.addValueEventListener(listener);
+        }
         return view;
     }
 }

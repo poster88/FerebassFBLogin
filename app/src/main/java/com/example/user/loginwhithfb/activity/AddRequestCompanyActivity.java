@@ -11,8 +11,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.user.loginwhithfb.R;
-import com.example.user.loginwhithfb.event.UpdateCompanyUI;
-import com.example.user.loginwhithfb.eventbus.BusProvider;
 import com.example.user.loginwhithfb.lisntener.MyValueEventListener;
 import com.example.user.loginwhithfb.model.CompaniesInfoTable;
 import com.example.user.loginwhithfb.model.RequestToAddClientToCompaniesTable;
@@ -171,7 +169,6 @@ public class AddRequestCompanyActivity extends BaseActivity{
             for (DataSnapshot data: dataSnapshot.getChildren()){
                 if (user.getUid().equals(data.getValue(UserLoginInfoTable.class).getuID())){
                     updateUserProfile(data.getKey());
-                    //BusProvider.getInstance().post(new UpdateCompanyUI());
                 }
             }
         }

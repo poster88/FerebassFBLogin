@@ -102,13 +102,12 @@ public class OrderActivity extends BaseActivity {
         itemDescr = ButterKnife.findById(itemCardLayout, R.id.item_description);
         itemImage = ButterKnife.findById(itemCardLayout, R.id.item_image);
         progressBar = ButterKnife.findById(itemCardLayout, R.id.progress_bar_item_card);
-        setVisibilityGone(itemCardLayout,
-                R.id.item_count_label, R.id.item_count, R.id.item_available_status, R.id.item_add_wish_list, R.id.buy_btn);
+        setVisibilityGone(  R.id.item_count_label, R.id.item_count, R.id.item_available_status, R.id.item_add_wish_list, R.id.buy_btn);
     }
 
-    private void setVisibilityGone(View view, Integer...id){
+    private void setVisibilityGone(Integer...id){
         for (int i = 0; i < id.length; i++) {
-            (ButterKnife.findById(view, id[i])).setVisibility(View.GONE);
+            (ButterKnife.findById(itemCardLayout, id[i])).setVisibility(View.GONE);
         }
     }
 

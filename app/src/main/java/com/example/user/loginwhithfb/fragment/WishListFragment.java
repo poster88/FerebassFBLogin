@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.example.user.loginwhithfb.R;
 import com.example.user.loginwhithfb.activity.BaseActivity;
+import com.example.user.loginwhithfb.activity.ProductListActivity;
 import com.example.user.loginwhithfb.adapter.MyRecycleViewAdapter;
 import com.example.user.loginwhithfb.lisntener.MyValueEventListener;
 import com.example.user.loginwhithfb.model.Product;
@@ -17,6 +18,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -45,7 +47,27 @@ public class WishListFragment extends BaseFragment {
     private void innitAdapter() {
         adapter = new MyRecycleViewAdapter(products, getContext());
         recyclerView.setAdapter(adapter);
+        ((MyRecycleViewAdapter) adapter).setOnItemClickListener(myClickListener);
+
     }
+
+    private MyRecycleViewAdapter.MyClickListener myClickListener = new MyRecycleViewAdapter.MyClickListener() {
+        @Override
+        public void onItemClick(int position, View v) {
+            if (v.getId() == R.id.buy_btn){
+                DatabaseReference reference = database.getReferenceFromUrl("https://fir-projectdb.firebaseio.com/" + BaseActivity.userModel.getCompanyUid() +
+                        "/wareHouse");
+                reference.
+            }
+        }
+    };
+
+    private MyValueEventListener getItemFromDB = new MyValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            System.out.println(dataSnapshot.toString());
+        }
+    };
 
     @Nullable
     @Override

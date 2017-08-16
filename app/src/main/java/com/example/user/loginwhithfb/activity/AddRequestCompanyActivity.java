@@ -124,9 +124,8 @@ public class AddRequestCompanyActivity extends BaseActivity{
     @OnClick(R.id.sendRequestBtn)
     public void sendRequest(){
         super.showProgressDialog("Creating request...");
-        super.showAlertDialog("Send request", "Send request to a new company?", android.R.drawable.ic_menu_edit,
+        super.showAlert("Send request", "Send request to a new company?", android.R.drawable.ic_menu_edit,
                 false, "Send", "Cancel", posListener, negOnclickListener);
-
     }
 
     private boolean checkUsersRequestExist(DataSnapshot dataSnapshot) {

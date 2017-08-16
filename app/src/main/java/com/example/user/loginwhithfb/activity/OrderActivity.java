@@ -46,6 +46,7 @@ public class OrderActivity extends BaseActivity {
     private TextView itemName;
     private TextView itemDescr;
     private ImageView itemImage;
+    private TextView itemPrice;
     private ProgressBar progressBar;
     private DatabaseReference reference;
     private Product product;
@@ -61,6 +62,7 @@ public class OrderActivity extends BaseActivity {
                 super.userModel.getEmail() + ", " + super.userModel.getMobileNumber());
         itemName.setText(product.getName());
         itemDescr.setText(product.getDescription());
+        itemPrice.setText(product.getPrice().toString());
         Glide.with(this).load(Uri.parse(product.getPhotoUri())).listener(new RequestListener<Uri, GlideDrawable>() {
             @Override
             public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -96,20 +98,18 @@ public class OrderActivity extends BaseActivity {
 
     private void innitWidgets() {
         itemName = ButterKnife.findById(itemCardLayout, R.id.item_name_label);
-        itemName = ButterKnife.findById(itemCardLayout, R.id.item_name_label);
+        itemPrice = ButterKnife.findById(itemCardLayout, R.id.item_price);
         itemDescr = ButterKnife.findById(itemCardLayout, R.id.item_description);
         itemImage = ButterKnife.findById(itemCardLayout, R.id.item_image);
         progressBar = ButterKnife.findById(itemCardLayout, R.id.progress_bar_item_card);
-        setVisibilityGone(itemCardLayout, R.id.item_count_label);
-        setVisibilityGone(itemCardLayout, R.id.item_count);
-        setVisibilityGone(itemCardLayout, R.id.item_available_status);
-        setVisibilityGone(itemCardLayout, R.id.item_price);
-        setVisibilityGone(itemCardLayout, R.id.item_add_wish_list);
-        setVisibilityGone(itemCardLayout, R.id.buy_btn);
+        setVisibilityGone(itemCardLayout,
+                R.id.item_count_label, R.id.item_count, R.id.item_available_status, R.id.item_add_wish_list, R.id.buy_btn);
     }
 
-    private void setVisibilityGone(View view,  int id){
-        (ButterKnife.findById(view, id)).setVisibility(View.GONE);
+    private void setVisibilityGone(View view, Integer...id){
+        for (int i = 0; i < id.length; i++) {
+            (ButterKnife.findById(view, id[i])).setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -136,12 +136,12 @@ public class OrderActivity extends BaseActivity {
             orderModel.setMessage(orderMessage.getText().toString());
             orderModel.setPhotoUri(product.getPhotoUri());
             orderModel.setItemName(product.getName());
-            orderModel.setItemPrice(String.valueOf(product.getPrice() + " грн"));
+            orderModel.setItemPrice(String.valueOf((product.getPrice() * (Integer.valueOf(itemCount.getText().toString())) + " грн")));
             Map<String, Object> newTable = new HashMap<>();
             Map<String, Object> tempMap = orderModel.toMap();
             newTable.put(orderRef.push().getKey(), tempMap);
             orderRef.updateChildren(newTable);
-            showAlertDialogOneBtn("Order message", "Order created.", "Close", dialogBtnClickListener);
+            super.showAlert("Order message", "Order created.", android.R.drawable.stat_sys_warning, true, null, "Close", null, dialogBtnClickListener);
         }
     }
 

@@ -137,25 +137,20 @@ public class BaseActivity extends AppCompatActivity {
         setExitTimer();
     }
 
-    protected void showAlertDialog(String title, String message, int icon, boolean cancelable, String positiveBtnTitle, String negativeBtnTitle, DialogInterface.OnClickListener posBtnClickListener, DialogInterface.OnClickListener negBtnClickListener) {
-        AlertDialog.Builder ab = new AlertDialog.Builder(this);
-        ab.setTitle(title);
-        ab.setMessage(message);
-        ab.setIcon(icon);
-        ab.setCancelable(cancelable);
-        ab.setPositiveButton(positiveBtnTitle, posBtnClickListener);
-        ab.setNegativeButton(negativeBtnTitle, negBtnClickListener);
-        ab.show();
+    protected void showAlert(String title, String message, int icon, boolean cancelable, String positiveBtnTitle, String negativeBtnTitle, DialogInterface.OnClickListener posBtnClickListener, DialogInterface.OnClickListener negBtnClickListener){
+        initAlertBuilder().setTitle(title)
+                .setIcon(icon)
+                .setMessage(message)
+                .setCancelable(cancelable)
+                .setPositiveButton(positiveBtnTitle, posBtnClickListener)
+                .setNegativeButton(negativeBtnTitle, negBtnClickListener)
+                .create()
+                .show();
     }
 
-    protected void showAlertDialogOneBtn(String title, String message, String btnTitle, DialogInterface.OnClickListener btnClickListener){
+    private AlertDialog.Builder initAlertBuilder(){
         AlertDialog.Builder ab = new AlertDialog.Builder(this);
-        ab.setTitle(title);
-        ab.setIcon(android.R.drawable.stat_sys_warning);
-        ab.setMessage(message);
-        ab.setNegativeButton(btnTitle, btnClickListener);
-        ab.create();
-        ab.show();
+        return ab;
     }
 
     protected void hideSoftKeyboard(Activity activity) {

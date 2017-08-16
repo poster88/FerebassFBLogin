@@ -121,9 +121,8 @@ public class SentPassToEmailActivity extends BaseActivity{
     }
 
     private void setPositiveAlertDialog(String email){
-        super.showAlertDialog("Send email", "Send pass to the " + email + " ?", android.R.drawable.ic_menu_info_details,
-                false, "Send", "Cancel", onClickListenerSentEmail, onClickListenerCancel
-        );
+        super.showAlert("Send email", "Send pass to the " + email + " ?", android.R.drawable.ic_menu_info_details,
+                false, "Send", "Cancel", onClickListenerSentEmail, onClickListenerCancel);
     }
 
     private void sentPassword(String email){

@@ -83,10 +83,10 @@ public class NavigationDrawerActivity extends BaseActivity implements View.OnCli
         TextView userName = ButterKnife.findById(navHeader, R.id.name);
         TextView userEmail = ButterKnife.findById(navHeader, R.id.email);
         ImageView userPhoto = ButterKnife.findById(navHeader, R.id.img_profile);
+        ProgressBar progressBar = ButterKnife.findById(navHeader, R.id.progressBar);
         userName.setText(userModel.getName());
         userEmail.setText(userModel.getEmail());
         if (!userModel.getPhotoUrl().equals("default_uri")){
-            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
             progressBar.setProgress(getTaskId());
             Glide.with(getApplicationContext())
                     .load(Uri.parse(NavigationDrawerActivity.userModel.getPhotoUrl()))

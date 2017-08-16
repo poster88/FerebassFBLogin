@@ -53,6 +53,9 @@ public class BaseActivity extends AppCompatActivity {
     protected final String TAG_FAVORITE = "Favorite";
     protected final String TAG_NEWS = "News";
     protected final String TAG_INFORMATION = "Information";
+    protected final String URL_COMPANY_INFO_TABLE = "https://fir-projectdb.firebaseio.com/CompaniesInfoTable";
+    protected final String URL_REQ_TO_ADD_CLIENT_TABLE = "https://fir-projectdb.firebaseio.com/RequestToAddClientToCompaniesTable";
+    protected final String COMPANY_ID = "companyId";
     protected String CURRENT_TAG = TAG_HOME;
     protected ProgressDialog progressDialog;
 
@@ -62,7 +65,6 @@ public class BaseActivity extends AppCompatActivity {
 
     public static UserLoginInfoTable userModel;
     public static Query userRef;
-
     public static CompaniesInfoTable companiesInfoTable;
     public static Query refCompanyTable;
 

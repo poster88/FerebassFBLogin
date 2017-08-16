@@ -17,8 +17,6 @@ public class CompanyInfoActivity extends BaseActivity{
 
     private DatabaseReference reference;
     private String userUid;
-    private final String COMPANIES_INFO_TABLE = "CompaniesInfoTable";
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,7 +24,7 @@ public class CompanyInfoActivity extends BaseActivity{
         setContentView(R.layout.activity_company_info);
         super.setActivityForBinder(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        reference = super.database.getReference(COMPANIES_INFO_TABLE);
+        reference = super.database.getReference(COMP_INF_TABLE);
         if (!user.isAnonymous()){
             userUid = user.getUid();
         }

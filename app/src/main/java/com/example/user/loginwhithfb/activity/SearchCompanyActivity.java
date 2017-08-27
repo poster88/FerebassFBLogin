@@ -101,7 +101,7 @@ public class SearchCompanyActivity extends BaseActivity implements AdapterView.O
     private void innitCompanyList() {
         isProgressDialogShowing();
         companyData = new HashMap<>();
-        reference.addListenerForSingleValueEvent(dataListener);
+        reference.addValueEventListener(dataListener);
     }
 
     @Override
@@ -153,5 +153,13 @@ public class SearchCompanyActivity extends BaseActivity implements AdapterView.O
     @Override
     public void onBackPressed() {
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (reference != null){
+            reference.removeEventListener(dataListener);
+        }
     }
 }

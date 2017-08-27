@@ -94,14 +94,16 @@ public class ProductCatalogFragment extends BaseFragment {
     @Subscribe
     public void updateCompanyUI(UpdateCompanyUI event){
         if (BaseActivity.companiesInfoTable != null){
-            categoryMap = (Map<String, Object>) BaseActivity.companiesInfoTable.getWareHouse();
-            categoryList = new ArrayList<>();
-            for (Map.Entry map: categoryMap.entrySet()) {
-                categoryList.add(map.getKey().toString());
+            if (BaseActivity.companiesInfoTable.getWareHouse() != null){
+                categoryMap = (Map<String, Object>) BaseActivity.companiesInfoTable.getWareHouse();
+                categoryList = new ArrayList<>();
+                for (Map.Entry map: categoryMap.entrySet()) {
+                    categoryList.add(map.getKey().toString());
+                }
+                adapter = new CategoryRecycleViewAdapter(categoryList, getContext());
+                recyclerView.setAdapter(adapter);
+                ((CategoryRecycleViewAdapter) adapter).setOnItemClickListener(myClickListener);
             }
-            adapter = new CategoryRecycleViewAdapter(categoryList, getContext());
-            recyclerView.setAdapter(adapter);
-            ((CategoryRecycleViewAdapter) adapter).setOnItemClickListener(myClickListener);
         }
     }
 

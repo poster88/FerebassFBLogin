@@ -57,7 +57,6 @@ public class WishListFragment extends BaseFragment {
             if (v.getId() == R.id.buy_btn){
                 DatabaseReference reference = database.getReferenceFromUrl("https://fir-projectdb.firebaseio.com/" + BaseActivity.userModel.getCompanyUid() +
                         "/wareHouse");
-                reference.
             }
         }
     };
